@@ -1,0 +1,39 @@
+@charset "utf-8";
+/* CSS Document */
+div.playerbox
+{
+ text-decoration:  none;
+ font-family:      sans-serif;
+ font-style:       normal;
+ font-size:        13px;
+ background-color: #c6d6f5;
+ margin:           2px;
+ width:            200px;
+ min-height:       120px;
+ float:            left;
+ padding:          3px 3px 3px 3px;
+ text-align:       center;
+}
+
+div.themebox
+{
+ text-decoration:  none;
+ font-family:      sans-serif;
+ font-style:       normal;
+ font-size:        13px;
+ background-color: #c6d6f5;
+ margin:           2px;
+ min-height:       25em;
+ float:            left;
+ padding:          3px 3px 3px 3px;
+ height:           45em;
+ overflow:         auto;
+}
+
+div.themebox h2
+{
+ background-color: #b6c6e5;
+ text-align:       center;
+ white-space:      nowrap;
+ overflow:         hidden;
+}

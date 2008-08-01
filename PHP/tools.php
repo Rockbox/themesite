@@ -1,6 +1,6 @@
 <?php
 
-include 'ini.php';
+require_once('ini.php');
 
 # Some values for sanity checks of uploaded zip files
 $maxfilesinzip = 100;
@@ -33,13 +33,7 @@ function show_main_table()
     print "<p><table class=\"rockbox\" cellpadding=\"0\">\n";
     for ($i=0;$i<$nummodels;$i++)
     {
-       if (($i % 7) == 0) {
-           if ($i > 0) {
-              print "</tr>\n";
-           }
-           print "<tr valign=\"top\">";
-       }
-       print "<td align=\"center\"><a href=\"index.php?model=$models[$i]\"><img border=\"0\" src=\"http://www.rockbox.org/playerpics/$imagenames[$i]\" alt=\"$modelnames[$i]\" /><p>$modelnames[$i]</a></td>\n";
+	   print "<div class=\"playerbox\"><a href=\"".SITEURL."/models/$models[$i]/\"><img border=\"0\" src=\"http://www.rockbox.org/playerpics/$imagenames[$i]\" alt=\"$modelnames[$i]\" /><p>$modelnames[$i]</a></div>\n";
     }
     print "</table></p>\n";
 }
@@ -47,11 +41,9 @@ function show_main_table()
 # Filter the themes.txt by LCD type and return an array of matching themes
 function filter($mainlcdfilter,$remotelcdfilter)
 {
-    global $DATADIR;
-
     $count = 0;
 
-    $fh = fopen("$DATADIR/themes.txt", "r");
+    $fh = fopen(DATADIR."/themes.txt", "r");
     if ($fh)
     {
         while ((list($id,$name,$shortname,$img1,$img2,$author,$email,$mainlcd,$remotelcd,$description,$date) = fgetcsv($fh, 1000, "|")) !== FALSE)

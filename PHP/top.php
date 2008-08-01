@@ -1,7 +1,9 @@
+<? require_once('ini.php'); ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
 <link rel="STYLESHEET" type="text/css" href="http://www.rockbox.org/style.css">
+<link rel="STYLESHEET" type="text/css" href="<?=SITEURL?>/theme_site_style.css">
 <link rel="shortcut icon" href="http://www.rockbox.org/favicon.ico">
 <title>Rockbox Themes</title>
 <meta name="author" content="Rockbox Contributors">

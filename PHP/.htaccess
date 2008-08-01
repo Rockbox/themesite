@@ -1,0 +1,3 @@
+RewriteEngine On
+RewriteRule ^models/(.*)/ index.php?model=$1
+Options -Indexes
