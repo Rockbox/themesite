@@ -199,7 +199,7 @@ function validate_zip($filename, $new_model)
             if(trim(@$ret[0]) != "BMP")
                 $errors[$nerrs++] = "File isn't a BMP - ".substr($bmp, 14);
         }
-        foreach(glob("/tmp/rbthemes/.rockbox/wps/*.wps") as $wps)
+        foreach(glob("/tmp/rbthemes/.rockbox/wps/*.?wps") as $wps)
         {
             $ret = shell_exec(DATADIR."/../checkwps.$new_model \"$wps\"");
             $ret = explode("\n", $ret);
