@@ -20,15 +20,9 @@ $imagenames = array('player-small.png','recorder-small.png','recorder-small.png'
 
 function get_modelid($model)
 {
-    global $nummodels;
     global $models;
-
-    for ($i=0;$i<$nummodels;$i++)
-    {
-        if ($model==$models[$i]) { return $i; }
-    }
-
-    return '';
+	
+	return array_search($model, $models);
 }
 
 function show_main_table()

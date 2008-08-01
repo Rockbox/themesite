@@ -4,9 +4,12 @@ include('top.php');
 
 include('tools.php');
 
-$modelid = get_modelid($_GET['model']);
+if(isset($_GET['model']))
+	$modelid = get_modelid($_GET['model']);
+else
+	$modelid = false;
 
-if ($modelid=='')
+if ($modelid == false)
 {
     # HOME PAGE
     print "<h1>Rockbox Themes</h1>\n";
@@ -75,7 +78,7 @@ else
                     print "<img src=\"data/$lcd/$shortname.png\" ";
                     print "alt=\"$name\" name=\"$shortname\" width=\"$width\" height=\"$height\" />";
                     print "</a><br />\n";
-                    print "<small> Size: 28.5 KB</small>\n";
+                    print "<small> Size: ".round(filesize($DATADIR."/".$lcd."/".$shortname.".zip")/1024, 2)." KB</small>\n";
                     print "</p>\n";
                     print "<small>";
                     print "<strong>Submitter:</strong><br />\n";
