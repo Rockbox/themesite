@@ -1,113 +1,158 @@
 <?php
 
 include('top.php');
-
 include('tools.php');
 
-$submit = $_POST['submit'];
+$err = array();
 
-if (!$submit)
+function disp_helper($name)
 {
-    print "<h1>Rockbox Themes - Upload a theme</h1>\n";
-
-    print "<h2>Section 1 - Theme information</h2>\n";
-    print "<form enctype=\"multipart/form-data\" action=\"upload.php\" method=\"post\">\n";
-    # The following line is just for convenience for the user - the real maximum is specified in the php config file
-    print "<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"1000000\" />\n";
-
-    print "<table class=\"rockbox\">\n";
-
-    print "<tr>";
-    print "<td><b>Theme name</b></td>";
-    print "<td><input type=\"text\" name=\"name\" size=\"32\" /></td>";
-    print "</tr>\n";
-
-    print "<tr>";
-    print "<td><b>Target device</b></td>";
-    print "<td><select name=\"target\">";
-    print "<option value=\"X\"></option>\n";
-    for ($i=0;$i<count($models);$i++) {
-        print "<option value=\"$models[$i]\">$modelnames[$i] ($mainlcdtypes[$i])</option>\n";
-    }
-    print "</select></td>";
-    print "</tr>\n";
-
-    print "<tr>";
-    print "<td><b>Your real name</b><br /><small><a href=\"http://www.rockbox.org/wiki/WhyRealNames\">Why do I need to provide this?</a></td>";
-    print "<td><input type=\"text\" name=\"author\" size=\"32\" /></td>";
-    print "</tr>\n";
-
-    print "<tr>";
-    print "<td><b>Your email address</b><br /><small>Not displayed publically</small></td>";
-    print "<td><input type=\"text\" name=\"email\" size=\"32\" /></td>";
-    print "</tr>\n";
-
-    print "<tr>";
-    print "<td valign=\"top\"><b>Description</b><br /><small>If your theme uses images from other<br />themes, please include the name(s)<br /> and author(s) of those themes<br />here</small></td>";
-    print "<td><textarea cols=\"60\" rows=\"6\" name=\"description\"></textarea></td>";
-    print "</tr>\n";
-
-    print "</table>\n";
-
-    print "<h2>Section 2 - File uploads</h2>\n";
-    print "<table class=\"rockbox\">\n";
-
-    print "<tr>";
-    print "<td><b>Main zip file</b></td>";
-    print "<td><input type=\"file\" name=\"zip\" size=\"60\" /></td>";
-    print "</tr>\n";
-    print "<tr>";
-    print "<td><b>WPS screenshot</b><br /><small>PNG format only</small></td>";
-    print "<td><input type=\"file\" name=\"wpsimg\" size=\"60\" /></td>";
-    print "</tr>\n";
-    print "<tr>";
-    print "<td><b>Menu screenshot</b><br /><small>PNG format only<br />(Optional)</small></td>";
-    print "<td><input type=\"file\" name=\"menuimg\" size=\"60\" /></td>";
-    print "</tr>\n";
-    print "</table>\n";
-
-    print "<h2>Section 3 - The legal stuff</h2>\n";
-
-    print "<p>In line with the spirit of Rockbox itself, all themes on this website are freely redistributable (in both modified and unmodified forms) without any restriction (e.g. commercial/non-commercial) on their use.</p>\n";
-    print "<p>By uploading your theme to this site, you are agreeing to license your work under the <a href=\"\">CC-BY-SA</a> license.</p>\n";
-
-    print "<p><input type=\"submit\" name=\"submit\" value=\"Submit\"/></p>\n";
-    print "</form>\n";
+    global $err;
+    $ret = "";
+    if(isset($_POST[$name]))
+        $ret .= " value=\"".htmlspecialchars($_POST[$name])."\"";
+    if(array_search($name, $err) !== false)
+        $ret .= " class=\"error\"";
+    return $ret;
 }
-else
+
+if (isset($_POST['submit']))
 {
+    foreach($_POST as $name => $element)
+    {
+        if(strlen(trim($element)) == 0)
+            $err[] = $name;
+    }
+    
+    foreach($_FILES as $name => $values)
+    {
+        if(strlen(trim($values["name"])) == 0 && $name != "menuimg")
+            $err[] = $name;
+    }
+    
+    /* Check if valid email address */
+    if(!eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$", $_POST["email"]))
+        $err[] = "email";
+    
+    /* Check if valid target */
+    if(array_search($_POST['target'], $models) === false)
+        $err[] = "target";
+    
+    /* Require a first and last name */
+    if(count(explode(" ", $_POST['author'])) < 2)
+        $err[] = "author";
+        
+    if($_FILES['zip']['type'] != "application/zip")
+        $err[] = "zip";
+    
+    if($_FILES['wpsimg']['type'] != "image/png")
+        $err[] = "wpsimg";
+        
+    if($_FILES['menuimg']['type'] != "image/png" && strlen($_FILES['menuimg']['name']) > 0)
+        $err[] = "menuimg";
+
     $name = $_POST['name'];
     $target = $_POST['target'];
     $author = $_POST['author'];
     $email = $_POST['email'];
     $description = $_POST['description'];
-
-    print "<p>Uploaded.</p>\n";
-    print "<p>name=$name</p>\n";
-    print "<p>target=$target</p>\n";
-    print "<p>author=$author</p>\n";
-    print "<p>email=$email</p>\n";
-    print "<p>description=$description</p>\n";
-
-    $ziptest = validate_zip($_FILES['zip']['tmp_name']);
-
-    if (count($ziptest)==0)
+    
+    if(count($err)==0)
     {
-        print "<p>ZIP OK!</p>\n";
-    }
-    else
-    {
-        print "<p>The zip file contained the following errors:</p>\n";
-        print "<ul>";
-        for ($i=0;$i<count($ziptest);$i++)
+        $ziptest = validate_zip($_FILES['zip']['tmp_name']);
+    
+        if (count($ziptest)==0)
+            print "<p>ZIP OK!</p>\n";
+        else
         {
-            print "<li>$ziptest[$i]</li>\n";
+            print "<p>The zip file contained the following errors:</p>\n";
+            print "<ul>";
+            for ($i=0;$i<count($ziptest);$i++)
+                print "<li>$ziptest[$i]</li>\n";
+            print "</ul>";
         }
-        print "</ul>";
     }
 }
+?>
+    <h1>Rockbox Themes - Upload a theme</h1>
+    
+    <? if(count($err)>0): ?>
+    <div class="error_desc">
+    There were some errors while procesing your information; please check if everything is filled in correctly!
+    </div>
+    <? endif; ?>
 
+    <h2>Section 1 - Theme information</h2>
+    <form enctype="multipart/form-data" action="upload.php" method="post">
+    <input type="hidden" name="MAX_FILE_SIZE" value="1000000" />
+    
+    <table class="rockbox">
+
+    <tr>
+    <td><b>Theme name</b></td>
+    <td><input type="text" name="name" size="32"<?=disp_helper("name");?>/></td>
+    </tr>
+
+    <tr>
+    <td><b>Target device</b></td>
+    <td>
+    <select name="target"<?=(array_search("target", $err)?" class=\"error\"":"")?>>
+    <option value="X"></option>
+    <?
+    for ($i=0; $i<count($models); $i++)
+    {
+        echo "<option value=\"$models[$i]\"";
+        if(@$_POST['target'] == $models[$i])
+            echo " selected=\"selected\"";
+        echo ">".$modelnames[$i]." (".$mainlcdtypes[$i].")</option>";
+    }
+    ?>
+    </select>
+    </td>
+    </tr>
+
+    <tr>
+    <td><b>Your real name</b><br /><small><a href="http://www.rockbox.org/wiki/WhyRealNames">Why do I need to provide this?</a></td>
+    <td><input type="text" name="author" size="32"<?=disp_helper("author");?>/></td>
+    </tr>
+
+    <tr>
+    <td><b>Your email address</b><br /><small>Not displayed publically</small></td>
+    <td><input type="text" name="email" size="32"<?=disp_helper("email");?>/></td>
+    </tr>
+
+    <tr>
+    <td valign="top"><b>Description</b><br /><small>If your theme uses images from other<br />themes, please include the name(s)<br /> and author(s) of those themes<br />here</small></td>
+    <td>
+    <textarea cols="60" rows="6" name="description"<?=(array_search("description", $err)?" class=\"error\"":"")?>><?=(isset($_POST['description'])?htmlspecialchars($_POST['description']):"")?></textarea></td>
+    </tr>
+
+    </table>
+
+    <h2>Section 2 - File uploads</h2>
+    <table class="rockbox">
+
+    <tr>
+    <td><b>Main zip file</b></td>
+    <td<?=disp_helper("zip");?>><input type="file" name="zip" size="60" /></td>
+    </tr>
+    <tr>
+    <td><b>WPS screenshot</b><br /><small>PNG format only</small></td>
+    <td<?=disp_helper("wpsimg");?>><input type="file" name="wpsimg" size="60" /></td>
+    </tr>
+    <tr>
+    <td><b>Menu screenshot</b><br /><small>PNG format only<br />(Optional)</small></td>
+    <td<?=disp_helper("menuimg");?>><input type="file" name="menuimg" size="60" /></td>
+    </tr>
+    </table>
+
+    <h2>Section 3 - The legal stuff</h2>
+    
+    <p>In line with the spirit of Rockbox itself, all themes on this website are freely redistributable (in both modified and unmodified forms) without any restriction (e.g. commercial/non-commercial) on their use.</p>
+<p>By uploading your theme to this site, you are agreeing to license your work under the <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a> license.</p>
+
+<p><input type="submit" name="submit" value="Submit"/></p>
+</form>
+<?
 include('bottom.php');
-
-
 ?>

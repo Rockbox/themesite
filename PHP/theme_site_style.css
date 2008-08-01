@@ -40,3 +40,16 @@ div.playerbox
  color:           black;
  text-decoration: none;
 }
+
+.error
+{
+ border:          red solid 2px;
+ font-style:      italic;
+}
+
+.error_desc
+{
+ color:          red;
+ font-weight:    bold;
+ font-size:      16px;
+}
