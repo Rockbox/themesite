@@ -2,10 +2,6 @@
 
 require_once('ini.php');
 
-# Some values for sanity checks of uploaded zip files
-$maxfilesinzip = 100;
-$maxunzippedsize = 1000000;  # In bytes
-
 # The main list of devices.
 
 $models = array('player','recorder','recorder8mb','fmrecorder','recorderv2','ondiofm','ondiosp','iaudiom5','iaudiox5','iaudiom3','h100','h120','h300','h10_5gb','h10','ipod1g2g','ipod3g','ipod4gray','ipodcolor','ipodvideo','ipodvideo64mb','ipodmini1g','ipodmini2g','ipodnano','gigabeatf','sansae200','sansac200','mrobe100');
@@ -68,8 +64,6 @@ function filter($mainlcdfilter,$remotelcdfilter)
 
 function validate_zip($filename)
 {
-    GLOBAL $maxfilesinzip;
-    GLOBAL $maxunzippedsize;
 
     $nerrs = 0;
 
@@ -95,7 +89,10 @@ function validate_zip($filename)
     $recs = split("\n",$buf);
 
     # Do some sanity checks on the unzip output
-    if ((count($recs) < 7) ||  # Number of lines with one file in the zip
+    if(count($recs) == 7) # Number of lines with one file in the zip
+        return array("Zip contains only 1 file.");
+    
+    if (count($recs) < 7 || 
         ($recs[1] != "  Length     Date   Time    Name") ||
         ($recs[2] != " --------    ----   ----    ----"))
     {
@@ -107,14 +104,12 @@ function validate_zip($filename)
     $s = preg_replace('/^\ +/','',$s);
     list($size,$numfiles,$s) = split(" ",$s);
     if ($s != 'files')
-    {
          return array('Unexpected ZIP file error.');
-    }
 
-    if ($numfiles > $maxfilesinzip)
+    if ($numfiles > MAXFILESINZIP)
         return array("Too many files in ZIP file ($numfiles)");
 
-    if ($size > $maxunzippedsize)
+    if ($size > MAXUNZIPPEDSIZE)
         return array("ZIP contents too large ($size bytes)");
 
     # Now go through each file in turn.
@@ -124,8 +119,6 @@ function validate_zip($filename)
     # Check filetypes (extensions) in each subdir
     # Check filenames of .wps, .rwps and .cfg match, and is same as name of dir in wps/
     # Check for exactly one subdir in wps/
-
-    # TODO: Return an array of errors, not just the first one...
 
     for ($i=3;$i<count($recs)-3;$i++)
     {
@@ -187,6 +180,18 @@ function validate_zip($filename)
         return array();
     else
         return $errors;
+}
+
+function validate_png($filename)
+{
+    $res = imagecreatefrompng($filename);
+    if(!$res)
+        return false;
+    else
+    {
+        imagedestroy($res);
+        return true;
+    }
 }
 
 ?>

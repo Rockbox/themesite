@@ -1,9 +1,11 @@
 <?php
 
+require_once("ini.php");
 include('top.php');
 include('tools.php');
 
 $err = array();
+$zip_err = array();
 
 function disp_helper($name)
 {
@@ -16,7 +18,7 @@ function disp_helper($name)
     return $ret;
 }
 
-if (isset($_POST['submit']))
+if(isset($_POST['submit']))
 {
     foreach($_POST as $name => $element)
     {
@@ -41,35 +43,38 @@ if (isset($_POST['submit']))
     /* Require a first and last name */
     if(count(explode(" ", $_POST['author'])) < 2)
         $err[] = "author";
-        
+    
     if($_FILES['zip']['type'] != "application/zip")
         $err[] = "zip";
     
     if($_FILES['wpsimg']['type'] != "image/png")
         $err[] = "wpsimg";
-        
+    
     if($_FILES['menuimg']['type'] != "image/png" && strlen($_FILES['menuimg']['name']) > 0)
         $err[] = "menuimg";
-
-    $name = $_POST['name'];
-    $target = $_POST['target'];
-    $author = $_POST['author'];
-    $email = $_POST['email'];
-    $description = $_POST['description'];
     
     if(count($err)==0)
     {
+		if(md5_file($_FILES['wpsimg']['tmp_name']) == md5_file($_FILES['menuimg']['tmp_name'])
+		   && strlen($_FILES['menuimg']['name']) > 0)
+		{
+			$err[] = "wpsimg";
+			$err[] = "menuimg";
+		}
+        if(!validate_png($_FILES['wpsimg']['tmp_name']))
+            $err[] = "wpsimg";
+        
+        if(!validate_png($_FILES['menuimg']['tmp_name']) && strlen($_FILES['menuimg']['name']) > 0)
+            $err[] = "menuimg";
+        
         $ziptest = validate_zip($_FILES['zip']['tmp_name']);
     
         if (count($ziptest)==0)
             print "<p>ZIP OK!</p>\n";
         else
         {
-            print "<p>The zip file contained the following errors:</p>\n";
-            print "<ul>";
-            for ($i=0;$i<count($ziptest);$i++)
-                print "<li>$ziptest[$i]</li>\n";
-            print "</ul>";
+            $err[] = "zip";
+            $zip_err = $ziptest;
         }
     }
 }
@@ -80,11 +85,22 @@ if (isset($_POST['submit']))
     <div class="error_desc">
     There were some errors while procesing your information; please check if everything is filled in correctly!
     </div>
+    <?
+    if(count($zip_err)>0)
+    {
+        print "<p>Additionally, the zip file contains the following errors:</p>\n";
+        print "<ul>";
+        for ($i=0;$i<count($zip_err);$i++)
+            print "<li>$zip_err[$i]</li>\n";
+        print "</ul>";
+    }
+    ?>
+    <hr />
     <? endif; ?>
 
     <h2>Section 1 - Theme information</h2>
     <form enctype="multipart/form-data" action="upload.php" method="post">
-    <input type="hidden" name="MAX_FILE_SIZE" value="1000000" />
+    <input type="hidden" name="MAX_FILE_SIZE" value="<?=MAXFILESIZE?>" />
     
     <table class="rockbox">
 
