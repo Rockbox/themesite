@@ -160,17 +160,18 @@ function validate_zip($filename, $new_model)
 
         # We know there are at least 3 elements in path
         if ($validdir[$a[1]] != 1)
-        {
             $errors[$nerrs++] = "Invalid directory - $f";
-        }
 
-        # Check for known bad files        
-        if (strtolower($a[count($a)-1]) == 'thumbs.db')
-        {
-            $errors[$nerrs++] = "Invalid file - $f";
+        # Check for known bad files     
+		switch(strtolower($a[count($a)-1]))
+		{
+			case "thumbs.db":
+			case "desktop.ini":
+			case ".ds_store":
+			case ".directory":
+            	$errors[$nerrs++] = "Invalid file - $f";
+			break;
         }
-
-        #print "<p>$i - $f (".strtolower($a[count($a)-1]).")</p>\n";
     }
     
     if($nerrs == 0)
@@ -217,16 +218,17 @@ function validate_zip($filename, $new_model)
                 if(substr(trim($el), 0, 1) != "#")
                 {
                     $el = explode(":", trim($el));
-                    switch($el[0])
+                    switch(strtolower($el[0]))
                     {
                         case "wps":
                         case "font":
                         case "backdrop":
-                        case "lang":
+						case "iconset":
+						case "viewers iconset":
                             $path = "/tmp/rbthemes".trim($el[1]);
                             if(substr(dirname($path), 0, 13) != "/tmp/rbthemes"
                                || !file_exists($path))
-                                $errors[$nerrs++] = "Path in config does not exist: ".htmlspecialchars(substr($path, 0, 13))." - ".substr($cfg, 14);
+                                $errors[$nerrs++] = "Path in config doesn't exist: ".htmlspecialchars(substr($path, 0, 13))." - ".substr($cfg, 14);
                         break;
                     }
                 }
