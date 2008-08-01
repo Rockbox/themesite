@@ -15,7 +15,7 @@ div.playerbox
  text-align:       center;
 }
 
-div.themebox
+.themebox
 {
  text-decoration:  none;
  font-family:      sans-serif;
@@ -23,17 +23,20 @@ div.themebox
  font-size:        13px;
  background-color: #c6d6f5;
  margin:           2px;
- min-height:       25em;
- float:            left;
  padding:          3px 3px 3px 3px;
- height:           45em;
- overflow:         auto;
+ vertical-align:   top;
 }
 
-div.themebox h2
+.themebox h2
 {
  background-color: #b6c6e5;
  text-align:       center;
  white-space:      nowrap;
  overflow:         hidden;
+}
+
+.themebox h2 a
+{
+ color:           black;
+ text-decoration: none;
 }

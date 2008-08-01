@@ -55,7 +55,7 @@ Downloads
 <img width=16 height=16 src='http://www.rockbox.org/silk_icons/package.png' align='top'> <a class="menulink" href="http://www.rockbox.org/download/">releases</a><br>
 <img width=16 height=16 src='http://www.rockbox.org/silk_icons/bomb.png' align='top'> <a class="menulink" href="http://build.rockbox.org">current build</a><br>
 <img width=16 height=16 src='http://www.rockbox.org/silk_icons/style.png' align='top'> <a class="menulink" href="http://www.rockbox.org/twiki/bin/view/Main/RockboxExtras">extras</a><br>
-<img width=16 height=16 src='http://www.rockbox.org/silk_icons/palette.png' align='top'> <a class="menulink" href="index.php">themes</a>
+<img width=16 height=16 src='http://www.rockbox.org/silk_icons/palette.png' align='top'> <a class="menulink" href="<?=SITEURL?>/index.php">themes</a>
 <div class="submenu">
 Documentation
 

@@ -21,8 +21,8 @@ $imagenames = array('player-small.png','recorder-small.png','recorder-small.png'
 function get_modelid($model)
 {
     global $models;
-	
-	return array_search($model, $models);
+    
+    return array_search($model, $models);
 }
 
 function show_main_table()
@@ -33,7 +33,7 @@ function show_main_table()
     print "<p><table class=\"rockbox\" cellpadding=\"0\">\n";
     for ($i=0;$i<$nummodels;$i++)
     {
-	   print "<div class=\"playerbox\"><a href=\"".SITEURL."/models/$models[$i]/\"><img border=\"0\" src=\"http://www.rockbox.org/playerpics/$imagenames[$i]\" alt=\"$modelnames[$i]\" /><p>$modelnames[$i]</a></div>\n";
+       print "<div class=\"playerbox\"><a href=\"".SITEURL."/models/$models[$i]/\"><img border=\"0\" src=\"http://www.rockbox.org/playerpics/$imagenames[$i]\" alt=\"$modelnames[$i]\" /><p>$modelnames[$i]</a></div>\n";
     }
     print "</table></p>\n";
 }
