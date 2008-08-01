@@ -85,7 +85,7 @@ else
                 print "<h2><a name='$modelnames[$modelid]' id='$shortname'></a><a href=\"#$shortname\">$name</a></h2>\n";
                 
                 print "<p align='center'>\n";
-                print "<a href=\"data/$lcd/$shortname.zip\" ";
+                print "<a href=\"".SITEURL."/data/$lcd/$shortname.zip\" ";
                 if ($img2)
                 {
                     print "onmouseout=\"MM_swapImgRestore()\" ";

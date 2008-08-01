@@ -30,6 +30,8 @@ if(isset($_POST['submit']))
     {
         if(strlen(trim($values["name"])) == 0 && $name != "menuimg")
             $err[] = $name;
+        if(!is_uploaded_file($values["tmp_name"]) && strlen(trim($values["name"])) > 0)
+            $err[] = $name;
     }
     
     /* Check if valid email address */
@@ -55,27 +57,49 @@ if(isset($_POST['submit']))
     
     if(count($err)==0)
     {
-		if(md5_file($_FILES['wpsimg']['tmp_name']) == md5_file($_FILES['menuimg']['tmp_name'])
-		   && strlen($_FILES['menuimg']['name']) > 0)
-		{
-			$err[] = "wpsimg";
-			$err[] = "menuimg";
-		}
+        if(md5_file($_FILES['wpsimg']['tmp_name']) == md5_file($_FILES['menuimg']['tmp_name'])
+           && strlen($_FILES['menuimg']['name']) > 0)
+        {
+            $err[] = "wpsimg";
+            $err[] = "menuimg";
+        }
         if(!validate_png($_FILES['wpsimg']['tmp_name']))
             $err[] = "wpsimg";
         
         if(!validate_png($_FILES['menuimg']['tmp_name']) && strlen($_FILES['menuimg']['name']) > 0)
             $err[] = "menuimg";
         
-        $ziptest = validate_zip($_FILES['zip']['tmp_name']);
+        $ziptest = validate_zip($_FILES['zip']['tmp_name'], array_search($_POST['target'], $models));
     
-        if (count($ziptest)==0)
-            print "<p>ZIP OK!</p>\n";
-        else
+        if(count($ziptest) > 0)
         {
             $err[] = "zip";
             $zip_err = $ziptest;
         }
+        $name = htmlspecialchars(trim($_POST['name']));
+        $author = ucwords(htmlspecialchars(trim($_POST['author'])));
+        $email = htmlspecialchars(trim($_POST['email']));
+        $description = str_replace(array("\n","\r","\t"), "", htmlspecialchars(trim($_POST['description'])));
+        $date = date("Y-m-d");
+        $model = array_search($_POST['target'], $models);
+        $shortname = substr($name, 0, 15);
+        
+        $new = get_new_id()."|$name|$shortname|1|".(strlen($_FILES['menuimg']['name']) > 0 ? "1" : "")."|$author|$email|$mainlcdtypes[$model]|/|$description|$date";
+        
+        echo $new;
+        
+        /*
+        move_uploaded_file($_FILES['wpsimg']['tmp_name'], DATADIR."/".$mainlcdtypes[$model]."/".$shortname.".png");
+        if(strlen($_FILES['menuimg']['name']) > 0)
+            move_uploaded_file($_FILES['menuimg']['tmp_name'], DATADIR."/".$mainlcdtypes[$model]."/".$shortname."_b.png");
+        move_uploaded_file($_FILES['zip']['tmp_name'], DATADIR."/".$mainlcdtypes[$model]."/".$shortname.".zip");
+        $handle = fopen(DATADIR."/themes.txt", "a");
+        if(!$handle)
+            die("Database is missing; please report to administrator!");
+        fwrite($handle, $new);
+        fclose($handle);
+        echo "Theme successfully added!";
+        */
     }
 }
 ?>

@@ -45,25 +45,22 @@ function filter($mainlcdfilter,$remotelcdfilter)
         while ((list($id,$name,$shortname,$img1,$img2,$author,$email,$mainlcd,$remotelcd,$description,$date) = fgetcsv($fh, 1000, "|")) !== FALSE)
         {
             if ($mainlcd==$mainlcdfilter)
-            {
                 $themes[$count++] = array($id,$name,$shortname,$img1,$img2,$author,$email,$mainlcd,$remotelcd,$description,$date);
-            }
         }
+        fclose($fh);
     }
-    fclose($fh);
 
     if ($count==0) 
-    {
         return array();
-    } else {
+    else
         return $themes;
-    }
 }    
 
 # Validate an uploaded theme zip file, exercising extreme paranoia
 
-function validate_zip($filename)
+function validate_zip($filename, $new_model)
 {
+    global $mainlcdtypes;
 
     $nerrs = 0;
 
@@ -175,6 +172,68 @@ function validate_zip($filename)
 
         #print "<p>$i - $f (".strtolower($a[count($a)-1]).")</p>\n";
     }
+    
+    if($nerrs == 0)
+    {
+        mkdir("/tmp/rbthemes");
+        exec("/usr/bin/unzip -d /tmp/rbthemes $filename");
+        foreach(glob("/tmp/rbthemes/.rockbox/backdrops/*") as $bmp)
+        {
+            $ret = shell_exec("/usr/bin/identify \"$bmp\"");
+            $ret = substr($ret, strlen($bmp)+1);
+            $ret = explode(" ", $ret);
+            if(trim(@$ret[0]) != "BMP")
+                $errors[$nerrs++] = "Backdrop isn't a BMP - ".substr($bmp, 14);
+            $lcd_size = explode("x", $mainlcdtypes[$new_model]);
+            array_pop($lcd_size);
+            $lcd_size = implode("x", $lcd_size);
+            if(@$ret[1] != $lcd_size)
+                $errors[$nerrs++] = "Backdrop must be ".$lcd_size." while it is ".@$ret[1];
+        }
+        foreach(glob("/tmp/rbthemes/.rockbox/wps/*/*") as $bmp)
+        {
+            $ret = shell_exec("/usr/bin/identify \"$bmp\"");
+            $ret = substr($ret, strlen($bmp)+1);
+            $ret = explode(" ", $ret);
+            if(trim(@$ret[0]) != "BMP")
+                $errors[$nerrs++] = "File isn't a BMP - ".substr($bmp, 14);
+        }
+        foreach(glob("/tmp/rbthemes/.rockbox/wps/*.wps") as $wps)
+        {
+            $ret = shell_exec(DATADIR."/../checkwps.$new_model \"$wps\"");
+            $ret = explode("\n", $ret);
+            foreach($ret as $el)
+            {
+                if(strstr($el, "ERR: ") !== false)
+                    $errors[$nerrs++] = "WPS validation error: ".htmlspecialchars($el)." - ".substr($wps, 14);
+            }
+        }
+        foreach(glob("/tmp/rbthemes/.rockbox/themes/*.cfg") as $cfg)
+        {
+            $ret = file_get_contents($cfg);
+            $ret = explode("\n", $ret);
+            foreach($ret as $el)
+            {
+                if(substr(trim($el), 0, 1) != "#")
+                {
+                    $el = explode(":", trim($el));
+                    switch($el[0])
+                    {
+                        case "wps":
+                        case "font":
+                        case "backdrop":
+                        case "lang":
+                            $path = "/tmp/rbthemes".trim($el[1]);
+                            if(substr(dirname($path), 0, 13) != "/tmp/rbthemes"
+                               || !file_exists($path))
+                                $errors[$nerrs++] = "Path in config does not exist: ".htmlspecialchars(substr($path, 0, 13))." - ".substr($cfg, 14);
+                        break;
+                    }
+                }
+            }
+        }
+        exec("rm -R -f /tmp/rbthemes");
+    }
 
     if ($nerrs==0)
         return array();
@@ -193,5 +252,19 @@ function validate_png($filename)
         return true;
     }
 }
+
+function get_new_id()
+{
+    $fh = fopen(DATADIR."/themes.txt", "r");
+    if($fh)
+    {
+        while(($el = fgetcsv($fh, 1000, "|")) !== FALSE)
+            $ret = ((int)$el[0])+1;
+        fclose($fh);
+        return $ret;
+    }
+    else
+        return false;
+} 
 
 ?>
