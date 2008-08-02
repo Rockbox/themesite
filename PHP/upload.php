@@ -63,10 +63,14 @@ if(isset($_POST['submit']))
             $err[] = "wpsimg";
             $err[] = "menuimg";
         }
-        if(!validate_png($_FILES['wpsimg']['tmp_name']))
+        
+        $lcd_size = explode("x", $mainlcdtypes[array_search($_POST['target'], $models)]);
+        array_pop($lcd_size);
+        $lcd_size = implode("x", $lcd_size);
+        if(!validate_png($_FILES['wpsimg']['tmp_name'], $lcd_size))
             $err[] = "wpsimg";
         
-        if(!validate_png($_FILES['menuimg']['tmp_name']) && strlen($_FILES['menuimg']['name']) > 0)
+        if(!validate_png($_FILES['menuimg']['tmp_name'], $lcd_size) && strlen($_FILES['menuimg']['name']) > 0)
             $err[] = "menuimg";
         
         $ziptest = validate_zip($_FILES['zip']['tmp_name'], array_search($_POST['target'], $models));
@@ -74,7 +78,7 @@ if(isset($_POST['submit']))
         if(count($ziptest) > 0)
         {
             $err[] = "zip";
-            $zip_err = $ziptest;
+            $err_desc = $ziptest;
         }
         $name = htmlspecialchars(trim($_POST['name']));
         $author = ucwords(htmlspecialchars(trim($_POST['author'])));
@@ -110,12 +114,12 @@ if(isset($_POST['submit']))
     There were some errors while procesing your information; please check if everything is filled in correctly!
     </div>
     <?
-    if(count($zip_err)>0)
+    if(count($err_desc)>0)
     {
-        print "<p>Additionally, the zip file contains the following errors:</p>\n";
+        print "<p>Additionally, these errors occured while processing your ZIP file:</p>\n";
         print "<ul>";
-        for ($i=0;$i<count($zip_err);$i++)
-            print "<li>$zip_err[$i]</li>\n";
+        foreach($err_desc as $el)
+            print "<li>$el</li>\n";
         print "</ul>";
     }
     ?>
@@ -174,22 +178,22 @@ if(isset($_POST['submit']))
 
     <tr>
     <td><b>Main zip file</b></td>
-    <td<?=disp_helper("zip");?>><input type="file" name="zip" size="60" /></td>
+    <td<?=disp_helper("zip");?>><input type="file" name="zip" size="60" /><br /><small>Don't forget to match the <a href="http://www.rockbox.org/wiki/ThemeGuidelines">theme guidelines</a>.</small></td>
     </tr>
     <tr>
     <td><b>WPS screenshot</b><br /><small>PNG format only</small></td>
-    <td<?=disp_helper("wpsimg");?>><input type="file" name="wpsimg" size="60" /></td>
+    <td<?=disp_helper("wpsimg");?>><input type="file" name="wpsimg" size="60" /><br /><small>The dimensions should be the same as the LCD size</small></td>
     </tr>
     <tr>
     <td><b>Menu screenshot</b><br /><small>PNG format only<br />(Optional)</small></td>
-    <td<?=disp_helper("menuimg");?>><input type="file" name="menuimg" size="60" /></td>
+    <td<?=disp_helper("menuimg");?>><input type="file" name="menuimg" size="60" /><br /><small>The dimensions should be the same as the LCD size</small></td>
     </tr>
     </table>
 
     <h2>Section 3 - The legal stuff</h2>
     
     <p>In line with the spirit of Rockbox itself, all themes on this website are freely redistributable (in both modified and unmodified forms) without any restriction (e.g. commercial/non-commercial) on their use.</p>
-<p>By uploading your theme to this site, you are agreeing to license your work under the <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a> license.</p>
+<p>By uploading your theme to this site, you are agreeing to license your work under the <a href="http://creativecommons.org/licenses/by-sa/3.0/"><img height="15" src="by-sa.png" border="0" /></a> license.</p>
 
 <p><input type="submit" name="submit" value="Submit"/></p>
 </form>

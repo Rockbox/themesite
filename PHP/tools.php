@@ -163,53 +163,57 @@ function validate_zip($filename, $new_model)
             $errors[$nerrs++] = "Invalid directory - $f";
 
         # Check for known bad files     
-		switch(strtolower($a[count($a)-1]))
-		{
-			case "thumbs.db":
-			case "desktop.ini":
-			case ".ds_store":
-			case ".directory":
-            	$errors[$nerrs++] = "Invalid file - $f";
-			break;
+        switch(strtolower($a[count($a)-1]))
+        {
+            case "thumbs.db":
+            case "desktop.ini":
+            case ".ds_store":
+            case ".directory":
+                $errors[$nerrs++] = "Invalid file - $f";
+            break;
         }
     }
     
     if($nerrs == 0)
     {
-        mkdir("/tmp/rbthemes");
-        exec("/usr/bin/unzip -d /tmp/rbthemes $filename");
-        foreach(glob("/tmp/rbthemes/.rockbox/backdrops/*") as $bmp)
+        $checked = array();
+        $tmp_path = "/tmp/rbthemes-".rand();
+        mkdir($tmp_path);
+        exec("/usr/bin/unzip -d $tmp_path $filename");
+        foreach(glob("$tmp_path/.rockbox/backdrops/*") as $bmp)
         {
-            $ret = shell_exec("/usr/bin/identify \"$bmp\"");
-            $ret = substr($ret, strlen($bmp)+1);
-            $ret = explode(" ", $ret);
-            if(trim(@$ret[0]) != "BMP")
-                $errors[$nerrs++] = "Backdrop isn't a BMP - ".substr($bmp, 14);
             $lcd_size = explode("x", $mainlcdtypes[$new_model]);
             array_pop($lcd_size);
             $lcd_size = implode("x", $lcd_size);
-            if(@$ret[1] != $lcd_size)
-                $errors[$nerrs++] = "Backdrop must be ".$lcd_size." while it is ".@$ret[1];
+            switch(validate_bmp($bmp, $lcd_size))
+            {
+                case -1:
+                    $errors[$nerrs++] = "Backdrop isn't a valid BMP - ".substr($bmp, strlen($tmp_path)+1);
+                    break;
+                case -2:
+                    $errors[$nerrs++] = "Backdrop must be ".$lcd_size." - ".substr($bmp, strlen($tmp_path)+1);
+                    break;
+            }
+            $checked[] = $bmp;
         }
-        foreach(glob("/tmp/rbthemes/.rockbox/wps/*/*") as $bmp)
+        foreach(glob("$tmp_path/.rockbox/wps/*/*") as $bmp)
         {
-            $ret = shell_exec("/usr/bin/identify \"$bmp\"");
-            $ret = substr($ret, strlen($bmp)+1);
-            $ret = explode(" ", $ret);
-            if(trim(@$ret[0]) != "BMP")
-                $errors[$nerrs++] = "File isn't a BMP - ".substr($bmp, 14);
+            if(validate_bmp($bmp, false) != 0)
+                $errors[$nerrs++] = "File isn't a valid BMP - ".substr($bmp, strlen($tmp_path)+1);
+            $checked[] = $bmp;
         }
-        foreach(glob("/tmp/rbthemes/.rockbox/wps/*.?wps") as $wps)
+        foreach(glob("$tmp_path/.rockbox/wps/*.?wps") as $wps)
         {
             $ret = shell_exec(DATADIR."/../checkwps.$new_model \"$wps\"");
             $ret = explode("\n", $ret);
             foreach($ret as $el)
             {
                 if(strstr($el, "ERR: ") !== false)
-                    $errors[$nerrs++] = "WPS validation error: ".htmlspecialchars($el)." - ".substr($wps, 14);
+                    $errors[$nerrs++] = "WPS validation error: ".htmlspecialchars($el)." - ".substr($wps, strlen($tmp_path)+1);
             }
+            $checked[] = $wps;
         }
-        foreach(glob("/tmp/rbthemes/.rockbox/themes/*.cfg") as $cfg)
+        foreach(glob("$tmp_path/.rockbox/themes/*.cfg") as $cfg)
         {
             $ret = file_get_contents($cfg);
             $ret = explode("\n", $ret);
@@ -218,23 +222,64 @@ function validate_zip($filename, $new_model)
                 if(substr(trim($el), 0, 1) != "#")
                 {
                     $el = explode(":", trim($el));
-                    switch(strtolower($el[0]))
+                    $path = $tmp_path.trim($el[1]);
+                    $path_disp = htmlspecialchars(substr($path, strlen($tmp_path)+1));
+                    if(array_search($path, $checked) !== false)
                     {
-                        case "wps":
-                        case "font":
-                        case "backdrop":
-						case "iconset":
-						case "viewers iconset":
-                            $path = "/tmp/rbthemes".trim($el[1]);
-                            if(substr(dirname($path), 0, 13) != "/tmp/rbthemes"
-                               || !file_exists($path))
-                                $errors[$nerrs++] = "Path in config doesn't exist: ".htmlspecialchars(substr($path, 0, 13))." - ".substr($cfg, 14);
-                        break;
+                        switch(strtolower($el[0]))
+                        {
+                            case "wps":
+                                if(substr(dirname($path), 0, strlen($tmp_path)) != $tmp_path
+                                   || !file_exists($path))
+                                    $errors[$nerrs++] = "WPS in config doesn't exist: ".$path_disp;
+                                else
+                                {
+                                    $ret = shell_exec(DATADIR."/../checkwps.$new_model \"$path\"");
+                                    $ret = explode("\n", $ret);
+                                    foreach($ret as $el)
+                                    {
+                                        if(strstr($el, "ERR: ") !== false)
+                                            $errors[$nerrs++] = "WPS validation error: ".htmlspecialchars($el)." - ".substr($wps, strlen($tmp_path)+1);
+                                    }
+                                    $checked[] = $path;
+                                }
+                            break;
+                            case "backdrop":
+                                if(substr(dirname($path), 0, strlen($tmp_path)) != $tmp_path
+                                   || !file_exists($path))
+                                    $errors[$nerrs++] = "Backdrop in config doesn't exist: ".$path_disp;
+                                else
+                                {
+                                    $lcd_size = explode("x", $mainlcdtypes[$new_model]);
+                                    array_pop($lcd_size);
+                                    $lcd_size = implode("x", $lcd_size);
+                                    switch(validate_bmp($path, $lcd_size))
+                                    {
+                                        case -1:
+                                            $errors[$nerrs++] = "Backdrop isn't a valid BMP - ".$path_disp;
+                                            break;
+                                        case -2:
+                                            $errors[$nerrs++] = "Backdrop must be ".$lcd_size." - ".$path_disp;
+                                            break;
+                                    }
+                                    $checked[] = $path;
+                                }
+                            break;
+                            case "font":
+                            case "iconset":
+                            case "viewers iconset":
+                                if(substr(dirname($path), 0, strlen($tmp_path)) != $tmp_path
+                                   || !file_exists($path))
+                                    $errors[$nerrs++] = "Path in config doesn't exist: ".$path_disp;
+                                else
+                                    $checked[] = $path;
+                            break;
+                        }
                     }
                 }
             }
         }
-        exec("rm -R -f /tmp/rbthemes");
+        exec("rm -R -f $tmp_path");
     }
 
     if ($nerrs==0)
@@ -243,16 +288,42 @@ function validate_zip($filename, $new_model)
         return $errors;
 }
 
-function validate_png($filename)
+function validate_bmp($bmp, $dimensions=false)
 {
-    $res = imagecreatefrompng($filename);
-    if(!$res)
+    return validate_image($bmp, "BMP", $dimensions);
+}
+
+function validate_png($filename, $dimensions=false)
+{
+    if(validate_image($filename, "PNG", $dimensions) !== 0)
         return false;
     else
-    {
-        imagedestroy($res);
         return true;
+}
+
+function validate_image($filename, $type, $dimensions=false)
+{
+    $ret = getimagesize($filename);
+    if($ret === false)
+        return -3;
+    switch($ret["mime"])
+    {
+        case "image/png":
+            if($type != "PNG")
+                return -1;
+            break;
+        case "image/bmp":
+            if($type != "BMP")
+                return -1;
+            break;
     }
+    if($dimensions != false)
+    {
+        $size = $ret[0]."x".$ret[1];
+        if($dimensions != $size)
+            return -2;
+    }
+    return 0;
 }
 
 function get_new_id()
