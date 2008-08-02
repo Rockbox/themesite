@@ -61,8 +61,8 @@ function filter($mainlcdfilter,$remotelcdfilter)
 function validate_zip($filename, $new_model)
 {
     global $mainlcdtypes;
-
-    $nerrs = 0;
+    
+    $errors = array();
 
     $validdir['wps']=1;
     $validdir['themes']=1;
@@ -128,14 +128,14 @@ function validate_zip($filename, $new_model)
 
         if ($a[0] != '.rockbox')
         {
-            $errors[$nerrs++] = "Not in .rockbox - $f";
+            $errors[] = "Not in .rockbox - $f";
             continue;
         }
 
         # Check if the directory structure is too deep
         if (count($a) > 4)
         {
-            $errors[$nerrs++] = "Invalid directory structure for $f";
+            $errors[] = "Invalid directory structure for $f";
             continue;
         }
 
@@ -146,21 +146,21 @@ function validate_zip($filename, $new_model)
             if (substr($f,strlen($f)-1,1)=='/')
             {
                  if ($validdir[$a[1]] != 1)
-                     $errors[$nerrs++] = "Invalid directory - $f";
+                     $errors[] = "Invalid directory - $f";
 
                  continue;
             }
             else
             {
                 # Else, it's a file and shouldn't be in .rockbox
-                $errors[$nerrs++] = "Invalid file in .rockbox - $f";
+                $errors[] = "Invalid file in .rockbox - $f";
                 continue;
             }
         }        
 
         # We know there are at least 3 elements in path
         if ($validdir[$a[1]] != 1)
-            $errors[$nerrs++] = "Invalid directory - $f";
+            $errors[] = "Invalid directory - $f";
 
         # Check for known bad files     
         switch(strtolower($a[count($a)-1]))
@@ -169,16 +169,17 @@ function validate_zip($filename, $new_model)
             case "desktop.ini":
             case ".ds_store":
             case ".directory":
-                $errors[$nerrs++] = "Invalid file - $f";
+                $errors[] = "Invalid file - $f";
             break;
         }
     }
     
-    if($nerrs == 0)
+    if(count($errors) == 0)
     {
         $checked = array();
-        $tmp_path = "/tmp/rbthemes-".rand();
-        mkdir($tmp_path);
+        $tmp_path = tmpdir("/tmp", "rbthemes-");
+        if(!$tmp_path)
+            die("Cannot create a temporary directory!");
         exec("/usr/bin/unzip -d $tmp_path $filename");
         foreach(glob("$tmp_path/.rockbox/backdrops/*") as $bmp)
         {
@@ -188,10 +189,10 @@ function validate_zip($filename, $new_model)
             switch(validate_bmp($bmp, $lcd_size))
             {
                 case -1:
-                    $errors[$nerrs++] = "Backdrop isn't a valid BMP - ".substr($bmp, strlen($tmp_path)+1);
+                    $errors[] = "Backdrop isn't a valid BMP - ".substr($bmp, strlen($tmp_path)+1);
                     break;
                 case -2:
-                    $errors[$nerrs++] = "Backdrop must be ".$lcd_size." - ".substr($bmp, strlen($tmp_path)+1);
+                    $errors[] = "Backdrop must be ".$lcd_size." - ".substr($bmp, strlen($tmp_path)+1);
                     break;
             }
             $checked[] = $bmp;
@@ -199,7 +200,7 @@ function validate_zip($filename, $new_model)
         foreach(glob("$tmp_path/.rockbox/wps/*/*") as $bmp)
         {
             if(validate_bmp($bmp, false) != 0)
-                $errors[$nerrs++] = "File isn't a valid BMP - ".substr($bmp, strlen($tmp_path)+1);
+                $errors[] = "File isn't a valid BMP - ".substr($bmp, strlen($tmp_path)+1);
             $checked[] = $bmp;
         }
         foreach(glob("$tmp_path/.rockbox/wps/*.?wps") as $wps)
@@ -209,7 +210,7 @@ function validate_zip($filename, $new_model)
             foreach($ret as $el)
             {
                 if(strstr($el, "ERR: ") !== false)
-                    $errors[$nerrs++] = "WPS validation error: ".htmlspecialchars($el)." - ".substr($wps, strlen($tmp_path)+1);
+                    $errors[] = "WPS validation error: ".htmlspecialchars($el)." - ".substr($wps, strlen($tmp_path)+1);
             }
             $checked[] = $wps;
         }
@@ -231,7 +232,7 @@ function validate_zip($filename, $new_model)
                             case "wps":
                                 if(substr(dirname($path), 0, strlen($tmp_path)) != $tmp_path
                                    || !file_exists($path))
-                                    $errors[$nerrs++] = "WPS in config doesn't exist: ".$path_disp;
+                                    $errors[] = "WPS in config doesn't exist: ".$path_disp;
                                 else
                                 {
                                     $ret = shell_exec(DATADIR."/../checkwps.$new_model \"$path\"");
@@ -239,7 +240,7 @@ function validate_zip($filename, $new_model)
                                     foreach($ret as $el)
                                     {
                                         if(strstr($el, "ERR: ") !== false)
-                                            $errors[$nerrs++] = "WPS validation error: ".htmlspecialchars($el)." - ".substr($wps, strlen($tmp_path)+1);
+                                            $errors[] = "WPS validation error: ".htmlspecialchars($el)." - ".substr($wps, strlen($tmp_path)+1);
                                     }
                                     $checked[] = $path;
                                 }
@@ -247,7 +248,7 @@ function validate_zip($filename, $new_model)
                             case "backdrop":
                                 if(substr(dirname($path), 0, strlen($tmp_path)) != $tmp_path
                                    || !file_exists($path))
-                                    $errors[$nerrs++] = "Backdrop in config doesn't exist: ".$path_disp;
+                                    $errors[] = "Backdrop in config doesn't exist: ".$path_disp;
                                 else
                                 {
                                     $lcd_size = explode("x", $mainlcdtypes[$new_model]);
@@ -256,10 +257,10 @@ function validate_zip($filename, $new_model)
                                     switch(validate_bmp($path, $lcd_size))
                                     {
                                         case -1:
-                                            $errors[$nerrs++] = "Backdrop isn't a valid BMP - ".$path_disp;
+                                            $errors[] = "Backdrop isn't a valid BMP - ".$path_disp;
                                             break;
                                         case -2:
-                                            $errors[$nerrs++] = "Backdrop must be ".$lcd_size." - ".$path_disp;
+                                            $errors[] = "Backdrop must be ".$lcd_size." - ".$path_disp;
                                             break;
                                     }
                                     $checked[] = $path;
@@ -270,7 +271,7 @@ function validate_zip($filename, $new_model)
                             case "viewers iconset":
                                 if(substr(dirname($path), 0, strlen($tmp_path)) != $tmp_path
                                    || !file_exists($path))
-                                    $errors[$nerrs++] = "Path in config doesn't exist: ".$path_disp;
+                                    $errors[] = "Path in config doesn't exist: ".$path_disp;
                                 else
                                     $checked[] = $path;
                             break;
@@ -282,10 +283,7 @@ function validate_zip($filename, $new_model)
         exec("rm -R -f $tmp_path");
     }
 
-    if ($nerrs==0)
-        return array();
-    else
-        return $errors;
+    return $errors;
 }
 
 function validate_bmp($bmp, $dimensions=false)
@@ -324,6 +322,21 @@ function validate_image($filename, $type, $dimensions=false)
             return -2;
     }
     return 0;
+}
+
+function tmpdir($path, $prefix)
+{
+        $tempname = tempnam($path, $prefix);
+        if (!$tempname)
+                return false;
+
+        if (!unlink($tempname))
+                return false;
+        
+        if (mkdir($tempname))
+                return $tempname;
+
+        return false;
 }
 
 function get_new_id()
