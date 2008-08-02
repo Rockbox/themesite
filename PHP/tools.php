@@ -177,9 +177,14 @@ function validate_zip($filename, $new_model)
     if(count($errors) == 0)
     {
         $checked = array();
-        $tmp_path = tmpdir("/tmp", "rbthemes-");
-        if(!$tmp_path)
+        
+        $tempname = tempnam("/tmp", "rbthemes-");
+        if (!$tempname)
+            die("Cannot create a temporary file!");
+        $tmp_path = $tempname."_dir";
+        if(!mkdir($tmp_path))
             die("Cannot create a temporary directory!");
+            
         exec("/usr/bin/unzip -d $tmp_path $filename");
         foreach(glob("$tmp_path/.rockbox/backdrops/*") as $bmp)
         {
@@ -281,6 +286,7 @@ function validate_zip($filename, $new_model)
             }
         }
         exec("rm -R -f $tmp_path");
+        unlink($tempname);
     }
 
     return $errors;
@@ -322,21 +328,6 @@ function validate_image($filename, $type, $dimensions=false)
             return -2;
     }
     return 0;
-}
-
-function tmpdir($path, $prefix)
-{
-        $tempname = tempnam($path, $prefix);
-        if (!$tempname)
-                return false;
-
-        if (!unlink($tempname))
-                return false;
-        
-        if (mkdir($tempname))
-                return $tempname;
-
-        return false;
 }
 
 function get_new_id()
