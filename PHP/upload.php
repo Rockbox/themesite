@@ -6,6 +6,7 @@ include('tools.php');
 
 $err = array();
 $zip_err = array();
+$err_desc = array();
 
 function disp_helper($name)
 {
@@ -80,30 +81,33 @@ if(isset($_POST['submit']))
             $err[] = "zip";
             $err_desc = $ziptest;
         }
-        $name = htmlspecialchars(trim($_POST['name']));
-        $author = ucwords(htmlspecialchars(trim($_POST['author'])));
-        $email = htmlspecialchars(trim($_POST['email']));
-        $description = str_replace(array("\n","\r","\t"), "", htmlspecialchars(trim($_POST['description'])));
-        $date = date("Y-m-d");
-        $model = array_search($_POST['target'], $models);
-        $shortname = substr($name, 0, 15);
-        
-        $new = get_new_id()."|$name|$shortname|1|".(strlen($_FILES['menuimg']['name']) > 0 ? "1" : "")."|$author|$email|$mainlcdtypes[$model]|/|$description|$date";
-        
-        echo $new;
-        
-        /*
-        move_uploaded_file($_FILES['wpsimg']['tmp_name'], DATADIR."/".$mainlcdtypes[$model]."/".$shortname.".png");
-        if(strlen($_FILES['menuimg']['name']) > 0)
-            move_uploaded_file($_FILES['menuimg']['tmp_name'], DATADIR."/".$mainlcdtypes[$model]."/".$shortname."_b.png");
-        move_uploaded_file($_FILES['zip']['tmp_name'], DATADIR."/".$mainlcdtypes[$model]."/".$shortname.".zip");
-        $handle = fopen(DATADIR."/themes.txt", "a");
-        if(!$handle)
-            die("Database is missing; please report to administrator!");
-        fwrite($handle, $new);
-        fclose($handle);
-        echo "Theme successfully added!";
-        */
+        else
+        {
+            $name = htmlspecialchars(trim($_POST['name']));
+            $author = ucwords(htmlspecialchars(trim($_POST['author'])));
+            $email = htmlspecialchars(trim($_POST['email']));
+            $description = str_replace(array("\n","\r","\t"), "", htmlspecialchars(trim($_POST['description'])));
+            $date = date("Y-m-d");
+            $model = array_search($_POST['target'], $models);
+            $shortname = substr($name, 0, 15);
+            
+            if(file_exists(DATADIR."/".$mainlcdtypes[$model]."/".$shortname.".zip"))
+                $shortname .= substr(md5(time().$_SERVER['REMOTE_PORT'].$name.$description), 0, 5);
+            
+            $new = get_new_id()."|$name|$shortname|1|".(strlen($_FILES['menuimg']['name']) > 0 ? "1" : "")."|$author|$email|$mainlcdtypes[$model]|/|$description|$date\n";
+            
+            move_uploaded_file($_FILES['wpsimg']['tmp_name'], DATADIR."/".$mainlcdtypes[$model]."/".$shortname.".png");
+            if(strlen($_FILES['menuimg']['name']) > 0)
+                move_uploaded_file($_FILES['menuimg']['tmp_name'], DATADIR."/".$mainlcdtypes[$model]."/".$shortname."_b.png");
+            move_uploaded_file($_FILES['zip']['tmp_name'], DATADIR."/".$mainlcdtypes[$model]."/".$shortname.".zip");
+            $handle = fopen(DATADIR."/pre_themes.txt", "a");
+            if(!$handle)
+                die("Database is missing; please report to administrator!");
+            fwrite($handle, $new);
+            fclose($handle);
+            echo "Theme successfully added!<br>";
+            echo "After an administrator checked it, it will be available on the site.";
+        }
     }
 }
 ?>

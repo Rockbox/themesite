@@ -223,12 +223,12 @@ function validate_zip($filename, $new_model)
         {
             $ret = file_get_contents($cfg);
             $ret = explode("\n", $ret);
-            foreach($ret as $el)
+            foreach(@$ret as $el)
             {
                 if(substr(trim($el), 0, 1) != "#")
                 {
                     $el = explode(":", trim($el));
-                    $path = $tmp_path.trim($el[1]);
+                    $path = $tmp_path.trim(@$el[1]);
                     $path_disp = htmlspecialchars(substr($path, strlen($tmp_path)+1));
                     if(array_search($path, $checked) !== false)
                     {
@@ -338,6 +338,12 @@ function get_new_id()
         while(($el = fgetcsv($fh, 1000, "|")) !== FALSE)
             $ret = ((int)$el[0])+1;
         fclose($fh);
+        
+        $fh = fopen(DATADIR."/pre_themes.txt", "r");
+        while(($el = fgetcsv($fh, 1000, "|")) !== FALSE)
+            $ret = max($ret, ((int)$el[0])+1);
+        fclose($fh);
+        
         return $ret;
     }
     else
