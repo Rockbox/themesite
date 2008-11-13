@@ -73,9 +73,8 @@ function validate_zip($filename, $new_model)
     # Step 1 - get a listing of the files inside the zip file
     $fh = popen("/usr/bin/unzip -l $filename","r");
     if (!$fh)
-    {
-        return 'Not a valid ZIP file';
-    }
+        return array('Not a valid ZIP file');
+    
     $buf = '';
     while (!feof($fh)) 
     {
