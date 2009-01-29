@@ -1,4 +1,4 @@
-<? require_once('ini.php'); ?>
+<? require_once('config.php'); ?>
 <h1>Rockbox Themes</h1>
 
 <p>Welcome to the official Rockbox Themes repository - a collection
