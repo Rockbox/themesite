@@ -1,5 +1,5 @@
 @charset "utf-8";
-/* CSS Document */
+
 div.playerbox
 {
  text-decoration:  none;
@@ -52,4 +52,28 @@ div.playerbox
  color:          red;
  font-weight:    bold;
  font-size:      14px;
+}
+
+table.admin tr.title
+{
+    background-color: #CCCCCC;
+    font-weight: bold;
+}
+table.admin tr.title td
+{
+    margin-top: 10px;
+    border: 1px solid black;
+}
+table.admin td.image
+{
+    background-color:#FFFFFF
+    font-weight: bold;
+    border: 1px solid black;
+}
+table.admin td.desc
+{
+    padding-top: 10px;
+    background-color:#FFFFFF
+    font-weight: bold;
+    border: 1px solid black;
 }

@@ -1,45 +1,12 @@
 <?php
-
-require_once('ini.php');
-
-# The main list of devices.
-
-$models = array('player','recorder','recorder8mb','fmrecorder','recorderv2','ondiofm','ondiosp','iaudiom5','iaudiox5','iaudiom3','h100','h120','h300','h10_5gb','h10','ipod1g2g','ipod3g','ipod4gray','ipodcolor','ipodvideo','ipodvideo64mb','ipodmini1g','ipodmini2g','ipodnano','gigabeatf','sansae200','sansac200','mrobe100');
-
-$nummodels = count($models);
-
-$modelnames = array('Archos Player/Studio','Archos Recorder v1','Archos Recorder 8MB','Archos FM Recorder','Archos Recorder v2','Archos Ondio FM','Archos Ondio SP','iAudio M5','iAudio X5','iAudio M3','iriver H100/115','iriver H120/140','iriver H320/340','iriver H10 5GB','iriver H10 20GB','iPod 1st and 2nd gen','iPod 3rd gen','iPod 4th gen Grayscale','iPod color/Photo','iPod Video 30GB','iPod Video 60/80GB','iPod Mini 1st gen','iPod Mini 2nd gen','iPod Nano 1st gen','Toshiba Gigabeat F/X','SanDisk Sansa e200','SanDisk Sansa c200','Olympus M-Robe 100');
-
-$mainlcdtypes = array('charcell','112x64x1','112x64x1','112x64x1','112x64x1','112x64x1','112x64x1','160x128x2','160x128x16','128x96x2','160x128x2','160x128x2','220x176x16','128x128x16','160x128x16','160x128x2','160x128x2','160x128x2','220x176x16','320x240x16','320x240x16','138x110x2','138x110x2','176x132x16','240x320x16','176x220x16','132x80x16','160x128x1');
-
-$imagenames = array('player-small.png','recorder-small.png','recorder-small.png','recorderv2fm-small.png','recorderv2fm-small.png','ondiofm-small.png','ondiosp-small.png','m5-small.png','x5-small.png','m3-small.png','h100-small.png','h100-small.png','h300-small.png','h10_5gb-small.png','h10-small.png','ipod1g2g-small.png','ipod3g-small.png','ipod4g-small.png','ipodcolor-small.png','ipodvideo-small.png','ipodvideo-small.png','ipodmini-small.png','ipodmini-small.png','ipodnano-small.png','gigabeatf-small.png','e200-small.png','c200-small.png','mrobe100-small.png');
-
-function get_modelid($model)
-{
-    global $models;
-    
-    return array_search($model, $models);
-}
-
-function show_main_table()
-{
-    global $nummodels;
-    global $modelnames,$imagenames,$models;
-
-    print "<p><table class=\"rockbox\" cellpadding=\"0\">\n";
-    for ($i=0;$i<$nummodels;$i++)
-    {
-       print "<div class=\"playerbox\"><a href=\"".SITEURL."/models/$models[$i]/\"><img border=\"0\" src=\"http://www.rockbox.org/playerpics/$imagenames[$i]\" alt=\"$modelnames[$i]\" /><p>$modelnames[$i]</a></div>\n";
-    }
-    print "</table></p>\n";
-}
+require_once('config.php');
 
 # Filter the themes.txt by LCD type and return an array of matching themes
-function filter($mainlcdfilter,$remotelcdfilter)
+function filter($mainlcdfilter, $remotelcdfilter)
 {
     $count = 0;
 
-    $fh = fopen(DATADIR."/themes.txt", "r");
+    $fh = fopen(THEMES, "r");
     if ($fh)
     {
         while ((list($id,$name,$shortname,$img1,$img2,$author,$email,$mainlcd,$remotelcd,$description,$date) = fgetcsv($fh, 1000, "|")) !== FALSE)
@@ -50,18 +17,16 @@ function filter($mainlcdfilter,$remotelcdfilter)
         fclose($fh);
     }
 
-    if ($count==0) 
+    if ($count==0)
         return array();
     else
         return $themes;
-}    
+}
 
 # Validate an uploaded theme zip file, exercising extreme paranoia
 
-function validate_zip($filename, $new_model)
+function validate_zip($filename, $model)
 {
-    global $mainlcdtypes;
-    
     $errors = array();
 
     $validdir['wps']=1;
@@ -71,12 +36,12 @@ function validate_zip($filename, $new_model)
     $validdir['fonts']=1;
 
     # Step 1 - get a listing of the files inside the zip file
-    $fh = popen("/usr/bin/unzip -l $filename","r");
+    $fh = popen(UNZIP." -l $filename","r");
     if (!$fh)
         return array('Not a valid ZIP file');
-    
+
     $buf = '';
-    while (!feof($fh)) 
+    while (!feof($fh))
     {
         $buf .= fgets($fh, 4096);
     }
@@ -87,10 +52,15 @@ function validate_zip($filename, $new_model)
     # Do some sanity checks on the unzip output
     if(count($recs) == 7) # Number of lines with one file in the zip
         return array("Zip contains only 1 file.");
-    
-    if (count($recs) < 7 || 
+
+    if (count($recs) < 7) /*||
         ($recs[1] != "  Length     Date   Time    Name") ||
         ($recs[2] != " --------    ----   ----    ----"))
+Need a more generic error checking, my unzip produces
+[1] =>   Length EAs ACLs Date Time Name
+[2] => -------- --- ---- ---- ---- ----
+
+*/
     {
          return array('Unexpected ZIP file error.');
     }
@@ -98,14 +68,15 @@ function validate_zip($filename, $new_model)
     # Check the total uncompressed size
     $s = preg_replace('/\ +/'," ",$recs[count($recs)-2]);
     $s = preg_replace('/^\ +/','',$s);
-    list($size,$numfiles,$s) = split(" ",$s);
-    if ($s != 'files')
+    $data = split(" ",$s);
+    $count = count($data);
+    if ($data[$count-1] != 'files')
          return array('Unexpected ZIP file error.');
 
-    if ($numfiles > MAXFILESINZIP)
+    if ($data[$count-2] > MAXFILESINZIP)
         return array("Too many files in ZIP file ($numfiles)");
 
-    if ($size > MAXUNZIPPEDSIZE)
+    if ($data[0] > MAXUNZIPPEDSIZE)
         return array("ZIP contents too large ($size bytes)");
 
     # Now go through each file in turn.
@@ -118,7 +89,7 @@ function validate_zip($filename, $new_model)
 
     for ($i=3;$i<count($recs)-3;$i++)
     {
-        $f = substr($recs[$i],28);
+        $f = substr($recs[$i], strpos($recs[$i], '.rockbox/'));
 
         if ($f=='.rockbox/')
             continue;
@@ -132,7 +103,7 @@ function validate_zip($filename, $new_model)
         }
 
         # Check if the directory structure is too deep
-        if (count($a) > 4)
+        if (count($a) > MAXTHEMEPATHDEPTH)
         {
             $errors[] = "Invalid directory structure for $f";
             continue;
@@ -155,13 +126,13 @@ function validate_zip($filename, $new_model)
                 $errors[] = "Invalid file in .rockbox - $f";
                 continue;
             }
-        }        
+        }
 
         # We know there are at least 3 elements in path
         if ($validdir[$a[1]] != 1)
             $errors[] = "Invalid directory - $f";
 
-        # Check for known bad files     
+        # Check for known bad files
         switch(strtolower($a[count($a)-1]))
         {
             case "thumbs.db":
@@ -172,24 +143,22 @@ function validate_zip($filename, $new_model)
             break;
         }
     }
-    
+
     if(count($errors) == 0)
     {
         $checked = array();
-        
-        $tempname = tempnam("/tmp", "rbthemes-");
+
+        $tempname = tempnam(TMPDIR, "rbthemes-");
         if (!$tempname)
             die("Cannot create a temporary file!");
         $tmp_path = $tempname."_dir";
         if(!mkdir($tmp_path))
             die("Cannot create a temporary directory!");
-            
-        exec("/usr/bin/unzip -d $tmp_path $filename");
+
+        exec(UNZIP." -d $tmp_path $filename");
         foreach(glob("$tmp_path/.rockbox/backdrops/*") as $bmp)
         {
-            $lcd_size = explode("x", $mainlcdtypes[$new_model]);
-            array_pop($lcd_size);
-            $lcd_size = implode("x", $lcd_size);
+            $lcd_size = $model->lcd_size();
             switch(validate_bmp($bmp, $lcd_size))
             {
                 case -1:
@@ -207,9 +176,9 @@ function validate_zip($filename, $new_model)
                 $errors[] = "File isn't a valid BMP - ".substr($bmp, strlen($tmp_path)+1);
             $checked[] = $bmp;
         }
-        foreach(glob("$tmp_path/.rockbox/wps/*.?wps") as $wps)
+        foreach(glob("$tmp_path/.rockbox/wps/*.*wps") as $wps)
         {
-            $ret = shell_exec(DATADIR."/../checkwps.$new_model \"$wps\"");
+            $ret = shell_exec(CHECKWPS.".".$model->checkwps." \"$wps\"");
             $ret = explode("\n", $ret);
             foreach($ret as $el)
             {
@@ -239,7 +208,7 @@ function validate_zip($filename, $new_model)
                                     $errors[] = "WPS in config doesn't exist: ".$path_disp;
                                 else
                                 {
-                                    $ret = shell_exec(DATADIR."/../checkwps.$new_model \"$path\"");
+                                    $ret = shell_exec(CHECKWPS.".".$model->checkwps." \"$path\"");
                                     $ret = explode("\n", $ret);
                                     foreach($ret as $el)
                                     {
@@ -255,9 +224,7 @@ function validate_zip($filename, $new_model)
                                     $errors[] = "Backdrop in config doesn't exist: ".$path_disp;
                                 else
                                 {
-                                    $lcd_size = explode("x", $mainlcdtypes[$new_model]);
-                                    array_pop($lcd_size);
-                                    $lcd_size = implode("x", $lcd_size);
+                                    $lcd_size = $model->lcd_size();
                                     switch(validate_bmp($path, $lcd_size))
                                     {
                                         case -1:
@@ -331,22 +298,40 @@ function validate_image($filename, $type, $dimensions=false)
 
 function get_new_id()
 {
-    $fh = fopen(DATADIR."/themes.txt", "r");
+    $fh = fopen(THEMES, "r");
     if($fh)
     {
         while(($el = fgetcsv($fh, 1000, "|")) !== FALSE)
             $ret = ((int)$el[0])+1;
         fclose($fh);
-        
-        $fh = fopen(DATADIR."/pre_themes.txt", "r");
+
+        $fh = fopen(PRE_THEMES, "r");
         while(($el = fgetcsv($fh, 1000, "|")) !== FALSE)
             $ret = max($ret, ((int)$el[0])+1);
         fclose($fh);
-        
+
+        if (!$ret) //Make sure we return an ID when there is no theme added yet.
+            $ret = 1;
+
         return $ret;
     }
     else
         return false;
-} 
+}
 
+function convert_to_png($uploaded_file, $filename, $lcd_size)
+{
+    rename($uploaded_file, $uploaded_file.$filename);
+    $ret = system(IMAGEMAGICK." ".
+                  $uploaded_file.$filename.
+                  " -size ".$lcd_size." ".
+                  $uploaded_file.".png");
+    
+    unlink($uploaded_file.$filename);
+    
+    if(strlen($ret) > 0)
+        return false;
+    else
+        return $uploaded_file.".png";
+}
 ?>

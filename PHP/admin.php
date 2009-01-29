@@ -1,8 +1,9 @@
 <?php
 session_start();
-
-require_once("ini.php");
+require_once("config.php");
 require_once("tools.php");
+
+
 include_once("top.php");
 
 if(@$_SESSION['loggedin'] === true)
@@ -24,7 +25,7 @@ if(@$_SESSION['loggedin'] === true)
             exit();
         break;
         case "commit":
-            $themes = explode("\n", file_get_contents(DATADIR."/pre_themes.txt"));
+            $themes = explode("\n", file_get_contents(DATADIR."/pre-themes.txt"));
             for($i = 0; $i < count($themes); $i++)
             {
                 $tmp = explode("|", $themes[$i]);
@@ -41,7 +42,7 @@ if(@$_SESSION['loggedin'] === true)
                         unlink(DATADIR."/".$themes[$del][7]."/".$themes[$del][2].".png");
                         if($themes[$del][4] == "1")
                             unlink(DATADIR."/".$themes[$del][7]."/".$themes[$del][2]."_b.png");
-                        file_put_contents(DATADIR."/pre_themes.txt", str_replace(implode("|", $themes[$del]), "", file_get_contents(DATADIR."/pre_themes.txt")));
+                        file_put_contents(DATADIR."/pre-themes.txt", str_replace(implode("|", $themes[$del]), "", file_get_contents(DATADIR."/pre-themes.txt")));
                     }
                 }
             }
@@ -51,44 +52,20 @@ if(@$_SESSION['loggedin'] === true)
                 {
                     if(isset($themes[$acc]))
                     {
-                        file_put_contents(DATADIR."/pre_themes.txt", str_replace(implode("|", $themes[$acc]), "", file_get_contents(DATADIR."/pre_themes.txt")));
-                        file_put_contents(DATADIR."/themes.txt", file_get_contents(DATADIR."/themes.txt").implode("|", $themes[$acc])."\n");
+                        file_put_contents(PRE_THEMES, str_replace(implode("|", $themes[$acc]), "", file_get_contents(PRE_THEMES)));
+                        file_put_contents(THEMES, file_get_contents(THEMES).implode("|", $themes[$acc])."\n");
                     }
                 }
             }
         break;
     }
     ?>
-    <style type="text/css">
-    table tr.title
-    {
-        background-color: #CCCCCC;
-        font-weight: bold;
-    }
-    table tr.title td
-    {
-        margin-top: 10px;
-        border: 1px solid black;
-    }
-    table td.image
-    {
-        background-color:#FFFFFF
-        font-weight: bold;
-        border: 1px solid black;
-    }
-    table td.desc
-    {
-        padding-top: 10px;
-        background-color:#FFFFFF
-        font-weight: bold;
-        border: 1px solid black;
-    }
-    </style>
+    <link rel="stylesheet" type="text/css" href="<?=SITEURL?>/theme_site_style.css">
     <strong>Themes</strong>
     <form action="<?=SITEURL?>/admin.php?p=commit" method="POST">
-    <table cellpadding="0" cellspacing="0">
+    <table class="admin" cellpadding="0" cellspacing="0">
     <?
-    $themes = explode("\n", file_get_contents(DATADIR."/pre_themes.txt"));
+    $themes = explode("\n", file_get_contents(PRE_THEMES));
     foreach($themes as $theme)
     {
         if(strlen($theme)>0)
@@ -102,7 +79,7 @@ if(@$_SESSION['loggedin'] === true)
             </tr>
             <tr>
             <td class="image">
-            <a href="<?=SITEURL?>/data/<?=$mainlcd?>/<?=$shortname?>.zip" <?=($img2 == "1" ? "onmouseout=\"MM_swapImgRestore()\" onmouseover=\"MM_swapImage('$shortname','','".SITEURL."/data/$mainlcd/".$shortname."_b.png',1)\" >" : ">")?><img src="<?=SITEURL?>/data/<?=$mainlcd?>/<?=$shortname?>.png" name="<?=$shortname?>" border="0" /></a>
+            <a href="<?=SITEDIR?>/<?=$mainlcd?>/<?=$shortname?>.zip" <?=($img2 == "1" ? "onmouseout=\"MM_swapImgRestore()\" onmouseover=\"MM_swapImage('$shortname','','".SITEDIR."/$mainlcd/".$shortname."_b.png',1)\" >" : ">")?><img src="<?=SITEDIR?>/<?=$mainlcd?>/<?=$shortname?>.png" name="<?=$shortname?>" border="0" /></a>
             </td>
             <td valign="top" class="desc">
             <?=$description?>
@@ -167,27 +144,17 @@ else
 ?>
 <form action="<?=SITEURL?>/admin.php" method="POST">
 <table>
-<tr>
-<td>
-Username:
-</td>
-<td>
-<input name="user" type="text">
-</td>
-</tr>
-<tr>
-<td>
-Password:
-</td>
-<td>
-<input name="pass" type="password">
-</td>
-</tr>
-<tr>
-<td colspan="2" align="center">
-<input name="login" type="submit" value="Login">
-</td>
-</tr>
+    <tr>
+        <td>Username:</td>
+        <td><input name="user" type="text"></td>
+    </tr>
+    <tr>
+        <td>Password:</td>
+        <td><input name="pass" type="password"></td>
+    </tr>
+    <tr>
+        <td colspan="2" align="center"><input name="login" type="submit" value="Login"></td>
+    </tr>
 </table>
 </form>
 <?

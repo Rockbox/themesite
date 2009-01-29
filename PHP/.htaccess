@@ -1,4 +1,4 @@
 RewriteEngine On
 RewriteRule ^models/(.*)/ index.php?model=$1
 Options -Indexes
-php_value max_upload_size 10MB
+#php_value max_upload_size 10MB
