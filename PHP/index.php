@@ -1,8 +1,8 @@
 <?php
-include('top.php');
-
 require_once('config.php');
 require_once('tools.php');
+
+include_once('top.php');
 
 if(isset($_GET['model']) && isset($models[$_GET['model']]))
 {
@@ -15,7 +15,7 @@ else
 if (!$model)
 {
     # HOME PAGE
-    include('intro.php');
+    include_once('intro.php');
 
     echo "<p><table class=\"rockbox\" cellpadding=\"0\">\n";
     foreach ($models as $id => $model)
@@ -80,7 +80,7 @@ else
         {
             $status = $i % $skip;
             list($id,$name,$shortname,$img1,$img2,$author,$email,$mainlcd,$remotelcd,$description,$date) = $themes[$i];
-            //if(file_exists(DATADIR."/".$lcd."/".$shortname.".zip"))
+            if(file_exists(DATADIR."/".$lcd."/".$shortname.".zip"))
             {
                 if($status == 0)
                     echo "<tr>\n";

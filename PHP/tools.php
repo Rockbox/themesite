@@ -42,9 +42,7 @@ function validate_zip($filename, $model)
 
     $buf = '';
     while (!feof($fh))
-    {
         $buf .= fgets($fh, 4096);
-    }
     pclose($fh);
 
     $recs = split("\n",$buf);
@@ -53,14 +51,9 @@ function validate_zip($filename, $model)
     if(count($recs) == 7) # Number of lines with one file in the zip
         return array("Zip contains only 1 file.");
 
-    if (count($recs) < 7) /*||
+    if (count($recs) < 7 ||
         ($recs[1] != "  Length     Date   Time    Name") ||
         ($recs[2] != " --------    ----   ----    ----"))
-Need a more generic error checking, my unzip produces
-[1] =>   Length EAs ACLs Date Time Name
-[2] => -------- --- ---- ---- ---- ----
-
-*/
     {
          return array('Unexpected ZIP file error.');
     }
@@ -322,10 +315,11 @@ function get_new_id()
 function convert_to_png($uploaded_file, $filename, $lcd_size)
 {
     rename($uploaded_file, $uploaded_file.$filename);
+    
     $ret = system(IMAGEMAGICK." ".
-                  $uploaded_file.$filename.
-                  " -size ".$lcd_size." ".
-                  $uploaded_file.".png");
+                  "'".$uploaded_file.$filename."'".
+                  " -resize $lcd_size ".
+                  "'".$uploaded_file.".png'");
     
     unlink($uploaded_file.$filename);
     

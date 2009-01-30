@@ -38,10 +38,10 @@ if(@$_SESSION['loggedin'] === true)
                 {
                     if(isset($themes[$del]))
                     {
-                        unlink(DATADIR."/".$themes[$del][7]."/".$themes[$del][2].".zip");
-                        unlink(DATADIR."/".$themes[$del][7]."/".$themes[$del][2].".png");
+                        unlink(PREDATADIR."/".$themes[$del][7]."/".$themes[$del][2].".zip");
+                        unlink(PREDATADIR."/".$themes[$del][7]."/".$themes[$del][2].".png");
                         if($themes[$del][4] == "1")
-                            unlink(DATADIR."/".$themes[$del][7]."/".$themes[$del][2]."_b.png");
+                            unlink(PREDATADIR."/".$themes[$del][7]."/".$themes[$del][2]."_b.png");
                         file_put_contents(DATADIR."/pre-themes.txt", str_replace(implode("|", $themes[$del]), "", file_get_contents(DATADIR."/pre-themes.txt")));
                     }
                 }
@@ -60,10 +60,9 @@ if(@$_SESSION['loggedin'] === true)
         break;
     }
     ?>
-    <link rel="stylesheet" type="text/css" href="<?=SITEURL?>/theme_site_style.css">
-    <strong>Themes</strong>
+    <h3>Themes</h3>
     <form action="<?=SITEURL?>/admin.php?p=commit" method="POST">
-    <table class="admin" cellpadding="0" cellspacing="0">
+    <table class="admin">
     <?
     $themes = explode("\n", file_get_contents(PRE_THEMES));
     foreach($themes as $theme)
@@ -71,23 +70,22 @@ if(@$_SESSION['loggedin'] === true)
         if(strlen($theme)>0)
         {
             list($id,$name,$shortname,$img1,$img2,$author,$email,$mainlcd,$remotelcd,$description,$date) = explode("|", $theme);
+            $lcd = explode("x", $mainlcd);
             ?>
             <tr class="title">
-            <td colspan="2">
-            <?=$name?> [<?=$author?> &lt;<?=$email?>&gt;] - <?=$date?>
-            </td>
+                <td colspan="2"><?=$name?> [<?=$author?> &lt;<?=$email?>&gt;] - <?=$date?></td>
+                <td class="check">Accept</td>
+                <td class="check">Reject</td>
             </tr>
             <tr>
-            <td class="image">
-            <a href="<?=SITEDIR?>/<?=$mainlcd?>/<?=$shortname?>.zip" <?=($img2 == "1" ? "onmouseout=\"MM_swapImgRestore()\" onmouseover=\"MM_swapImage('$shortname','','".SITEDIR."/$mainlcd/".$shortname."_b.png',1)\" >" : ">")?><img src="<?=SITEDIR?>/<?=$mainlcd?>/<?=$shortname?>.png" name="<?=$shortname?>" border="0" /></a>
-            </td>
-            <td valign="top" class="desc">
-            <?=$description?>
-            </td>
-            <td valign="middle">
-            Accept: <input type="checkbox" name="accept[]" value="<?=$id?>" /><br />
-            Delete: <input type="checkbox" name="delete[]" value="<?=$id?>" />
-            </td>
+                <td class="image" width="<?=$lcd[0]?>">
+                <a href="<?=SITEURL?>/admin_edit.php?id=<?=$id?>&pre=1" <?=($img2 == "1" ? "onmouseout=\"MM_swapImgRestore()\" onmouseover=\"MM_swapImage('$shortname','','".PRESITEDIR."/$mainlcd/".$shortname."_b.png',1)\" >" : ">")?><img src="<?=PRESITEDIR?>/<?=$mainlcd?>/<?=$shortname?>.png" name="<?=$shortname?>" border="0" /></a>
+                </td>
+                <td class="desc"><?=$description?></td>
+                <td class="check"><input type="checkbox" name="accept[]" value="<?=$id?>" /></td>
+                <td class="check"><input type="checkbox" name="delete[]" value="<?=$id?>" /><br /><br />
+                                  <input type="text" name="delete_<?=$id?>" value="Reason" />
+                </td>
             </tr>
             <?
         }
@@ -100,10 +98,7 @@ if(@$_SESSION['loggedin'] === true)
     </tr>
     </table>
     </form>
-    <strong>Menu</strong>
-    <ul>
-    <li><a href="<?=SITEURL?>/admin.php?p=logout">Logout</a></li>
-    </ul>
+    <a href="<?=SITEURL?>/admin.php?p=logout">Logout</a>
     <?
 }
 else

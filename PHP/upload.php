@@ -66,7 +66,6 @@ if(isset($_POST['submit']))
     {
         $model = $models[$_POST['target']];
         
-        /* Drop last element from LCD size */
         $lcd_size = $model->lcd_size();
         
         if(!validate_png($_FILES['wpsimg']['tmp_name'], $lcd_size))
@@ -106,23 +105,22 @@ if(isset($_POST['submit']))
             $email = htmlspecialchars(trim($_POST['email']));
             $description = str_replace(array("\n","\r","\t"), "", htmlspecialchars(trim($_POST['description'])));
             $date = date("Y-m-d");
-            # make a filesystem safe filename
-            $shortname = strtr(mb_convert_encoding($_FILES['zip']['name'], 'ASCII'), ' ,;:?*#!§$%&/(){}<>=`´|\\\'"','');
+            $shortname = strstr(basename($_FILES['zip']['name']), '.', true);
 
             if(file_exists(DATADIR."/".$model->display."/".$shortname.".zip"))
                 $shortname .= substr(md5(time().$_SERVER['REMOTE_PORT'].$name.$description), 0, 5);
 
             $new = get_new_id()."|$name|$shortname|1|".
-                   (strlen($_FILES['menuimg']['name']) > 0 ? "1" : "").
+                   (isset($menuimg) > 0 ? "1" : "").
                    "|$author|$email|$model->display|/|$description|$date\n";
 
-            if (!file_exists(DATADIR."/".$model->display))
-                  mkdir(DATADIR."/".$model->display); // Make sure the dir is available
+            if (!file_exists(PREDATADIR."/".$model->display))
+                mkdir(PREDATADIR."/".$model->display); // Make sure the dir is available
 
-            rename($wpsimg, DATADIR."/".$model->display."/".$shortname.".png");
+            rename($wpsimg, PREDATADIR."/".$model->display."/".$shortname.".png");
             if(isset($menuimg))
-                rename($menuimg, DATADIR."/".$model->display."/".$shortname."_b.png");
-            move_uploaded_file($_FILES['zip']['tmp_name'], DATADIR."/".$model->display."/".$shortname.".zip");
+                rename($menuimg, PREDATADIR."/".$model->display."/".$shortname."_b.png");
+            move_uploaded_file($_FILES['zip']['tmp_name'], PREDATADIR."/".$model->display."/".$shortname.".zip");
 
             $handle = fopen(PRE_THEMES, "a");
             if(!$handle)
