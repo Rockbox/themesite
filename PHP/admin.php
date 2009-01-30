@@ -73,7 +73,7 @@ if(@$_SESSION['loggedin'] === true)
             $lcd = explode("x", $mainlcd);
             ?>
             <tr class="title">
-                <td colspan="2"><?=$name?> [<?=$author?> &lt;<?=$email?>&gt;] - <?=$date?></td>
+                <td colspan="2"><?=$name?> [<?=$author?> &lt;<?=$email?>&gt;] - <?=human_filesize(filesize(PREDATADIR."/$mainlcd/".$shortname.".zip"))?> - <?=$date?></td>
                 <td class="check">Accept</td>
                 <td class="check">Reject</td>
             </tr>

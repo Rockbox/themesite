@@ -328,4 +328,13 @@ function convert_to_png($uploaded_file, $filename, $lcd_size)
     else
         return $uploaded_file.".png";
 }
+
+function human_filesize($size)
+{
+    $units = explode(' ','B KiB MiB GiB TiB PiB');
+    for ($i = 0; $size > 1024; $i++)
+        $size /= 1024;
+
+    return round($size, 2).' '.$units[$i];
+}
 ?>

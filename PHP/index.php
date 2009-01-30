@@ -100,10 +100,7 @@ else
                 echo "alt=\"$name\" name=\"$shortname\" width=\"$width\" height=\"$height\" />";
                 echo "</a><br />\n";
                 $filesize = filesize(DATADIR."/$lcd/$shortname.zip");
-                if($filesize > 1024*1024)
-                    echo "<small> Size: ".round($filesize/1024/1024, 2)." MiB</small>\n";
-                else
-                    echo "<small> Size: ".round($filesize/1024, 2)." KiB</small>\n";
+                echo "<small>Size: ".human_filesize($filesize)."</small>\n";
                 echo "</p>\n";
                 echo "<small>\n";
                 echo "<strong>Submitter:</strong><br />\n";
