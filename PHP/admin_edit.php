@@ -2,21 +2,7 @@
 ob_start();
 session_start();
 require_once("config.php");
-
-function get_theme($id, $location)
-{
-    $themes = explode("\n", file_get_contents($location));
-    foreach($themes as $theme)
-    {
-        if(strlen($theme)>0)
-        {
-            $ret = explode("|", $theme);
-            if($ret[0] == $id)
-                return $ret;
-        }
-    }
-    return false;
-}
+require_once("tools.php");
 
 include_once("top.php");
 if(@$_SESSION['loggedin'] === true)

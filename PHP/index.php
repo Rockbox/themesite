@@ -23,7 +23,7 @@ if (!$model)
        echo "<div class=\"playerbox\"><a href=\"".SITEURL;
        echo "/index.php?model=$id\"><img border=\"0\" src=\"";
        echo "http://www.rockbox.org/playerpics/$model->image\" alt=\"";
-       echo "$model->name\" /><p>$model->name</a></div>\n";
+       echo "$model->name\" /><p>$model->name</p></a></div>\n";
     }
     echo "</table></p>\n";
 }

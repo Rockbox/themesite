@@ -8,6 +8,8 @@ include_once("top.php");
 
 if(@$_SESSION['loggedin'] === true)
 {
+    $theme_mode = (@$_GET['mode'] == 1 ? 1 : 0);
+    
     switch(@$_GET['p'])
     {
         case "logout":
@@ -58,28 +60,75 @@ if(@$_SESSION['loggedin'] === true)
                 }
             }
         break;
+        case "check_wps":
+            $theme = get_theme($_GET['id'], ($_GET['mode'] == 1 ? THEMES : PRE_THEMES));
+            if($theme !== false)
+            {
+                $theme = new theme($theme);
+                echo '<h2>Validate ZIP output:</h2>';
+                echo '<pre id="checkwps-output">';
+                echo implode("\n", validate_zip($theme->zip(false, !(bool)$_GET['mode']),
+                                                $models[$_GET['model']]) );
+                echo '</pre>';
+            }
+        break;
     }
-    ?>
-    <h3>Themes</h3>
-    <form action="<?=SITEURL?>/admin.php?p=commit" method="POST">
-    <table class="admin">
-    <?
-    $themes = explode("\n", file_get_contents(PRE_THEMES));
-    foreach($themes as $theme)
+    
+    ?><h2>Mode: <a href="<?=SITEURL?>/admin.php?mode=<?=(1-$theme_mode)?>&model=<?=@$_GET['model']?>"><?=($theme_mode === 0 ? 'Pre-themes' : 'Themes')?></a></h2><?
+    
+    if(!isset($_GET['model']) || !check_model($_GET['model']))
     {
-        if(strlen($theme)>0)
+        ?>
+        <h2>Model:</h2>
+        <p>
+            <table class="rockbox" cellpadding="0">
+            <?
+            foreach($models as $id => $model):
+                $count = count_themes($model->display, false, !(bool)$theme_mode);
+                if($count > 0 || isset($_GET['show_all'])):
+            ?>
+                <div class="playerbox">
+                    <a href="<?=SITEURL?>/admin.php?model=<?=$id?>&mode=<?=$theme_mode?>">
+                        <img border="0" src="http://www.rockbox.org/playerpics/<?=$model->image?>" alt="<?=$model->name?>" />
+                        <p><?=$model->name?> (<strong><?=$count?></strong>)</p>
+                    </a>
+                </div>
+            <?
+                endif;
+            endforeach;
+            ?>
+            </table>
+        </p>
+        <br clear="both" />
+        <? if(isset($_GET['show_all'])): ?>
+        <p><a href="<?=SITEURL?>/admin.php?mode=<?=$theme_mode?>">Show targets with theme count > 0</a></p>
+        <? else: ?>
+        <p><a href="<?=SITEURL?>/admin.php?mode=<?=$theme_mode?>&show_all">Show all targets</a></p>
+        <? endif; ?>
+        <?
+    }
+    else
+    {
+        $model = $models[$_GET['model']];
+        ?>
+        <h3>Themes</h3>
+        <form action="<?=SITEURL?>/admin.php?p=commit&mode=<?=$theme_mode?>" method="POST">
+        <table class="admin">
+        <?
+        foreach(filter($model->display, false, !(bool)$theme_mode) as $theme)
         {
-            list($id,$name,$shortname,$img1,$img2,$author,$email,$mainlcd,$remotelcd,$description,$date) = explode("|", $theme);
+            list($id,$name,$shortname,$img1,$img2,$author,$email,$mainlcd,$remotelcd,$description,$date) = $theme;
             $lcd = explode("x", $mainlcd);
             ?>
+            <? if($theme_mode === 0): ?>
             <tr class="title">
-                <td colspan="2"><?=$name?> [<?=$author?> &lt;<?=$email?>&gt;] - <?=human_filesize(filesize(PREDATADIR."/$mainlcd/".$shortname.".zip"))?> - <?=$date?></td>
+                <td colspan="2"><?=$name?> [<?=$author?> &lt;<?=$email?>&gt;] - <?=human_filesize(@filesize(PREDATADIR."/$mainlcd/".$shortname.".zip"))?> - <?=$date?></td>
                 <td class="check">Accept</td>
                 <td class="check">Reject</td>
             </tr>
             <tr>
                 <td class="image" width="<?=$lcd[0]?>">
-                <a href="<?=SITEURL?>/admin_edit.php?id=<?=$id?>&pre=1" <?=($img2 == "1" ? "onmouseout=\"MM_swapImgRestore()\" onmouseover=\"MM_swapImage('$shortname','','".PRESITEDIR."/$mainlcd/".$shortname."_b.png',1)\" >" : ">")?><img src="<?=PRESITEDIR?>/<?=$mainlcd?>/<?=$shortname?>.png" name="<?=$shortname?>" border="0" /></a>
+                <a href="<?=SITEURL?>/admin_edit.php?id=<?=$id?>&pre=<?=(1-$theme_mode)?>" <?=($img2 == "1" ? "onmouseout=\"MM_swapImgRestore()\" onmouseover=\"MM_swapImage('$shortname','','".PRESITEDIR."/$mainlcd/".$shortname."_b.png',1)\" >" : ">")?><img src="<?=PRESITEDIR?>/<?=$mainlcd?>/<?=$shortname?>.png" name="<?=$shortname?>" border="0" /></a>
                 </td>
                 <td class="desc"><?=$description?></td>
                 <td class="check"><input type="checkbox" name="accept[]" value="<?=$id?>" /></td>
@@ -87,18 +136,38 @@ if(@$_SESSION['loggedin'] === true)
                                   <input type="text" name="delete_<?=$id?>" value="Reason" />
                 </td>
             </tr>
+            <? else: ?>
+            <tr class="title">
+                <td colspan="2"><?=$name?> [<?=$author?> &lt;<?=$email?>&gt;] - <?=human_filesize(@filesize(DATADIR."/$mainlcd/".$shortname.".zip"))?> - <?=$date?></td>
+                <td class="check">Validate ZIP</td>
+            </tr>
+            <tr>
+                <td class="image" width="<?=$lcd[0]?>">
+                <a href="<?=SITEURL?>/admin_edit.php?id=<?=$id?>&pre=<?=(1-$theme_mode)?>" <?=($img2 == "1" ? "onmouseout=\"MM_swapImgRestore()\" onmouseover=\"MM_swapImage('$shortname','','".SITEDIR."/$mainlcd/".$shortname."_b.png',1)\" >" : ">")?><img src="<?=SITEDIR?>/<?=$mainlcd?>/<?=$shortname?>.png" name="<?=$shortname?>" border="0" /></a>
+                </td>
+                <td class="desc"><?=$description?></td>
+                <td class="check" onClick="javascript:window.location.href = '<?=SITEURL?>/admin.php?p=check_wps&id=<?=$id?>&mode=1';">
+                    <a href="<?=SITEURL?>/admin.php?p=check_wps&id=<?=$id?>&mode=1">X</a>
+                </td>
+            </tr>
+            <? endif; ?>
             <?
         }
+        ?>
+        <tr>
+        <td colspan="3" align="center">
+        <input type="submit" value="Commit" />
+        </td>
+        </tr>
+        </table>
+        </form>
+        <?
     }
     ?>
-    <tr>
-    <td colspan="3" align="center">
-    <input type="submit" value="Commit" />
-    </td>
-    </tr>
-    </table>
-    </form>
+    <p>
+    <a href="<?=SITEURL?>/admin.php?mode=<?=$theme_mode?>">Choose other model</a><br />
     <a href="<?=SITEURL?>/admin.php?p=logout">Logout</a>
+    </p>
     <?
 }
 else

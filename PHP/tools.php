@@ -2,17 +2,21 @@
 require_once('config.php');
 
 # Filter the themes.txt by LCD type and return an array of matching themes
-function filter($mainlcdfilter, $remotelcdfilter=false)
+function filter($mainlcdfilter, $remotelcdfilter=false, $pre_themes=false)
 {
     $count = 0;
 
-    $fh = fopen(THEMES, "r");
+    $fh = fopen(($pre_themes ? PRE_THEMES : THEMES), "r");
     if ($fh)
     {
-        while ((list($id,$name,$shortname,$img1,$img2,$author,$email,$mainlcd,$remotelcd,$description,$date) = fgetcsv($fh, 1000, "|")) !== FALSE)
+        while( ($line = fgetcsv($fh, 1000, "|")) !== FALSE )
         {
-            if ($mainlcd==$mainlcdfilter)
-                $themes[$count++] = array($id,$name,$shortname,$img1,$img2,$author,$email,$mainlcd,$remotelcd,$description,$date);
+            if(count($line) > 1)
+            {
+                list($id,$name,$shortname,$img1,$img2,$author,$email,$mainlcd,$remotelcd,$description,$date) = $line;
+                if($mainlcd == $mainlcdfilter)
+                    $themes[$count++] = array($id,$name,$shortname,$img1,$img2,$author,$email,$mainlcd,$remotelcd,$description,$date);
+            }
         }
         fclose($fh);
     }
@@ -36,16 +40,11 @@ function validate_zip($filename, $model)
     $validdir['fonts']=1;
 
     # Step 1 - get a listing of the files inside the zip file
-    $fh = popen(UNZIP." -l $filename","r");
-    if (!$fh)
+    $buf = shell_exec(UNZIP." -l $filename");
+    if($buf === false)
         return array('Not a valid ZIP file');
 
-    $buf = '';
-    while (!feof($fh))
-        $buf .= fgets($fh, 4096);
-    pclose($fh);
-
-    $recs = split("\n",$buf);
+    $recs = explode("\n", $buf);
 
     # Do some sanity checks on the unzip output
     if(count($recs) == 7) # Number of lines with one file in the zip
@@ -67,10 +66,10 @@ function validate_zip($filename, $model)
          return array('Unexpected ZIP file error.');
 
     if ($data[$count-2] > MAXFILESINZIP)
-        return array("Too many files in ZIP file ($numfiles)");
+        return array("Too many files in ZIP file (".$data[$count-2].")");
 
     if ($data[0] > MAXUNZIPPEDSIZE)
-        return array("ZIP contents too large ($size bytes)");
+        return array("ZIP contents too large (".$data[0]." bytes)");
 
     # Now go through each file in turn.
 
@@ -171,13 +170,7 @@ function validate_zip($filename, $model)
         }
         foreach(glob("$tmp_path/.rockbox/wps/*.*wps") as $wps)
         {
-            $ret = shell_exec(CHECKWPS.".".$model->checkwps." \"$wps\"");
-            $ret = explode("\n", $ret);
-            foreach($ret as $el)
-            {
-                if(strstr($el, "ERR: ") !== false)
-                    $errors[] = "WPS validation error: ".htmlspecialchars($el)." - ".substr($wps, strlen($tmp_path)+1);
-            }
+            $errors = array_merge($errors, check_wps($wps, $model));
             $checked[] = $wps;
         }
         foreach(glob("$tmp_path/.rockbox/themes/*.cfg") as $cfg)
@@ -201,13 +194,7 @@ function validate_zip($filename, $model)
                                     $errors[] = "WPS in config doesn't exist: ".$path_disp;
                                 else
                                 {
-                                    $ret = shell_exec(CHECKWPS.".".$model->checkwps." \"$path\"");
-                                    $ret = explode("\n", $ret);
-                                    foreach($ret as $el)
-                                    {
-                                        if(strstr($el, "ERR: ") !== false)
-                                            $errors[] = "WPS validation error: ".htmlspecialchars($el)." - ".substr($wps, strlen($tmp_path)+1);
-                                    }
+                                    $errors = array_merge($errors, check_wps($path, $model));
                                     $checked[] = $path;
                                 }
                             break;
@@ -349,5 +336,110 @@ function check_resolution($resolution)
 	}
 
 	return false;
+}
+
+function check_model($model_name)
+{
+    global $models;
+    
+    return isset($models[$model_name]);
+}
+
+function check_wps($wps, $model)
+{
+    $errors = array();
+
+    $ret = shell_exec(CHECKWPS.".".$model->checkwps." \"$wps\"");
+    if($ret === false)
+        return array('Unable to run checkwps.'.$model->checkwps);
+    foreach(explode("\n", $ret) as $el)
+    {
+        if(strstr($el, "ERR: ") !== false)
+            $errors[] = "WPS validation error: ".htmlspecialchars($el)." - ".basename($wps);
+    }
+
+    return $errors;
+}
+
+function get_theme($id, $location)
+{
+    $themes = explode("\n", file_get_contents($location));
+    foreach($themes as $theme)
+    {
+        if(strlen($theme)>0)
+        {
+            $ret = explode("|", $theme);
+            if($ret[0] == $id)
+                return $ret;
+        }
+    }
+    return false;
+}
+
+function count_themes($mainlcd, $remotelcd=false, $pre_themes=false)
+{
+    return count(filter($mainlcd, $remotelcd, $pre_themes));
+}
+
+class theme
+{
+    public $id;
+    public $name;
+    public $shortname;
+    public $img1;
+    public $img2;
+    public $author;
+    public $email;
+    public $mainlcd;
+    public $remotelcd;
+    public $description;
+    public $date;
+
+    function __construct($init)
+    {
+        $this->id = $init[0];
+        $this->name = $init[1];
+        $this->shortname = $init[2];
+        $this->img1 = $init[3];
+        $this->img2 = $init[4];
+        $this->author = $init[5];
+        $this->email = $init[6];
+        $this->mainlcd = $init[7];
+        $this->remotelcd = $init[8];
+        $this->description = $init[9];
+        $this->date = $init[10];
+        
+    }
+    
+    function resolution($remote=false)
+    {
+        /* Drop last element from LCD size */
+        $lcd_size = explode("x", ($remote ? $this->remotelcd : $this->mainlcd));
+        array_pop($lcd_size);
+        return implode("x", $lcd_size);
+    }
+    
+    private function path($url, $pre_theme)
+    {
+        if($pre_theme)
+            return ($url ? PRESITEDIR : PREDATADIR);
+        else
+            return ($url ? SITEDIR : DATADIR);
+    }
+    
+    function zip($url=false, $pre_theme = false)
+    {
+        return $this->path($url, $pre_theme)."/".$this->mainlcd."/".$this->shortname.".zip";
+    }
+    
+    function image($url=false, $pre_theme = false)
+    {
+        return $this->path($url, $pre_theme)."/".$this->mainlcd."/".$this->shortname.".png";
+    }
+    
+    function image2($url=false, $pre_theme = false)
+    {
+        return $this->path($url, $pre_theme)."/".$this->mainlcd."/".$this->shortname."_b.png";
+    }
 }
 ?>
