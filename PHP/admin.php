@@ -146,8 +146,8 @@ if(@$_SESSION['loggedin'] === true)
                 <a href="<?=SITEURL?>/admin_edit.php?id=<?=$id?>&pre=<?=(1-$theme_mode)?>" <?=($img2 == "1" ? "onmouseout=\"MM_swapImgRestore()\" onmouseover=\"MM_swapImage('$shortname','','".SITEDIR."/$mainlcd/".$shortname."_b.png',1)\" >" : ">")?><img src="<?=SITEDIR?>/<?=$mainlcd?>/<?=$shortname?>.png" name="<?=$shortname?>" border="0" /></a>
                 </td>
                 <td class="desc"><?=$description?></td>
-                <td class="check" onClick="javascript:window.location.href = '<?=SITEURL?>/admin.php?p=check_wps&id=<?=$id?>&mode=1';">
-                    <a href="<?=SITEURL?>/admin.php?p=check_wps&id=<?=$id?>&mode=1">X</a>
+                <td class="check" onClick="javascript:window.location.href = '<?=SITEURL?>/admin.php?p=check_wps&id=<?=$id?>&mode=1&model=<?=$_GET['model']?>';">
+                    <a href="<?=SITEURL?>/admin.php?p=check_wps&id=<?=$id?>&mode=1&model=<?=$_GET['model']?>">X</a>
                 </td>
             </tr>
             <? endif; ?>
