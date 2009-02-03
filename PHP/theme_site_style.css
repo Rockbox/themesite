@@ -108,13 +108,13 @@ div.playerbox
     border: none;
 }
 
-.admin-edit input[type=text], textarea
+.admin-edit input[type=text], .admin-edit textarea
 {
     border: 1px solid gray;
     width: 90%;
 }
 
-.admin-edit input[type=text]:focus, textarea:focus
+.admin-edit input[type=text]:focus, .admin-edit textarea:focus
 {
     border: 1px solid orange;
 }

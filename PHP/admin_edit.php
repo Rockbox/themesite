@@ -22,7 +22,7 @@ include_once("top.php");
 if(@$_SESSION['loggedin'] === true)
 {
     $id = (int)$_GET['id'];
-    $pre = ($_GET['pre'] == 1 ? true : false);
+    $pre = (@$_GET['pre'] == 1 ? true : false);
     $theme = get_theme($id, ($pre ? PRE_THEMES : THEMES));
     if($theme !== false)
     {

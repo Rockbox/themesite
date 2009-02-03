@@ -2,7 +2,7 @@
 require_once('config.php');
 
 # Filter the themes.txt by LCD type and return an array of matching themes
-function filter($mainlcdfilter, $remotelcdfilter)
+function filter($mainlcdfilter, $remotelcdfilter=false)
 {
     $count = 0;
 
@@ -336,5 +336,18 @@ function human_filesize($size)
         $size /= 1024;
 
     return round($size, 2).' '.$units[$i];
+}
+
+function check_resolution($resolution)
+{
+	global $models;
+
+	foreach($models as $model)
+	{
+		if($model->display == $resolution)
+			return true;
+	}
+
+	return false;
 }
 ?>
