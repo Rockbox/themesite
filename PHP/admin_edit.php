@@ -50,7 +50,18 @@ if(@$_SESSION['loggedin'] === true)
         <tr>
             <td>Theme zip contents</td>
             <td>
-            <pre id="zip-content"><? passthru(UNZIP." -lqq ".($pre ? PREDATADIR : DATADIR)."/$mainlcd/$shortname.zip"); ?></pre>
+            <pre id="zip-content"><?
+                $ret = shell_exec(UNZIP." -lqq ".($pre ? PREDATADIR : DATADIR)."/$mainlcd/$shortname.zip");
+                foreach(explode("\n", $ret) as $line)
+                {
+                    $line = trim($line);
+                    if(strlen($line) > 0)
+                    {
+                        $line = explode("  ", $line);
+                        echo str_pad(human_filesize($line[0]), 12, ' ', STR_PAD_LEFT)."  ".$line[1]." ".$line[2]."\n";
+                    }
+                }
+            ?></pre>
             </td>
         <tr>
             <td>Added on </td>
