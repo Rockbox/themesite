@@ -97,7 +97,7 @@ class themesite {
                      * data, and one with only the latest results for fast
                      * retrieval?
                      */
-                    $this->db->query(sprintf("DELETE FROM checkwps WHERE themeid=%d", $theme['RowID']));
+                    $this->db->query(sprintf("DELETE FROM checkwps WHERE themeid=%d AND version_type='%s'", $theme['RowID'], db::quote($version_type)));
                     $sql = sprintf("INSERT INTO checkwps (themeid, version_type, version_number, target, pass) VALUES (%d, '%s', '%s', '%s', '%s')",
                         $theme['RowID'],
                         db::quote($version_type),
