@@ -9,7 +9,7 @@
     <tt style="color: red">fail</tt>
 {/if}
 
-&mdash; {$checkwpsresults[i].theme.mainlcd}/{$checkwpsresults[i].theme.shortname}/{$checkwpsresults[i].theme.zipfile}<br />
+&mdash; {$checkwpsresults[i].theme.mainlcd}/{$checkwpsresults[i].theme.shortname}/{$checkwpsresults[i].theme.zipfile} ({$checkwpsresults[i].summary.duration|string_format:'%0.3f'} seconds)<br />
 {/section}
 
 {include file="footer.tpl"}

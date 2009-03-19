@@ -60,6 +60,7 @@ class themesite {
         $themes = $this->db->query($sql);
         $return = array();
         while ($theme = $themes->next()) {
+            $starttime = microtime(true);
             $zipfile = sprintf("%s/%s/%s/%s",
                 config::datadir,
                 $theme['mainlcd'],
@@ -95,7 +96,7 @@ class themesite {
             $return[] = array(
                 'theme' => $theme,
                 'result' => $result,
-                'summary' => array('theme' => $theme['name'], 'pass' => $passany)
+                'summary' => array('theme' => $theme['name'], 'pass' => $passany, 'duration' => microtime(true) - $starttime)
             );
         }
         return $return;
