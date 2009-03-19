@@ -31,7 +31,6 @@ class themesite {
         $this->db = new db($dbfile);
         $this->themedir_public = sprintf("%s/%s/%s", $_SERVER['DOCUMENT_ROOT'], config::path, config::datadir);
         $this->themedir_private = sprintf("%s/%s", preconfig::privpath, config::datadir);
-        printf("%s<br />\n%s<br />\n", $this->themedir_public, $this->themedir_private);
     }
 
     /*
@@ -179,7 +178,7 @@ class themesite {
             $status_text[$newstatus],
             $reason
         ));
-        $sql = sprintf("SELECT shortname, mainlcd, email, name, author FROM themes WHERE RowID='%d'", db::quote($themeid));
+        $sql = sprintf("SELECT shortname, mainlcd, email, name, author, zipfile FROM themes WHERE RowID='%d'", db::quote($themeid));
         $theme = $this->db->query($sql)->next();
 
         if ($newstatus == -1) {
@@ -188,16 +187,18 @@ class themesite {
             );
 
             /* Delete the files */
-            $dir = sprintf("%s/%s/%s",
-                config::datadir,
-                $theme['mainlcd'],
-                $theme['shortname']
-            );
-            if (file_exists($dir)) {
-                foreach(glob(sprintf("%s/*", $dir)) as $file) {
-                    unlink($file);
+            foreach(array($this->themedir_public, $this->themedir_private) as $root) {
+                $dir = sprintf("%s/%s/%s",
+                    $root,
+                    $theme['mainlcd'],
+                    $theme['shortname']
+                );
+                if (file_exists($dir)) {
+                    foreach(glob(sprintf("%s/*", $dir)) as $file) {
+                        unlink($file);
+                    }
+                    rmdir($dir);
                 }
-                rmdir($dir);
             }
         }
         else {
@@ -206,6 +207,14 @@ class themesite {
                 db::quote($reason),
                 db::quote($themeid)
             );
+            $from = sprintf("%s/%s/%s/%s", $this->themedir_public, $theme['mainlcd'], $theme['shortname'], $theme['zipfile']);
+            $to = sprintf("%s/%s/%s/%s", $this->themedir_private, $theme['mainlcd'], $theme['shortname'], $theme['zipfile']);
+            if ($newstatus == 1) {
+                $temp = $to;
+                $to = $from;
+                $from = $temp;
+            }
+            rename($from, $to);
         }
         if ($oldstatus == 1 && $newstatus < 1) {
             // Send a mail to notify the user that his theme has been
@@ -244,9 +253,12 @@ END;
             $remotelcd === false ? 'NULL' : sprintf("'%s'", db::quote($remotelcd))
         );
         $this->db->query($sql);
-        $themedir = sprintf("%s/%s", $this->themedir_public, $mainlcd);
-        if (!file_exists($themedir)) {
-            mkdir($themedir);
+        /* Create the target's dir in both the private and public theme dir */
+        foreach(array($this->themedir_public, $this->themedir_private) as $root) {
+            $themedir = sprintf("%s/%s", $root, $mainlcd);
+            if (!file_exists($themedir)) {
+                mkdir($themedir);
+            }
         }
     }
 
@@ -299,16 +311,21 @@ END;
         $err = array();
         /* return array("Skipping upload"); */
 
-        /* Create the destination dir */
+        /* Create the destination dir in both private and public area */
+        foreach(array($this->themedir_public, $this->themedir_private) as $root) {
+            mkdir(sprintf("%s/%s/%s",
+                $root,
+                $mainlcd,
+                $shortname
+            ));
+        }
+
+        /* This is the actual destination dir */
         $destdir = sprintf("%s/%s/%s",
-            $this->themedir_public,
+            config::defaultstatus == 1 ? $this->themedir_public : $this->themedir_private,
             $mainlcd,
             $shortname
         );
-        if (!file_exists($destdir) && !mkdir($destdir)) {
-            $err[] = sprintf("Couldn't create themedir %s", $destdir);
-            return $err;
-        }
         
         /* Prepend wps- and menu- to screenshots */
         $sshot_wps['name']  = empty($sshot_wps['name'])  ? '' : 'wps-'.$sshot_wps['name'];
