@@ -121,34 +121,40 @@ class themesite {
         return $result['count'] == 1 ? true : false;
     }
 
-    public function listthemes($target, $orderby = 'timestamp DESC', $approved = 'approved', $onlyverified = true) {
+    public function listthemes($mainlcd, $orderby = 'timestamp DESC', $approved = 'approved', $onlyverified = true) {
         $ret = array();
         switch($approved) {
             case 'any':
                 $approved_clause = "";
                 break;
             case 'hidden':
-                $approved_clause = " AND th.approved = 0 ";
+                $approved_clause = " AND approved = 0 ";
                 break;
             case 'approved':
             default:
-                $approved_clause = " AND th.approved = 1 ";
+                $approved_clause = " AND approved = 1 ";
                 break;
         }
         if ($onlyverified == true) {
-            $verified = " AND th.emailverification = 1 ";
+            $verified = " AND emailverification = 1 ";
         }
         else {
             $verified = "";
         }
-        $sql = sprintf("SELECT name, timestamp, th.mainlcd as mainlcd, approved, reason, description, th.RowID as id, th.shortname AS shortname, zipfile, sshot_wps, sshot_menu, emailverification = 1 as verified FROM themes th, targets ta WHERE 1 %s %s AND th.mainlcd=ta.mainlcd and ta.shortname='%s' AND (ta.remotelcd IS NULL OR ta.remotelcd=th.remotelcd) ORDER BY %s",
+        $sql = sprintf("SELECT name, timestamp, mainlcd, approved, reason, description, RowID as id, shortname, zipfile, sshot_wps, sshot_menu, emailverification = 1 as verified FROM themes WHERE 1 %s %s AND mainlcd='%s' ORDER BY %s",
             $verified,
             $approved_clause,
-            db::quote($target),
+            db::quote($mainlcd),
             $orderby
         );
         $themes = $this->db->query($sql);
         while ($theme = $themes->next()) {
+            $theme['size'] = filesize(sprintf("%s/%s/%s/%s",
+                $theme['approved'] == 1 ? $this->themedir_public : $this->themedir_private,
+                $theme['mainlcd'],
+                $theme['shortname'],
+                $theme['zipfile']
+            ));
             $ret[] = $theme;
         }
         return $ret;

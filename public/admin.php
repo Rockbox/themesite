@@ -59,8 +59,8 @@ else {
         }
         $approved = isset($_REQUEST['approved']) ? $_REQUEST['approved'] : 'any';
         $template = 'adminlist.tpl';
-        $themes = $site->listthemes($_REQUEST['target'], 'timestamp DESC',$approved, $onlyverified = false);
         $lcd = $site->target2lcd($_REQUEST['target']);
+        $themes = $site->listthemes($lcd['mainlcd'], 'timestamp DESC',$approved, $onlyverified = false);
         $t->assign('mainlcd', $lcd['mainlcd']);
         $t->assign('themes', $themes);
         $t->assign('approved', $approved);

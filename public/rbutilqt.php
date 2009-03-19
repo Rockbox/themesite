@@ -21,9 +21,13 @@
  ****************************************************************************/
 
 require_once('preconfig.inc.php');
+header('Content-type: text/plain');
 
-header("Content-type: application/xhtml+xml");
-$lcd = $site->target2lcd($_REQUEST['target']);
-$res = $site->listthemes($lcd['mainlcd']);
-$t->render('rss.tpl', array('themes' => $res));
+$mainlcd = substr($_REQUEST['res'], 0, strrpos($_REQUEST['res'], 'x'));
+$themes = $site->listthemes($mainlcd);
+$t->assign('themes', $themes);
+/* Not sure what kind of error message we would want to send? */
+$t->assign('errno', 0);
+$t->assign('errmsg', 'Rocking da boxes');
+$t->render('rbutil.tpl');
 ?>
