@@ -32,7 +32,7 @@ class templater {
         $s->compile_dir = sprintf("%s/compiled", $s->template_dir);
         $s->cache_dir = sprintf("%s/cache", $s->template_dir);
         $s->caching = false;
-        $s->debugging = true;
+        $s->debugging = false;
         $s->security = true;
         $s->security_settings['IF_FUNCS'] = array('array_key_exists', 'isset', 'is_array', 'count');
         $s->secure_dir = array(
