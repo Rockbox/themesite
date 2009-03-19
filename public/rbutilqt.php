@@ -23,11 +23,26 @@
 require_once('preconfig.inc.php');
 header('Content-type: text/plain');
 
-$mainlcd = substr($_REQUEST['res'], 0, strrpos($_REQUEST['res'], 'x'));
-$themes = $site->listthemes($mainlcd);
-$t->assign('themes', $themes);
-/* Not sure what kind of error message we would want to send? */
-$t->assign('errno', 0);
-$t->assign('errmsg', 'Rocking da boxes');
+$themes = array();
+if (!isset($_REQUEST['res'])) {
+    $t->assign('errno', 1);
+    $t->assign('errmsg', "Invalid URL");
+}
+else {
+    $mainlcd = substr($_REQUEST['res'], 0, strrpos($_REQUEST['res'], 'x'));
+    $themes = $site->listthemes($mainlcd);
+}
+
+if (count($themes) == 0) {
+    $t->assign('errno', 1);
+    $t->assign('errmsg', "No themes available for the selected target");
+}
+else {
+    $t->assign('themes', $themes);
+    /* Not sure what kind of error message we would want to send? */
+    $t->assign('errno', 0);
+    $t->assign('errmsg', 'Rocking da boxes');
+}
+
 $t->render('rbutil.tpl');
 ?>
