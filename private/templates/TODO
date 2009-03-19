@@ -1,6 +1,7 @@
 SHORT TERM (needed before going live)
  - Store hidden/unverified .zip files in the private dir, with an option for
    admins to download them.
+ - Make the templates less awful (help needed!)
 MID TERM (add as soon as possible)
  - Validate .cfg files
  - Make it possible to see .zip contents in the admin panel
@@ -9,3 +10,4 @@ MID TERM (add as soon as possible)
  - Add a rollover switch to the menu picture (if available)
 LONG TERM (add later)
  - Allow uploaders to update themes
+ - Forum login integration for admins (with the right badges)
