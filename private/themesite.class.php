@@ -68,11 +68,28 @@ class themesite {
             );
             $result = $this->checkwps($zipfile, $theme['mainlcd'], $theme['remotelcd']);
 
-            /* Check if at least one check passed (for the summary) */
+            /* 
+             * Store the results and check if at least one check passed (for
+             * the summary)
+             */
             $passany = false;
-            foreach($result as $which => $targets) {
+            foreach($result as $version_type => $targets) {
                 foreach($targets as $target => $result) {
-                    if ($result['pass']) $passany = true;
+                    if ($result['pass']) $passany = true; /* For the summary */
+                    /*
+                     * Maybe we want to have two tables - one with historic
+                     * data, and one with only the latest results for fast
+                     * retrieval?
+                     */
+                    $this->db->query(sprintf("DELETE FROM checkwps WHERE themeid=%d", $theme['RowID']));
+                    $sql = sprintf("INSERT INTO checkwps (themeid, version_type, version_number, target, pass) VALUES (%d, '%s', '%s', '%s', '%s')",
+                        $theme['RowID'],
+                        db::quote($version_type),
+                        db::quote($result['version']),
+                        db::quote($target),
+                        db::quote($result['pass'] ? 1 : 0)
+                    );
+                    $this->db->query($sql);
                 }
             }
             $return[] = array(
@@ -366,15 +383,19 @@ END;
      */
     public function checkwps($zipfile, $mainlcd, $remotelcd) {
         $return = array();
+
         /* First, create a temporary dir */
         $tmpdir = sprintf("%s/temp-%s", preconfig::privpath, md5(uniqid()));
         mkdir($tmpdir);
+
         /* Then, unzip the theme here */
         $cmd = sprintf("%s -d %s %s", config::unzip, $tmpdir, escapeshellarg($zipfile));
         exec($cmd, $dontcare, $ret);
+
         /* Now, cd into that dir */
         $olddir = getcwd();
         chdir($tmpdir);
+
         /* 
          * For all .wps and .rwps, run checkwps of both release and current for
          * all applicable targets
@@ -404,8 +425,10 @@ END;
                 }
             }
         }
+
         /* chdir back */
         chdir($olddir);
+
         /* Remove the tempdir */
         $this->rmdir_recursive($tmpdir);
         return $return;
