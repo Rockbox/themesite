@@ -146,7 +146,7 @@ class themesite {
         else {
             $verified = "";
         }
-        $sql = sprintf("SELECT name, approved, reason, description, th.RowID as id, th.shortname AS shortname, zipfile, sshot_wps, sshot_menu, emailverification = 1 as verified FROM themes th, targets ta WHERE 1 %s %s AND th.mainlcd=ta.mainlcd and ta.shortname='%s' AND (ta.remotelcd IS NULL OR ta.remotelcd=th.remotelcd) ORDER BY %s",
+        $sql = sprintf("SELECT name, timestamp, th.mainlcd as mainlcd, approved, reason, description, th.RowID as id, th.shortname AS shortname, zipfile, sshot_wps, sshot_menu, emailverification = 1 as verified FROM themes th, targets ta WHERE 1 %s %s AND th.mainlcd=ta.mainlcd and ta.shortname='%s' AND (ta.remotelcd IS NULL OR ta.remotelcd=th.remotelcd) ORDER BY %s",
             $verified,
             $approved_clause,
             db::quote($target),
