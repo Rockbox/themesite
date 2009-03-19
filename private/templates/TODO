@@ -1,15 +1,19 @@
-SHORT TERM
+SHORT TERM (needed before going live)
  - Do checkwps on upload and by request (from cronjob or similar) (nearly done)
+   * Do checkwps on upload  -  DONE
+   * Do checkwps on all themes on demand  -  DONE
+   * Store results  -  MISSING
+   * Write some scripts to help automate the creation of checkwps  -  MISSING
  - Implement deleting themes
  - Mail people when hiding/deleting their theme.
  - Store hidden/unverified .zip files in the private dir, with an option for
    admins to download them.
-MID TERM
- - Validate .cfg files
  - Log goddamn everything!
+MID TERM (add as soon as possible)
+ - Validate .cfg files
  - Make it possible to see .zip contents in the admin panel
  - Edit themes option for admins
  - Add a target detail editor
  - Add a rollover switch to the menu picture (if available)
-LONG TERM
+LONG TERM (add later)
  - Allow uploaders to update themes
