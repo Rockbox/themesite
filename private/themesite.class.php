@@ -24,18 +24,14 @@ require_once('db.class.php');
 
 class themesite {
     private $db;
-    private $themedir_abs;
+    private $themedir_public;
+    private $themedir_private;
 
     public function __construct($dbfile) {
         $this->db = new db($dbfile);
-        $this->themedir_abs = sprintf("%s/%s", $_SERVER['DOCUMENT_ROOT'], config::datadir);
-
-        /* Make sure the theme dir exists */
-        if (!file_exists($this->themedir_abs)) {
-            if (!@mkdir($this->themedir_abs)) {
-                die("The theme dir doesn't exist, and I can't create it. Giving up.");
-            }
-        }
+        $this->themedir_public = sprintf("%s/%s/%s", $_SERVER['DOCUMENT_ROOT'], config::path, config::datadir);
+        $this->themedir_private = sprintf("%s/%s", preconfig::privpath, config::datadir);
+        printf("%s<br />\n%s<br />\n", $this->themedir_public, $this->themedir_private);
     }
 
     /*
@@ -248,7 +244,7 @@ END;
             $remotelcd === false ? 'NULL' : sprintf("'%s'", db::quote($remotelcd))
         );
         $this->db->query($sql);
-        $themedir = sprintf("%s/%s", $this->themedir_abs, $mainlcd);
+        $themedir = sprintf("%s/%s", $this->themedir_public, $mainlcd);
         if (!file_exists($themedir)) {
             mkdir($themedir);
         }
@@ -305,7 +301,7 @@ END;
 
         /* Create the destination dir */
         $destdir = sprintf("%s/%s/%s",
-            $this->themedir_abs,
+            $this->themedir_public,
             $mainlcd,
             $shortname
         );
