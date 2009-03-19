@@ -1,0 +1,4 @@
+ - Do checkwps on upload and by request (from cronjob or similar) (nearly done)
+ - Validate .cfg files
+ - Log goddamn everything!
+ - Show unverified uploads in the admin panel
