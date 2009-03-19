@@ -70,6 +70,7 @@ class themesite {
      * Run checkwps on all our themes
      */
     public function checkallthemes() {
+        $this->log("Running checkwps");
         $sql = "SELECT RowID, * FROM themes";
         $themes = $this->db->query($sql);
         $return = array();
@@ -175,6 +176,13 @@ class themesite {
     }
 
     public function changestatus($themeid, $newstatus, $oldstatus, $reason) {
+        $status_text = array('1' => 'Approved', '0' => 'hidden', '-1' => 'deleted');
+        $this->log(sprintf("Changing status of theme %d from %s to %s",
+            $themeid,
+            $status_text[$oldstatus],
+            $status_text[$newstatus]
+        );
+
         if ($newstatus == -1) {
             $theme = $this->db->query(sprintf("SELECT shortname, mainlcd FROM themes WHERE RowID='%d'", db::quote($themeid)))->next();
             $sql = sprintf("DELETE FROM themes WHERE RowID='%d'",
@@ -210,6 +218,8 @@ class themesite {
     }
 
     public function addtarget($shortname, $fullname, $mainlcd, $pic, $depth, $remotelcd = false) {    
+        $this->log(sprintf("Add new target %s", $fullname));
+
         $sql = sprintf("INSERT INTO targets
                         (shortname, fullname, mainlcd, pic, depth, remotelcd)
                         VALUES
@@ -329,7 +339,9 @@ END;
         );
         $result = $this->db->query($sql);
         $id = $result->insertid();
-        $check = $this->checkwps(sprintf("%s/%s/%s", config::datadir, $mainlcd, $zipfile['name']), $mainlcd, $remotelcd, true);
+        $check = $this->checkwps(sprintf("%s/%s/%s", config::datadir, $mainlcd, $zipfile['name']), $mainlcd, $remotelcd);
+        /* xxx: store these results */
+        $this->log(sprintf("Added theme %d (email: %s)", $id, $email));
         return $id;
     }
 
