@@ -200,7 +200,7 @@ END;
 
     public function addtheme($name, $shortname, $author, $email, $mainlcd, $remotelcd, $description, $zipfile, $sshot_wps, $sshot_menu) {
         $err = array();
-        return array("Skipping");
+        /* return array("Skipping upload"); */
 
         /* Create the destination dir */
         $destdir = sprintf("%s/%s/%s",
