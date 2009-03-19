@@ -28,7 +28,7 @@ class templater {
         /* Load and set up Smarty */
         require_once(sprintf("%s/Smarty.class.php", $smartydir));
         $s = new smarty();
-        $s->template_dir = sprintf("%s/templates", config::privdir);
+        $s->template_dir = sprintf("%s/templates", preconfig::privpath);
         $s->compile_dir = sprintf("%s/compiled", $s->template_dir);
         $s->cache_dir = sprintf("%s/cache", $s->template_dir);
         $s->caching = false;

@@ -20,30 +20,16 @@
  *
  ****************************************************************************/
 
-require_once('../private/config.inc.php');
+require_once(sprintf("%s/config.inc.php", preconfig::privpath));
 require_once('themesite.class.php');
 require_once('templater.class.php');
 
-/* temporary shit */
-/*
-unlink(config::dbfile);
-unlink(sprintf("%s/176x220/widecabbie/%s", config::datadir, 'widecabbie.zip'));
-unlink(sprintf("%s/176x220/widecabbie/%s", config::datadir, 'widecabbie-menu.png'));
-unlink(sprintf("%s/176x220/widecabbie/%s", config::datadir, 'widecabbie-wide.png'));
-rmdir(sprintf("%s/176x220/widecabbie", config::datadir));
-/* Delete the above */
-
-$site = new themesite(config::privdir .'/' . config::dbfile);
+$site = new themesite(preconfig::privpath .'/' . config::dbfile);
 $t = new templater(config::smartydir);
 $t->assign('datadir', config::datadir);
 $t->assign('root', config::path);
 $t->assign('hostname', config::hostname);
 $t->assign('maxuploadsize', config::maxzippedsize);
-
-/* More temporary shit */
-//$site->addtarget('e200', 'Sandisk Sansa E200', '176x220', 'e200-small.png', '16');
-//$site->addtarget('ipodnano', 'Apple Ipod Nano 1G', '176x132', 'ipodnano-small.png', '16');
-/* Delete this as well */
 
 $values = array();
 ?>

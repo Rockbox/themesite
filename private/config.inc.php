@@ -43,9 +43,6 @@ class config {
     // Location to store theme data. Relative to the path given above - must be web-accessible
     const datadir = "themes"; 
 
-    // Location of the private (not web-accessible) dir
-    const privdir = "../private";
-
     // Location of the db within the above dir. Don't make it web-accessible.
     const dbfile = "themes.db";
 
