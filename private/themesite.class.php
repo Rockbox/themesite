@@ -181,7 +181,7 @@ class themesite {
             $themeid,
             $status_text[$oldstatus],
             $status_text[$newstatus]
-        );
+        ));
 
         if ($newstatus == -1) {
             $theme = $this->db->query(sprintf("SELECT shortname, mainlcd FROM themes WHERE RowID='%d'", db::quote($themeid)))->next();
