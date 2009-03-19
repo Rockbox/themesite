@@ -177,14 +177,16 @@ class themesite {
 
     public function changestatus($themeid, $newstatus, $oldstatus, $reason) {
         $status_text = array('1' => 'Approved', '0' => 'hidden', '-1' => 'deleted');
-        $this->log(sprintf("Changing status of theme %d from %s to %s",
+        $this->log(sprintf("Changing status of theme %d from %s to %s - Reason: %s",
             $themeid,
             $status_text[$oldstatus],
-            $status_text[$newstatus]
+            $status_text[$newstatus],
+            $reason
         ));
+        $sql = sprintf("SELECT shortname, mainlcd, email, name, author FROM themes WHERE RowID='%d'", db::quote($themeid));
+        $theme = $this->db->query($sql)->next();
 
         if ($newstatus == -1) {
-            $theme = $this->db->query(sprintf("SELECT shortname, mainlcd FROM themes WHERE RowID='%d'", db::quote($themeid)))->next();
             $sql = sprintf("DELETE FROM themes WHERE RowID='%d'",
                 db::quote($themeid)
             );
@@ -203,17 +205,31 @@ class themesite {
             }
         }
         else {
-            $sql = sprintf("UPDATE themes SET approved='%d' WHERE RowID='%d'",
+            $sql = sprintf("UPDATE themes SET approved='%d', reason='%s' WHERE RowID='%d'",
                 db::quote($newstatus),
+                db::quote($reason),
                 db::quote($themeid)
             );
         }
         if ($oldstatus == 1 && $newstatus < 1) {
             // Send a mail to notify the user that his theme has been
-            // hidden/deleted
-            print("Yeah hi we deleted your themz lol");
+            // hidden/deleted. No reason to distinguish, since the result
+            // for him is the same.
+            $to = sprintf("%s <%s>", $theme['author'], $theme['email']);
+            $subject = sprintf("Your theme '%s' has been removed from %s", $theme['name'], config::hostname);
+            $msg = <<<END
+Your theme {$theme['name']} was removed from the Rockbox theme site. The
+following reason should explain why:
+
+----------
+{$reason}
+----------
+
+If you think this was a mistake, or disagree with the decision, contact the
+theme site admins in the Rockbox Forums or on IRC.
+END;
+            $this->send_mail($subject, $to, $msg);
         }
-        print("SQL: $sql<br />\n");
         $this->db->query($sql);
     }
 

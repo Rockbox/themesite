@@ -1,6 +1,4 @@
 SHORT TERM (needed before going live)
- - Implement deleting themes
- - Mail people when hiding/deleting their theme.
  - Store hidden/unverified .zip files in the private dir, with an option for
    admins to download them.
 MID TERM (add as soon as possible)
