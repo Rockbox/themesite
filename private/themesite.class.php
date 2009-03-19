@@ -238,6 +238,12 @@ class themesite {
         }
     }
 
+    private function send_mail($subject, $to, $msg) {
+        $msg = wordwrap($msg, 78);
+        $headers = 'From: themes@rockbox.org';
+        mail($to, $subject, $msg, $headers);
+    }
+
     public function validatetheme($zipfile) {
         $err = array();
         return $err;
@@ -264,11 +270,9 @@ Thank for your contributions
 The Rockbox Theme Site team.
 END;
         /* ' (this is here to keep my syntax hilighting happy) */
-        $msg = wordwrap($msg, 78);
         $subject = "Rockbox Theme Site email verification";
         $to = sprintf("%s <%s>", $author, $email);
-        $headers = 'From: themes@rockbox.org';
-        mail($to, $subject, $msg, $headers);
+        $this->send_mail($subject, $to, $msg);
     }
 
     public function verifyemail($token) {
