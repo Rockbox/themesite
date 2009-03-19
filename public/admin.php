@@ -65,6 +65,7 @@ else {
         $t->assign('themes', $themes);
         $t->assign('approved', $approved);
     }
+    /* Adding a target */
     elseif (isset($_REQUEST['addtarget'])) {
         $site->addtarget(
             $_REQUEST['shortname'],
@@ -76,11 +77,13 @@ else {
         );
         $t->assign('adminmsg', 'Target added');
     }
+    /* Run checkwps on all themes */
     elseif (isset($_REQUEST['runcheckwps'])) {
         $results = $site->checkallthemes();
         $template = 'checkthemes.tpl';
         $t->assign('checkwpsresults', $results);
     }
+    /* Or just show the front page */
     if (!isset($template)) {
         $t->assign('title', 'Admin');
         $t->assign('targets', $site->listtargets());

@@ -113,11 +113,13 @@ function checkuploadfiles(&$site, &$err) {
 
 if (isset($_REQUEST['author'])) {
     $err = array();
+    /* First we do some checking of the uploaded data */
     checkuploadfields($site, $err);
     checkuploadfiles($site, $err);
     if (count($err) > 0) {
         $t->assign('errors', $err);
     }
+    /* If that went wrong, go on and include the theme */
     else {
         /* 
          * At this stage, the theme has been validated, any possible errors

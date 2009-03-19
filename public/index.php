@@ -23,21 +23,22 @@
 require_once('preconfig.inc.php');
 
 /* Decide what to do */
+/* This currently doesn't exist - but might show more details about a theme */
 if (isset($_REQUEST['target']) && isset($_REQUEST['themename'])) {
     $site->showtheme($_REQUEST['target'], $_REQUEST['themename']);
 }
+/* Show all themes for a specific target */
 elseif (isset($_REQUEST['target'])) {
     $values['themes'] = $site->listthemes($_REQUEST['target']);
     $lcd = $site->target2lcd($_REQUEST['target']);
     $t->assign('mainlcd', $lcd['mainlcd']);
     $template = 'themelist.tpl';
 }
-elseif (isset($_REQUEST['theme'])) {
-    $site->showtheme($_REQUEST['theme']);
-}
+/* Just show the frontpage */
 else {
     $values['targets'] = $site->listtargets();
     $template = 'frontpage.tpl';
 }
+
 $t->render($template, $values);
 ?>
