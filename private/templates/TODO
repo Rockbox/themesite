@@ -1,9 +1,4 @@
 SHORT TERM (needed before going live)
- - Do checkwps on upload and by request (from cronjob or similar) (nearly done)
-   * Do checkwps on upload  -  DONE
-   * Do checkwps on all themes on demand  -  DONE
-   * Store results  -  DONE
-   * Write some scripts to help automate the creation of checkwps  -  MISSING
  - Implement deleting themes
  - Mail people when hiding/deleting their theme.
  - Store hidden/unverified .zip files in the private dir, with an option for
