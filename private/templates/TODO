@@ -3,7 +3,6 @@ SHORT TERM (needed before going live)
  - Mail people when hiding/deleting their theme.
  - Store hidden/unverified .zip files in the private dir, with an option for
    admins to download them.
- - Log goddamn everything!
 MID TERM (add as soon as possible)
  - Validate .cfg files
  - Make it possible to see .zip contents in the admin panel
