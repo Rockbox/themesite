@@ -1,4 +1,4 @@
-{include file="header.tpl" title="Themes for $mainlcd"}
+{include file="header.tpl" title="Themes for $mainlcd" rss="rss.php?target=`$smarty.request.target`" rsstitle="Themes for `$smarty.request.target`"}
 
 <h1>Themes for {$mainlcd}</h1>
 

@@ -3,6 +3,9 @@
 <head>
 <link rel="STYLESHEET" type="text/css" href="http://www.rockbox.org/style.css">
 <link rel="shortcut icon" href="http://www.rockbox.org/favicon.ico">
+{if $rss}
+<link href="{$rss}" type="application/rss+xml" rel="alternate" title="{$rsstitle}" />
+{/if}
 <title>Rockbox Themes - {$title}</title>
 <meta name="author" content="Rockbox Contributors">
 {literal}
