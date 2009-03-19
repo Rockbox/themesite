@@ -36,7 +36,7 @@ class db {
         else {
             $res = $this->query("SELECT COUNT(*) as count FROM sqlite_master WHERE type='table'");
             if ($res->next('count') === "0") {
-                $theme_table = <<<END
+                $checkwps_table = <<<END
 CREATE TABLE checkwps (
     themeid INTEGER,
     version_type TEXT,
@@ -44,7 +44,9 @@ CREATE TABLE checkwps (
     target TEXT,
     pass INTEGER
 );
+END;
 
+                $theme_table = <<<END
 CREATE TABLE themes (
     name TEXT,
     approved INTEGER,
@@ -79,6 +81,7 @@ CREATE TABLE targets (
 )
 END;
                 $this->query($target_table);
+                $this->query($checkwps_table);
                 $this->query($theme_table);
                 $this->query($admin_table);
             }
