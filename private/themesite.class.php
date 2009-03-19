@@ -506,6 +506,7 @@ END;
             if ($entry == '.' || $entry == '..') continue;
             $path = sprintf("%s/%s", $dir->path, $entry);
             if (is_dir($path)) {
+                chmod($path, 0700); // To make sure we're allowed to delete files
                 $this->rmdir_recursive($path);
             }
             else {
