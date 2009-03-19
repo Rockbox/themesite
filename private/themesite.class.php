@@ -52,6 +52,38 @@ class themesite {
         return $ret;
     }
 
+    /*
+     * Run checkwps on all our themes
+     */
+    public function checkallthemes() {
+        $sql = "SELECT RowID, * FROM themes";
+        $themes = $this->db->query($sql);
+        $return = array();
+        while ($theme = $themes->next()) {
+            $zipfile = sprintf("%s/%s/%s/%s",
+                config::datadir,
+                $theme['mainlcd'],
+                $theme['shortname'],
+                $theme['zipfile']
+            );
+            $result = $this->checkwps($zipfile, $theme['mainlcd'], $theme['remotelcd']);
+
+            /* Check if at least one check passed (for the summary) */
+            $passany = false;
+            foreach($result as $which => $targets) {
+                foreach($targets as $target => $result) {
+                    if ($result['pass']) $passany = true;
+                }
+            }
+            $return[] = array(
+                'theme' => $theme,
+                'result' => $result,
+                'summary' => array('theme' => $theme['name'], 'pass' => $passany)
+            );
+        }
+        return $return;
+    }
+
     public function adminlogin($user, $pass) {
         $sql = sprintf("SELECT COUNT(*) as count FROM admins WHERE name='%s' AND pass='%s'",
             db::quote($user),

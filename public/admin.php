@@ -76,7 +76,11 @@ else {
         );
         $t->assign('adminmsg', 'Target added');
     }
-
+    elseif (isset($_REQUEST['runcheckwps'])) {
+        $results = $site->checkallthemes();
+        $template = 'checkthemes.tpl';
+        $t->assign('checkwpsresults', $results);
+    }
     if (!isset($template)) {
         $t->assign('title', 'Admin');
         $t->assign('targets', $site->listtargets());
