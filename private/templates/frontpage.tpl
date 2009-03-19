@@ -35,7 +35,7 @@
     </tr>
     <tr>
         <td>Shortname</td>
-        <td><input type="text" name="shortname" /></td><td>(e.g. ipodvideo)</td>
+        <td><input type="text" name="shortname" /></td><td>(e.g. ipodvideo - must match checkwps usage)</td>
     </tr>
     <tr>
         <td>Main LCD resolution</td>
