@@ -61,21 +61,28 @@ class themesite {
         return $result['count'] == 1 ? true : false;
     }
 
-    public function listthemes($target, $orderby = 'timestamp DESC', $approved = 'approved') {
+    public function listthemes($target, $orderby = 'timestamp DESC', $approved = 'approved', $onlyverified = true) {
         $ret = array();
         switch($approved) {
             case 'any':
                 $approved_clause = "";
                 break;
             case 'hidden':
-                $approved_clause = "AND th.approved = 0";
+                $approved_clause = " AND th.approved = 0 ";
                 break;
             case 'approved':
             default:
-                $approved_clause = "AND th.approved = 1";
+                $approved_clause = " AND th.approved = 1 ";
                 break;
         }
-        $sql = sprintf("SELECT name, approved, reason, description, th.RowID as id, th.shortname AS shortname, zipfile, sshot_wps, sshot_menu FROM themes th, targets ta WHERE th.emailverification=1 %s AND th.mainlcd=ta.mainlcd and ta.shortname='%s' AND (ta.remotelcd IS NULL OR ta.remotelcd=th.remotelcd) ORDER BY %s",
+        if ($onlyverified == true) {
+            $verified = " AND th.emailverification = 1 ";
+        }
+        else {
+            $verified = "";
+        }
+        $sql = sprintf("SELECT name, approved, reason, description, th.RowID as id, th.shortname AS shortname, zipfile, sshot_wps, sshot_menu, emailverification = 1 as verified FROM themes th, targets ta WHERE 1 %s %s AND th.mainlcd=ta.mainlcd and ta.shortname='%s' AND (ta.remotelcd IS NULL OR ta.remotelcd=th.remotelcd) ORDER BY %s",
+            $verified,
             $approved_clause,
             db::quote($target),
             $orderby

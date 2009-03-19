@@ -1,6 +1,5 @@
 SHORT TERM
  - Do checkwps on upload and by request (from cronjob or similar) (nearly done)
- - Show unverified uploads in the admin panel
  - Implement deleting themes
  - Mail people when hiding/deleting their theme.
  - Store hidden/unverified .zip files in the private dir, with an option for
