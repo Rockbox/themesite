@@ -80,10 +80,19 @@ CREATE TABLE targets (
     depth INTEGER
 )
 END;
+                $log_table = <<<END
+CREATE TABLE log (
+    time TEXT,
+    ip TEXT,
+    admin TEXT,
+    msg TEXT
+)
+END;
                 $this->query($target_table);
                 $this->query($checkwps_table);
                 $this->query($theme_table);
                 $this->query($admin_table);
+                $this->query($log_table);
             }
         }
     }

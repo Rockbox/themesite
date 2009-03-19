@@ -38,6 +38,20 @@ class themesite {
         }
     }
 
+    /*
+     * Log a message to the log table. Time, IP and admin user (if any)
+     * is automaticly added.
+     */
+    private function log($message) {
+        $sql_f = "INSERT INTO log (time, ip, admin, msg) VALUES (datetime('now'), '%s', '%s', '%s')";
+        $sql = sprintf($sql_f,
+            $_SERVER['REMOTE_ADDR'],
+            isset($_SESSION['user']) ? db::quote($_SESSION['user']) : '',
+            db::quote($message)
+        );
+        $this->db->query($sql);
+    }
+
     private function targetlist($orderby) {
         $sql = "SELECT shortname, fullname, pic, mainlcd, depth, remotelcd FROM targets ORDER BY " . $orderby;
         return $this->db->query($sql);
