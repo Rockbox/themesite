@@ -80,6 +80,9 @@ loop=$smarty.section.tr.index+$cols}
 <pre>
 {include file="TODO"}
 <pre>
+{else}
+<h2>Upload your own theme</h2>
+<p>Do you have you a theme that is not listed on this site? <a href="upload.php">Click Here to submit it for inclusion.</a></p> 
 {/if}
 
 {include file="footer.tpl"}

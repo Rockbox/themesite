@@ -11,7 +11,8 @@ Downloads
 </div>
 <img width=16 height=16 src='http://www.rockbox.org/silk_icons/package.png' align='top'> <a class="menulink" href="http://www.rockbox.org/download/">releases</a><br>
 <img width=16 height=16 src='http://www.rockbox.org/silk_icons/bomb.png' align='top'> <a class="menulink" href="http://build.rockbox.org">current build</a><br>
-<img width=16 height=16 src='http://www.rockbox.org/silk_icons/style.png' align='top'> <a class="menulink" href="http://www.rockbox.org/twiki/bin/view/Main/RockboxExtras">extras</a>
+<img width=16 height=16 src='http://www.rockbox.org/silk_icons/style.png' align='top'> <a class="menulink" href="http://www.rockbox.org/twiki/bin/view/Main/RockboxExtras">extras</a><br>
+<img width=16 height=16 src='http://www.rockbox.org/silk_icons/palette.png' align='top'> <a class="menulink" href="index.php">themes</a><br>
 <div class="submenu">
 Documentation
 
@@ -32,13 +33,6 @@ Tracker
 </div>
 <img width=16 height=16 src='http://www.rockbox.org/silk_icons/bug.png' align='top'> <a class="menulink" href="http://www.rockbox.org/tracker/index.php?type=2">bugs</a><br>
 <img width=16 height=16 src='http://www.rockbox.org/silk_icons/brick.png' align='top'> <a class="menulink" href="http://www.rockbox.org/tracker/index.php?type=4">patches</a><br>
-
-<div class="submenu">
-Themes
-</div>
-<a class="menulink" href="index.php">Front page</a><br />
-<a class="menulink" href="upload.php">Upload a theme</a><br />
-<a class="menulink" href="admin.php">Admin</a><br />
 
 <div class="submenu">
 Search
