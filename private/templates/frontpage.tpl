@@ -8,24 +8,31 @@
 <p>Pick a device below to manage themes for that target/screen size</p>
 {else}
 <h1>Rockbox themes</h1>
-<p>Pick a device below to see themes for that target/screen size</p>
+<p>Identify your player</p>
 {/if}
 
 {assign var="cols" value=#targetcolumns#}
-<table>
+<table class="rockbox">
   {section name=tr loop=$targets step=$cols}
+  {* First print a row with player names *}
   <tr>
     {section name=td start=$smarty.section.tr.index
 loop=$smarty.section.tr.index+$cols}
+    {if $targets[td]}
+    <th align="center" width="110">{$targets[td].fullname}</th>
+    {/if}
+    {/section}
+  </tr>
+  {* Then a row with "the rest" *}
+  <tr>
+    {section name=td start=$smarty.section.tr.index loop=$smarty.section.tr.index+$cols}
     {if $targets[td]}
     <td align="center">
         <a href="{$smarty.server.SCRIPT_NAME}?target={$targets[td].shortname}">
         <img src="http://www.rockbox.org/playerpics/{$targets[td].pic}" title="{$targets[td].fullname}" />
         </a><br />
-        <small>LCD: {$targets[td].mainlcd}x{$targets[td].depth}</small>
+        <small>LCD: {$targets[td].mainlcd}</small>
     </td>
-    {else}
-    <td></td>
     {/if}
     {/section}
   </tr>
