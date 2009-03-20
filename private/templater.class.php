@@ -40,7 +40,16 @@ class templater {
             realpath($s->template_dir)
         );
         $s->config_load(realpath(sprintf("%s/themes.cfg", $s->template_dir)));
+        $s->register_modifier('siprefix', array(&$this, 'siprefix'));
         $this->s = $s;
+    }
+
+    public function siprefix($value, $base2 = false) {
+        $prefixes = explode(' ', ' K M G T P');
+        $divisor = $base2 ? 1024 : 1000;
+        for ($i = 0; $value > $divisor; $i++)
+            $value /= $divisor;
+        return sprintf("%0.2f%s%s", $value, $prefixes[$i], $base2 ? 'i' : '');
     }
 
     public function assign($name, $value) {

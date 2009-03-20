@@ -141,7 +141,7 @@ class themesite {
         else {
             $verified = "";
         }
-        $sql = sprintf("SELECT name, timestamp, mainlcd, approved, reason, description, RowID as id, shortname, zipfile, sshot_wps, sshot_menu, emailverification = 1 as verified FROM themes WHERE 1 %s %s AND mainlcd='%s' ORDER BY %s",
+        $sql = sprintf("SELECT name, author, timestamp, mainlcd, approved, reason, description, RowID as id, shortname, zipfile, sshot_wps, sshot_menu, emailverification = 1 as verified FROM themes WHERE 1 %s %s AND mainlcd='%s' ORDER BY %s",
             $verified,
             $approved_clause,
             db::quote($mainlcd),
