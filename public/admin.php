@@ -24,10 +24,10 @@ require_once('preconfig.inc.php');
 session_start();
 
 function changestatuses(&$site) {
-    foreach($_REQUEST['id'] as $n => $id) {
-        $newstatus = $_REQUEST['status'][$n];
-        $oldstatus = $_REQUEST['prevstatus'][$n];
-        $reason    = $_REQUEST['reason'][$n];
+    foreach($_REQUEST['prevstatus'] as $id => $prevstatus) {
+        $newstatus = $_REQUEST['status'][$id];
+        $oldstatus = $_REQUEST['prevstatus'][$id];
+        $reason    = $_REQUEST['reason'][$id];
         if ($oldstatus != $newstatus) {
             $site->changestatus($id, $newstatus, $oldstatus, $reason);
         }
