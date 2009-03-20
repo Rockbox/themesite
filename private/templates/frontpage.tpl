@@ -1,7 +1,7 @@
 {* This template is also used for the admin frontpage *}
 
 {if !$title}{assign var="title" value="Frontpage"}{/if}
-{include file="header.tpl" title=$title}
+{include file="header.tpl" title=$title rss="rss.php"}
 
 {if $admin}
 <h1>Admin area</h1>

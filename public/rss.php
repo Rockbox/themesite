@@ -23,7 +23,12 @@
 require_once('preconfig.inc.php');
 
 header("Content-type: application/xhtml+xml");
-$lcd = $site->target2lcd($_REQUEST['target']);
-$res = $site->listthemes($lcd['mainlcd']);
+if (isset($_REQUEST['target'])) {
+    $lcd = $site->target2lcd($_REQUEST['target']);
+    $res = $site->listthemes($lcd['mainlcd']);
+}
+else {
+    $res = $site->listthemes();
+}
 $t->render('rss.tpl', array('themes' => $res));
 ?>

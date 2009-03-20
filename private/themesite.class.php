@@ -121,7 +121,7 @@ class themesite {
         return $result['count'] == 1 ? true : false;
     }
 
-    public function listthemes($mainlcd, $orderby = 'timestamp DESC', $approved = 'approved', $onlyverified = true) {
+    public function listthemes($mainlcd = false, $orderby = 'timestamp DESC', $approved = 'approved', $onlyverified = true) {
         $ret = array();
         switch($approved) {
             case 'any':
@@ -158,7 +158,7 @@ class themesite {
             ",
             $verified,
             $approved_clause,
-            db::quote($mainlcd),
+            $mainlcd === false ? "' or '1'='1" : db::quote($mainlcd), /* SQL injection on purpose! */
             $orderby
         );
         $themes = $this->db->query($sql);
