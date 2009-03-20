@@ -32,12 +32,14 @@ class templater {
         $s->compile_dir = sprintf("%s/compiled", $s->template_dir);
         $s->cache_dir = sprintf("%s/cache", $s->template_dir);
         $s->caching = false;
-        $s->debugging = false;
+        $s->debugging = true;
         $s->security = true;
         $s->security_settings['IF_FUNCS'] = array('array_key_exists', 'isset', 'is_array', 'count');
         $s->secure_dir = array(
-            config::datadir
+            realpath(config::datadir),
+            realpath($s->template_dir)
         );
+        $s->config_load(realpath(sprintf("%s/themes.cfg", $s->template_dir)));
         $this->s = $s;
     }
 

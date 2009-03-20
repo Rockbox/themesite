@@ -12,13 +12,20 @@
 {/if}
 
 <table>
-{section name=mysec loop=$targets}
+{section name=i loop=$targets}
+  {math assign="col" equation="x % y" x=$smarty.section.i.rownum y=#targetcolumns#}
+  {if $col == 0}
+  <tr>
+  {/if}
     <td align="center">
-        <a href="{$smarty.server.SCRIPT_NAME}?target={$targets[mysec].shortname}">
-        <img src="http://www.rockbox.org/playerpics/{$targets[mysec].pic}" title="{$targets[mysec].fullname}" />
+        <a href="{$smarty.server.SCRIPT_NAME}?target={$targets[i].shortname}">
+        <img src="http://www.rockbox.org/playerpics/{$targets[i].pic}" title="{$targets[i].fullname}" />
         </a><br />
-        <small>LCD: {$targets[mysec].mainlcd}x{$targets[mysec].depth}</small>
+        <small>LCD: {$targets[i].mainlcd}x{$targets[i].depth}</small>
     </td>
+  {if $col == $lastcol || $smarty.section.i.index_last }
+  </tr>
+  {/if}
 {/section}
 </table>
 
@@ -59,7 +66,6 @@
     </tr>
 </table>
 </form>
-{else}
 <h2>TODO list</h2>
 <pre>
 {include file="TODO"}
