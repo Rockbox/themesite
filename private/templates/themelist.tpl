@@ -35,6 +35,12 @@ loop=$smarty.section.tr.index+$cols}
     &nbsp;{$themes[td].author}<br />
     <strong>Description:</strong><br />  
     &nbsp;{$themes[td].description}<br />
+    {if $themes[td].current_pass}
+    <strong>Works with current build</strong><br />
+    {/if}
+    {if $themes[td].release_pass}
+    <strong>Works with release {$themes[td].release_version}</strong><br />
+    {/if}
     </small>
     </td>
     {/if}

@@ -141,7 +141,21 @@ class themesite {
         else {
             $verified = "";
         }
-        $sql = sprintf("SELECT name, author, timestamp, mainlcd, approved, reason, description, RowID as id, shortname, zipfile, sshot_wps, sshot_menu, emailverification = 1 as verified FROM themes WHERE 1 %s %s AND mainlcd='%s' ORDER BY %s",
+        $sql = sprintf("
+            SELECT
+            name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu,
+            emailverification = 1 as verified,
+            themes.RowId as id,
+            c.version_number AS current_version,
+            c.pass AS current_pass,
+            r.version_number as release_version,
+            r.pass as release_pass
+            FROM themes
+            LEFT OUTER JOIN checkwps c ON (themes.rowid=c.themeid and c.version_type='current')
+            LEFT OUTER JOIN checkwps r ON (themes.rowid=r.themeid and r.version_type='release')
+            WHERE 1 %s %s AND mainlcd='%s'
+            ORDER BY %s
+            ",
             $verified,
             $approved_clause,
             db::quote($mainlcd),
