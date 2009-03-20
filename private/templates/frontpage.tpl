@@ -11,22 +11,25 @@
 <p>Pick a device below to see themes for that target/screen size</p>
 {/if}
 
+{assign var="cols" value=#targetcolumns#}
 <table>
-{section name=i loop=$targets}
-  {math assign="col" equation="x % y" x=$smarty.section.i.rownum y=#targetcolumns#}
-  {if $col == 0}
+  {section name=tr loop=$targets step=$cols}
   <tr>
-  {/if}
+    {section name=td start=$smarty.section.tr.index
+loop=$smarty.section.tr.index+$cols}
+    {if $targets[td]}
     <td align="center">
-        <a href="{$smarty.server.SCRIPT_NAME}?target={$targets[i].shortname}">
-        <img src="http://www.rockbox.org/playerpics/{$targets[i].pic}" title="{$targets[i].fullname}" />
+        <a href="{$smarty.server.SCRIPT_NAME}?target={$targets[td].shortname}">
+        <img src="http://www.rockbox.org/playerpics/{$targets[td].pic}" title="{$targets[td].fullname}" />
         </a><br />
-        <small>LCD: {$targets[i].mainlcd}x{$targets[i].depth}</small>
+        <small>LCD: {$targets[td].mainlcd}x{$targets[td].depth}</small>
     </td>
-  {if $col == $lastcol || $smarty.section.i.index_last }
+    {else}
+    <td></td>
+    {/if}
+    {/section}
   </tr>
-  {/if}
-{/section}
+  {/section}
 </table>
 
 {if $admin}
@@ -73,4 +76,3 @@
 {/if}
 
 {include file="footer.tpl"}
-
