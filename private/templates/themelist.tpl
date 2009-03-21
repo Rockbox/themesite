@@ -1,6 +1,9 @@
-{include file="header.tpl" title="Themes for $mainlcd" rss="rss.php?target=`$smarty.request.target`" rsstitle="Themes for `$smarty.request.target`"}
+{assign var="self" value="Themes for $mainlcd"}
+{assign var="parent" value="index.php|Frontpage"}
+{include file="header.tpl" title=$self rss="rss.php?target=`$smarty.request.target`" rsstitle="Themes for `$smarty.request.target`"}
 
 <h1>Themes for {$mainlcd}</h1>
+{include file="breadcrumbs.tpl"}
 
 {if count($themes) == 0}
 <p>No themes uploaded yet for this screen size</p>

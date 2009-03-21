@@ -1,6 +1,9 @@
-{include file="header.tpl" title="Admin - handle themes for $mainlcd"}
+{assign var="self" value="handle themes for $mainlcd"}
+{assign var="parent" value="admin.php|Admin frontpage"}
+{include file="header.tpl" title="Admin - $self"}
 
-<h1>Manage themes for {$mainlcd}</h1>
+<h1>{$self|capitalize}</h1>
+{include file="breadcrumbs.tpl"}
    
    <a href="{$smarty.server.SCRIPT_NAME}?target={$smarty.request.target}&amp;approved=any">Show{if $approved=="any"}ing{/if} all</a>
  | <a href="{$smarty.server.SCRIPT_NAME}?target={$smarty.request.target}&amp;approved=approved">Show{if $approved=="approved"}ing{/if} approved</a>

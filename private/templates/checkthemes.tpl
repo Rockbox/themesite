@@ -1,6 +1,10 @@
-{include file="header.tpl" title="Check themes"}
+{assign var="parent" value="admin.php|Admin frontpage"}
+{assign var="self" value="Check themes"}
+{include file="header.tpl" title="Admin - $self"}
 
 <h1>Checking all themes</h1>
+
+{include file="breadcrumbs.tpl"}
 
 {section name=i loop=$checkwpsresults}
 {if $checkwpsresults[i].summary.pass}

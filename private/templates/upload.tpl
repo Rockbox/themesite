@@ -1,6 +1,9 @@
-{include file="header.tpl" title="Upload a theme"}
+{assign var="self" value="Upload a theme"}
+{assign var="parent" value="index.php|Frontpage"}
+{include file="header.tpl" title=$self}
 
-<h1>Rockbox Themes - Upload a theme</h1>
+<h1>{$self}</h1>
+{include file="breadcrumbs.tpl"}
 
 <h2>Before you start</h2>
 
