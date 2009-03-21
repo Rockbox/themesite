@@ -15,7 +15,7 @@
 <table class="rockbox">
     <tr>
         <th>Screenshot</th>
-        <th>Name</th>
+        <th>Details</th>
         <th>Status</th>
         <th>Removal reason (will be mailed)</th>
     </tr>
@@ -23,13 +23,29 @@
     {assign var='id' value=$themes[i].id}
     <tr>
         <td>{html_image file="`$datadir`/`$mainlcd`/`$themes[i].shortname`/`$themes[i].sshot_wps`" href="`$datadir`/`$mainlcd`/`$themes[i].shortname`/`$themes[i].zipfile`"}</td>
-        <td>{$themes[i].name}</td>
         <td>
-            <!-- <input type="hidden" name="id[]" value="{$themes[i].id}" /> -->
+            <strong>{$themes[i].name}</strong>
+            <p><small>
+            <strong>Author:</strong> <a href="mailto:{$themes[i].email|escape:'html'}">{$themes[i].author|escape:'html'}</a><br />
+            {$themes[i].description|escape:'html'}
+            {if $themes[i].current_pass}
+            <br /><strong>Works with <span title="$themes[i].current_version}">current build</span></strong>
+            {/if}
+            {if $themes[i].release_pass}
+            <br /><strong>Works with release {$themes[i].release_version}</strong>
+            {/if}
+            </small></p>
+        </td>
+        <td>
             <input type="hidden" name="prevstatus[{$id}]" value="{$themes[i].approved}" />
-            Approved <input type="radio" name="status[{$id}]" value="1" {if $themes[i].approved == 1}checked="checked" {/if}/><br />
-            Hidden <input type="radio" name="status[{$id}]" value="0" {if $themes[i].approved == 0}checked="checked" {/if}/><br />
-            Delete <input type="radio" name="status[{$id}]" value="-1" />
+            <label for="approved[{$id}]">Approved</label>
+            <input type="radio" id="approved[{$id}]" name="status[{$id}]" value="1" {if $themes[i].approved == 1}checked="checked" {/if}/><br />
+
+            <label for="hidden[{$id}]">Hidden</label>
+            <input type="radio" id="hidden[{$id}]" name="status[{$id}]" value="0" {if $themes[i].approved == 0}checked="checked" {/if}/><br />
+            
+            <label for="delete[{$id}]">Delete</label>
+            <input type="radio" id="delete[{$id}]" name="status[{$id}]" value="-1" />
         </td>
         <td>
             <textarea rows="10" cols="40" name="reason[{$id}]">{$themes[i].reason|escape:'html'}</textarea>
