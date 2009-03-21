@@ -16,7 +16,7 @@
     {section name=td start=$smarty.section.tr.index
 loop=$smarty.section.tr.index+$cols}
     {if $themes[td]}
-    <th align="center" width="110">{$themes[td].name}</th>
+    <th align="center" width="110">{$themes[td].name|escape:'html'}</th>
     {/if}
     {/section}
   </tr>
@@ -32,9 +32,9 @@ loop=$smarty.section.tr.index+$cols}
     </p>
     <small>
     <strong>Submitter:</strong><br />  
-    &nbsp;{$themes[td].author}<br />
+    &nbsp;{$themes[td].author|escape:'html'}<br />
     <strong>Description:</strong><br />  
-    &nbsp;{$themes[td].description}<br />
+    &nbsp;{$themes[td].description|escape:'html'}<br />
     {if $themes[td].current_pass}
     <strong>Works with current build</strong><br />
     {/if}

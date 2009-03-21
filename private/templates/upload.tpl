@@ -33,7 +33,7 @@ This is very unlikely to be your fault.
 
     <tr>
         <td>Theme name:</td>
-        <td><input type="text" name="themename" size="32" value="{$smarty.post.themename}" /></td>
+        <td><input type="text" name="themename" size="32" value="{$smarty.post.themename|escape:'html'}" /></td>
         {if is_array($errors) && isset($errors.themename)}<td class='error'>{$errors.themename}</td>{/if}
     </tr>
 
@@ -44,20 +44,20 @@ This is very unlikely to be your fault.
 
     <tr>
     <td><b>Your real name</b><br /><small><a href="http://www.rockbox.org/wiki/WhyRealNames">Why do I need to provide this?</a></td>
-    <td><input type="text" name="author" size="32" value="{$smarty.post.author}" /></td>
+    <td><input type="text" name="author" size="32" value="{$smarty.post.author|escape:'html'}" /></td>
     {if is_array($errors) && isset($errors.author)}<td class='error'>{$errors.author}</td>{/if}
     </tr>
 
     <tr>
     <td><b>Your email address</b><br /><small>Not displayed publically</small></td>
-    <td><input type="text" name="email" size="32" value="{$smarty.post.email}" /></td>
+    <td><input type="text" name="email" size="32" value="{$smarty.post.email|escape:'html'}" /></td>
     {if is_array($errors) && isset($errors.email)}<td class='error'>{$errors.email}</td>{/if}
     </tr>
 
     <tr>
     <td valign="top"><b>Description</b><br /><small>If your theme uses images from other<br />themes, please include the name(s)<br /> and author(s) of those themes<br />here</small></td>
     <td>
-    <textarea cols="60" rows="6" name="description">{$smarty.post.description}</textarea></td>
+    <textarea cols="60" rows="6" name="description">{$smarty.post.description|escape:'html'}</textarea></td>
     </tr>
     </table>
 

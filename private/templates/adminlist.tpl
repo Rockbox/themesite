@@ -32,7 +32,7 @@
             Delete <input type="radio" name="status[{$id}]" value="-1" />
         </td>
         <td>
-            <textarea rows="10" cols="40" name="reason[{$id}]">{$themes[i].reason}</textarea>
+            <textarea rows="10" cols="40" name="reason[{$id}]">{$themes[i].reason|escape:'html'}</textarea>
         </td>
     </tr>
 {/section}
