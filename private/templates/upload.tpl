@@ -2,6 +2,11 @@
 
 <h1>Rockbox Themes - Upload a theme</h1>
 
+<h2>Before you start</h2>
+
+<p>Make sure you have read and understood the <a
+href="http://www.rockbox.org/wiki/ThemeGuidelines">theme guidelines</a></p>
+
 {if is_array($general_errors)}
 <p class="error">
 Some internal internal error{if count($general_errors) != 0}s{/if} occured.
