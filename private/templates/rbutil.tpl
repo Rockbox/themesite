@@ -5,7 +5,7 @@ description="{$errmsg}"
 {/if}
 
 [status]
-msg="The theme site is in beta and still doesn't contain many themes. Please check back later for more themes."
+msg="The theme site is in beta and still doesn't contain many themes. If you don't find a theme you like, please try again later."
 
 {section name=i loop=$themes}
 [{$themes[i].shortname}]
