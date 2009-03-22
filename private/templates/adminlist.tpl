@@ -30,6 +30,9 @@
             <strong>{$themes[i].name}</strong>
             <p><small>
             <strong>Author:</strong> <a href="mailto:{$themes[i].email|escape:'html'}">{$themes[i].author|escape:'html'}</a><br />
+            {if $themes[i].verified == 1}
+            <strong style='color:red'>The author has not verified this theme</strong><br />
+            {/if}
             {$themes[i].description|escape:'html'}
             {if $themes[i].current_pass}
             <br /><strong>Works with <span title="$themes[i].current_version}">current build</span></strong>
@@ -37,6 +40,7 @@
             {if $themes[i].release_pass}
             <br /><strong>Works with release {$themes[i].release_version}</strong>
             {/if}
+            <br /><a href="admin.php?edittheme={$themes[i].id}&amp;parenttarget={$smarty.request.target}">Edit theme</a>
             </small></p>
         </td>
         <td>

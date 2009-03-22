@@ -121,6 +121,40 @@ class themesite {
         return $result['count'] == 1 ? true : false;
     }
 
+    public function themedetails($id) {
+        $sql = sprintf("
+            SELECT
+            name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu, email,
+            emailverification = 1 as verified,
+            themes.RowId as id,
+            c.version_number AS current_version,
+            c.pass AS current_pass,
+            r.version_number as release_version,
+            r.pass as release_pass
+            FROM themes
+            LEFT OUTER JOIN checkwps c ON (themes.rowid=c.themeid and c.version_type='current')
+            LEFT OUTER JOIN checkwps r ON (themes.rowid=r.themeid and r.version_type='release')
+            WHERE id=%d",
+            db::quote($id)
+        );
+        $theme = $this->db->query($sql)->next();
+        $zipfile = sprintf("%s/%s/%s/%s",
+            $theme['approved'] == 1 ? $this->themedir_public : $this->themedir_private,
+            $theme['mainlcd'],
+            $theme['shortname'],
+            $theme['zipfile']
+        );
+        $zip = zip_open($zipfile);
+        $files = array();
+        while ($ze = zip_read($zip)) {
+            $filename = zip_entry_name($ze);
+            $files[] = $filename;
+        }
+        $theme['files'] = $files;
+
+        return $theme;
+    }
+
     public function listthemes($mainlcd = false, $orderby = 'timestamp DESC', $approved = 'approved', $onlyverified = true) {
         $ret = array();
         switch($approved) {
@@ -396,6 +430,18 @@ END;
         /* xxx: store these results */
         $this->log(sprintf("Added theme %d (email: %s)", $id, $email));
         return $id;
+    }
+
+    public function updatetheme($id, $name, $mainlcd, $author, $email, $description) {
+        $sql = sprintf("UPDATE themes SET name='%s', mainlcd='%s', author='%s', email='%s', description='%s' WHERE RowID=%d",
+            db::quote($name),
+            db::quote($mainlcd),
+            db::quote($author),
+            db::quote($email),
+            db::quote($description),
+            db::quote($id)
+        );
+        $this->db->query($sql);
     }
 
     /*

@@ -65,6 +65,29 @@ else {
         $t->assign('themes', $themes);
         $t->assign('approved', $approved);
     }
+    /* Show a theme's details, possibly updating it as result of an admin
+     * submitting changes */
+    elseif (isset($_REQUEST['edittheme'])) {
+        /* Update the theme */
+        if (isset($_REQUEST['themename'])) {
+            $site->updatetheme(
+                $_REQUEST['edittheme'],
+                $_REQUEST['themename'],
+                $_REQUEST['mainlcd'],
+                $_REQUEST['author'],
+                $_REQUEST['email'],
+                $_REQUEST['description']
+            );
+        }
+        $theme = $site->themedetails($_REQUEST['edittheme']);
+        $targets = array();
+        foreach($site->listtargets() as $target) {
+            $targets[$target['shortname']] = $target['fullname'];
+        }
+        $t->assign('targets', $targets);
+        $t->assign('theme', $theme);
+        $template = 'edittheme.tpl';
+    }
     /* Adding a target */
     elseif (isset($_REQUEST['addtarget'])) {
         $site->addtarget(
