@@ -48,7 +48,7 @@ class themesite {
     }
 
     private function targetlist($orderby) {
-        $sql = "SELECT shortname, fullname, pic, mainlcd, depth, remotelcd FROM targets ORDER BY " . $orderby;
+        $sql = "SELECT targets.shortname as shortname, fullname, pic, targets.mainlcd as mainlcd, depth, targets.remotelcd as remotelcd, COUNT(themes.name) AS numthemes FROM targets LEFT OUTER JOIN themes ON targets.mainlcd==themes.mainlcd GROUP BY targets.shortname||targets.mainlcd ORDER BY " . $orderby;
         return $this->db->query($sql);
     }
 

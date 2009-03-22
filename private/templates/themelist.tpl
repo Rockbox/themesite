@@ -39,7 +39,7 @@ loop=$smarty.section.tr.index+$cols}
     <strong>Description:</strong><br />  
     &nbsp;{$themes[td].description|escape:'html'}<br />
     {if $themes[td].current_pass}
-    <strong>Works with current build</strong><br />
+    <strong>Works with <span title="{$themes[td].current_version}">current build</span></strong><br />
     {/if}
     {if $themes[td].release_pass}
     <strong>Works with release {$themes[td].release_version}</strong><br />
