@@ -4,6 +4,9 @@ code={$errno}
 description="{$errmsg}"
 {/if}
 
+[status]
+msg="The theme site is in beta and still doesn't contain many themes. Check back later"
+
 {section name=i loop=$themes}
 [{$themes[i].shortname}]
 name="{$themes[i].name|escape:'html'}"
@@ -17,5 +20,7 @@ archive="{$root}{$datadir}/{$themes[i].mainlcd}/{$themes[i].shortname}/{$themes[
 author="{$themes[i].author|escape:'html'}"
 version="{$themes[i].timestamp}"
 about="{$themes[i].description|escape:'html'}"
+pass_release="{$themes[i].release_version}"
+pass_current="{$themes[i].current_version}"
 
 {/section}
