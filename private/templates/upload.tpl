@@ -35,13 +35,13 @@ This is very unlikely to be your fault.
     <table class="rockbox">
 
     <tr>
-        <td>Theme name:</td>
+        <td><b>Theme name</b></td>
         <td><input type="text" name="themename" size="32" value="{$smarty.post.themename|escape:'html'}" /></td>
         {if is_array($errors) && isset($errors.themename)}<td class='error'>{$errors.themename}</td>{/if}
     </tr>
 
     <tr>
-        <td><b>Target device</td>
+        <td><b>Target device</b></td>
         <td>{html_options name="target" options=$targets selected=$smarty.post.target}</td>
     </tr>
 

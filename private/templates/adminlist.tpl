@@ -30,7 +30,7 @@
             <strong>{$themes[i].name}</strong>
             <p><small>
             <strong>Author:</strong> <a href="mailto:{$themes[i].email|escape:'html'}">{$themes[i].author|escape:'html'}</a><br />
-            {if $themes[i].verified == 1}
+            {if $themes[i].verified == 0}
             <strong style='color:red'>The author has not verified this theme</strong><br />
             {/if}
             {$themes[i].description|escape:'html'}
