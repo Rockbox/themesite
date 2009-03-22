@@ -1,8 +1,6 @@
 SHORT TERM (needed before going live)
 MID TERM (add as soon as possible)
  - Validate .cfg files
- - Make it possible to see .zip contents in the admin panel
- - Edit themes option for admins
  - Add a target detail editor
  - Add a rollover switch to the menu picture (if available)
 LONG TERM (add later)
