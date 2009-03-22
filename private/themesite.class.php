@@ -64,9 +64,12 @@ class themesite {
     /*
      * Run checkwps on all our themes
      */
-    public function checkallthemes() {
+    public function checkallthemes($id = 0) {
         $this->log("Running checkwps");
-        $sql = "SELECT RowID, * FROM themes";
+        $sql = sprintf("SELECT RowID, * FROM themes WHERE RowID=%d OR %s",
+            $id,
+            $id === 0 ? 1 : 0
+        );
         $themes = $this->db->query($sql);
         $return = array();
         while ($theme = $themes->next()) {
@@ -427,7 +430,8 @@ END;
         $result = $this->db->query($sql);
         $id = $result->insertid();
         $check = $this->checkwps(sprintf("%s/%s/%s", config::datadir, $mainlcd, $zipfile['name']), $mainlcd, $remotelcd);
-        /* xxx: store these results */
+        /* Yes, this runs checkwps *again*, but it keeps things nicely separated */ 
+        $this->checkallthemes($id);
         $this->log(sprintf("Added theme %d (email: %s)", $id, $email));
         return $id;
     }
