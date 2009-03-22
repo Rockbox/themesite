@@ -40,6 +40,7 @@ loop=$smarty.section.tr.index+$cols}
 </table>
 
 {if $admin}
+<p><a href="{$smarty.server.SCRIPT_NAME}?runcheckwps">Run checkwps on all themes</a></p>
 <hr />
 {if $adminmsg}<p>{$adminmsg}</p>{/if}
 <h2>Add a missing target</h2>
