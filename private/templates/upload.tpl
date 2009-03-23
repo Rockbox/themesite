@@ -81,7 +81,7 @@ This is very unlikely to be your fault.
       </tr>
       <tr>
         <td><b>WPS screenshot</b><br /></td>
-        <td><input type="file" name="sshot_wps" size="60" /><br /><small>The dimensions should be the same as the LCD size</small></td>
+        <td><input type="file" name="sshot_wps" size="60" /><br /><small>PNG format. The dimensions should be the same as the LCD size</small></td>
         {if is_array($errors) && array_key_exists('sshot_wps', $errors)}
             <td class='error'>
                 <ul>
@@ -94,7 +94,7 @@ This is very unlikely to be your fault.
       </tr>
       <tr>
         <td><b>Menu screenshot</b><br /><small>(Optional)</small></td>
-        <td><input type="file" name="sshot_menu" size="60" /><br /><small>The dimensions should be the same as the LCD size</small></td>
+        <td><input type="file" name="sshot_menu" size="60" /><br /><small>PNG format. The dimensions should be the same as the LCD size</small></td>
         {if is_array($errors) && array_key_exists('sshot_menu', $errors)}
             <td class='error'>
                 <ul>
