@@ -29,9 +29,9 @@ loop=$smarty.section.tr.index+$cols}
     {if $targets[td]}
     <td align="center">
         <a href="{$smarty.server.SCRIPT_NAME}?target={$targets[td].shortname}">
-        <img src="http://www.rockbox.org/playerpics/{$targets[td].pic}" title="{$targets[td].fullname} ({$targets[td].numthemes} theme{if $targets[td].numthemes ne 1}s{/if})" />
+        <img src="http://www.rockbox.org/playerpics/{$targets[td].pic}" title="LCD: {$targets[td].mainlcd}" />
         </a><br />
-        <small>LCD: {$targets[td].mainlcd}</small>
+        <small>{$targets[td].numthemes} theme{if $targets[td].numthemes ne 1}s{/if}</small>
     </td>
     {/if}
     {/section}
