@@ -429,8 +429,6 @@ END;
         );
         $result = $this->db->query($sql);
         $id = $result->insertid();
-        $check = $this->checkwps(sprintf("%s/%s/%s", config::datadir, $mainlcd, $zipfile['name']), $mainlcd, $remotelcd);
-        /* Yes, this runs checkwps *again*, but it keeps things nicely separated */ 
         $this->checkallthemes($id);
         $this->log(sprintf("Added theme %d (email: %s)", $id, $email));
         return $id;

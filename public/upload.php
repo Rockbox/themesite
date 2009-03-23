@@ -95,7 +95,7 @@ function checkuploadfiles(&$site, &$err) {
                 }
                 /* If not, reject with an error */
                 if ($pass == false) {
-                    $result[] = sprintf("Your wps didn't pass checkwps. Here's some output: %s", $output);
+                    $result[] = sprintf("Your wps didn't pass checkwps. Here's the output: %s", join("\n", $output));
                 }
                 break;
             case 'sshot_wps':
