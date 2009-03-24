@@ -8,7 +8,17 @@
 <p>Pick a device below to manage themes for that target/screen size</p>
 {else}
 <h1>Rockbox themes</h1>
-<p>Identify your player</p>
+
+<h2>Downloading themes</h2> <p>All themes on this website can be downloaded and
+installed via the integrated themes browser in <a
+href="http://www.rockbox.org/twiki/bin/view/Main/RockboxUtility">Rockbox
+Utility</a>. You can also download themes manually by clicking on the picture
+of your player in the table below.</p>
+
+<h2>Upload your own theme</h2>
+<p>Have you made a theme that is not listed on this site? Please read <a
+href="http://www.rockbox.org/twiki/bin/view/Main/ThemeGuidelines">the theme
+guidelines</a> and then <a href="upload.php">upload your theme</a>.</p> 
 {/if}
 
 {assign var="cols" value=#targetcolumns#}
@@ -81,9 +91,6 @@ loop=$smarty.section.tr.index+$cols}
 <pre>
 {include file="TODO"}
 <pre>
-{else}
-<h2>Upload your own theme</h2>
-<p>Do you have you a theme that is not listed on this site? <a href="upload.php">Click Here to submit it for inclusion.</a></p> 
 {/if}
 
 {include file="footer.tpl"}
