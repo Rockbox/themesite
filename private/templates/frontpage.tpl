@@ -9,40 +9,29 @@
 {else}
 <h1>Rockbox themes</h1>
 
-<h2>Downloading themes</h2> <p>All themes on this website can be downloaded and
-installed via the integrated themes browser in <a
-href="http://www.rockbox.org/twiki/bin/view/Main/RockboxUtility">Rockbox
-Utility</a>. You can also download themes manually by clicking on the picture
-of your player in the table below.</p>
-
 <h2>Upload your own theme</h2>
 <p>Have you made a theme that is not listed on this site? Please read <a
 href="http://www.rockbox.org/twiki/bin/view/Main/ThemeGuidelines">the theme
 guidelines</a> and then <a href="upload.php">upload your theme</a>.</p> 
 {/if}
 
+<h2>Downloading themes</h2> <p>All themes on this website can be downloaded and
+installed via the integrated themes browser in <a
+href="http://www.rockbox.org/twiki/bin/view/Main/RockboxUtility">Rockbox
+Utility</a>. You can also download themes manually by clicking on the picture
+of your player in the table below:</p>
+
 {assign var="cols" value=#targetcolumns#}
 <table class="rockbox">
   {section name=tr loop=$targets step=$cols}
-  {* First print a row with player names *}
-  <tr>
-    {section name=td start=$smarty.section.tr.index
-loop=$smarty.section.tr.index+$cols}
-    {if $targets[td]}
-    <th align="center" width="110">{$targets[td].fullname}</th>
-    {/if}
-    {/section}
-  </tr>
-  {* Then a row with "the rest" *}
-  <tr>
+  <tr valign="top">
     {section name=td start=$smarty.section.tr.index loop=$smarty.section.tr.index+$cols}
     {if $targets[td]}
-    <td align="center">
-        <a href="{$smarty.server.SCRIPT_NAME}?target={$targets[td].shortname}">
-        <img src="http://www.rockbox.org/playerpics/{$targets[td].pic}" title="LCD: {$targets[td].mainlcd}" />
-        </a><br />
-        <small>{$targets[td].numthemes} theme{if $targets[td].numthemes ne 1}s{/if}</small>
-    </td>
+
+    <td align='center'>
+        <a href="{$smarty.server.SCRIPT_NAME}?target={$targets[td].shortname}" title="{$targets[td].fullname}">
+        <img border="0" src="http://www.rockbox.org/playerpics/{$targets[td].pic}" alt="{$targets[td].fullname}">
+        <p>{$targets[td].fullname}</a><br><small>{$targets[td].numthemes} theme{if $targets[td].numthemes ne 1}s{/if}</small></td>
     {/if}
     {/section}
   </tr>

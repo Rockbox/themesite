@@ -52,7 +52,7 @@ class themesite {
         return $this->db->query($sql);
     }
 
-    public function listtargets($orderby = 'fullname ASC') {
+    public function listtargets($orderby = 'LOWER(fullname) ASC') {
         $targets = $this->targetlist($orderby);
         $ret = array();
         while ($target = $targets->next()) {
