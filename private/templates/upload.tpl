@@ -52,7 +52,7 @@ This is very unlikely to be your fault.
     </tr>
 
     <tr>
-    <td><b>Your email address</b><br /><small>Not displayed publically</small></td>
+    <td><b>Your email address</b><br /><small>Not displayed publicly</small></td>
     <td><input type="text" name="email" size="32" value="{$smarty.post.email|escape:'html'}" /></td>
     {if is_array($errors) && isset($errors.email)}<td class='error'>{$errors.email}</td>{/if}
     </tr>
