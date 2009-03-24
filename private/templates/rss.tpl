@@ -6,7 +6,7 @@
 {else}
         <title>Rockbox themes for all targets</title>
 {/if}
-        <link>{$hostname}/?target=</link>
+        <link>{$hostname}/{if $smarty.request.target}?target={$smarty.request.target}{/if}</link>
 {section name=i loop=$themes max=10}
     {assign var="picture" value="`$hostname`/`$root`/`$datadir`/`$themes[i].mainlcd`/`$themes[i].shortname`/`$themes[i].sshot_wps`"}
         <item>
