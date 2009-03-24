@@ -42,7 +42,7 @@ This is very unlikely to be your fault.
 
     <tr>
         <td><b>Target device</b></td>
-        <td>{html_options name="target" options=$targets selected=$smarty.post.target}</td>
+        <td>{html_options name="target" options=$targets selected=$smarty.request.target}</td>
     </tr>
 
     <tr>

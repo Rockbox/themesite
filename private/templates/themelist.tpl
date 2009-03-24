@@ -54,4 +54,11 @@ loop=$smarty.section.tr.index+$cols}
 
 
 {/if}
+
+<h2>Upload your own theme</h2> <p>Have you made a theme that is not listed
+here? Please read <a
+href="http://www.rockbox.org/twiki/bin/view/Main/ThemeGuidelines">the theme
+guidelines</a> and then <a
+href="upload.php?target={$smarty.request.target}">upload your theme</a>.</p> 
+
 {include file="footer.tpl"}
