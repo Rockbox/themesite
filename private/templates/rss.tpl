@@ -8,7 +8,7 @@
 {/if}
         <link>{$hostname}/?target=</link>
 {section name=i loop=$themes max=10}
-    {assign var="picture" value="`$datadir`/`$themes[i].mainlcd`/`$themes[i].shortname`/`$themes[i].sshot_wps`"}
+    {assign var="picture" value="`$host`/`$root`/`$datadir`/`$themes[i].mainlcd`/`$themes[i].shortname`/`$themes[i].sshot_wps`"}
         <item>
             <title>{$themes[i].name} by {$themes[i].author}</title>
             <link>{$hostname}/{$datadir}/{$themes[i].mainlcd}/{$themes[i].shortname}/{$themes[i].zipfile}</link>
