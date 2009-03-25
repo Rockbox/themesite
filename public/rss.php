@@ -25,6 +25,7 @@ require_once('preconfig.inc.php');
 header("Content-type: application/xhtml+xml");
 if (isset($_REQUEST['target'])) {
     $lcd = $site->target2lcd($_REQUEST['target']);
+    $t->assign('target', $site->target2fullname($_REQUEST['target']));
     $res = $site->listthemes($lcd['mainlcd']);
 }
 else {

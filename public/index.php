@@ -32,6 +32,7 @@ elseif (isset($_REQUEST['target'])) {
     $lcd = $site->target2lcd($_REQUEST['target']);
     $values['themes'] = $site->listthemes($lcd['mainlcd']);
     $t->assign('mainlcd', $lcd['mainlcd']);
+    $t->assign('target', $site->target2fullname($_REQUEST['target']));
     $template = 'themelist.tpl';
 }
 /* Just show the frontpage */

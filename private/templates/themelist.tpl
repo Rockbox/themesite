@@ -1,8 +1,8 @@
-{assign var="self" value="Themes for $mainlcd"}
+{assign var="self" value="Themes for $target"}
 {assign var="parent" value="index.php|Frontpage"}
 {include file="header.tpl" title=$self rss="rss.php?target=`$smarty.request.target`" rsstitle="Themes for `$smarty.request.target`"}
 
-<h1>Themes for {$mainlcd}</h1>
+<h1>{$self}</h1>
 {include file="breadcrumbs.tpl"}
 
 {if count($themes) == 0}

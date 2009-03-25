@@ -64,6 +64,7 @@ else {
         $t->assign('mainlcd', $lcd['mainlcd']);
         $t->assign('themes', $themes);
         $t->assign('approved', $approved);
+        $t->assign('target', $site->target2fullname($_REQUEST['target']));
     }
     /* Show a theme's details, possibly updating it as result of an admin
      * submitting changes */

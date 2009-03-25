@@ -1,4 +1,4 @@
-{assign var="self" value="handle themes for $mainlcd"}
+{assign var="self" value="handle themes for $target"}
 {assign var="parent" value="admin.php|Admin frontpage"}
 {include file="header.tpl" title="Admin - $self"}
 
