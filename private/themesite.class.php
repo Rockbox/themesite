@@ -553,7 +553,7 @@ END;
                         $shortname
                     )));
                     if (file_exists($checkwps)) {
-                        exec(sprintf("%s %s", $checkwps, $file), $output, $ret);
+                        exec(sprintf("%s %s", $checkwps, escapeshellarg($file)), $output, $ret);
                         $result['pass'] = ($ret == 0);
                         $result['output'] = $output;
                         $return[$version][$shortname] = $result;
