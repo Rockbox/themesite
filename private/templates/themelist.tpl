@@ -9,8 +9,8 @@
 <p>No themes uploaded yet for this screen size</p>
 {else}
 
-{assign var="cols" value=#themecolumns#}
-{* Maybe themecolumns should be decided by the lcd width? *}
+{* Decide the number of columns by the lcd width *}
+{math assign="cols" equation="floor(min(10, x / y))" x=1000 y=$mainlcd|regex_replace:'/x.*/':''}
 
 <table class="rockbox">
   {section name=tr loop=$themes step=$cols}
