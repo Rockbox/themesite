@@ -198,7 +198,7 @@ class themesite {
             FROM themes
             LEFT OUTER JOIN checkwps c ON (themes.rowid=c.themeid and c.version_type='current')
             LEFT OUTER JOIN checkwps r ON (themes.rowid=r.themeid and r.version_type='release')
-            WHERE 1 %s %s AND mainlcd='%s'
+            WHERE 1 %s %s AND (mainlcd='%s')
             ORDER BY %s
             ",
             $verified,
