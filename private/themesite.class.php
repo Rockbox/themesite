@@ -124,6 +124,14 @@ class themesite {
         return $result['count'] == 1 ? true : false;
     }
 
+    public function target2fullname($shortname) {
+        $sql = sprintf("SELECT fullname FROM targets WHERE shortname='%s'",
+            db::quote($shortname)
+        );
+        $result = $this->db->query($sql)->next();
+        return $result === false ? '' : $result['fullname'];
+    }
+
     public function themedetails($id) {
         $sql = sprintf("
             SELECT
