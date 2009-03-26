@@ -60,7 +60,6 @@ class themesite {
             ",
             $orderby
         );
-        printf("<tt>$sql</tt>\n");
         return $this->db->query($sql);
     }
 
