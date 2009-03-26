@@ -48,12 +48,11 @@ class themesite {
     }
 
     private function targetlist($orderby) {
-        $sql = "SELECT targets.shortname as shortname, fullname, pic, targets.mainlcd as mainlcd, depth, targets.remotelcd as remotelcd, COUNT(themes.name) AS numthemes FROM targets LEFT OUTER JOIN themes ON targets.mainlcd==themes.mainlcd AND themes.approved=1 AND themes.emailverification=1 GROUP BY targets.shortname||targets.mainlcd ORDER BY " . $orderby;
         $sql = sprintf("
             SELECT targets.shortname AS shortname, fullname, pic, targets.mainlcd AS mainlcd, depth, targets.remotelcd AS remotelcd, COUNT(themes.name) AS numthemes 
             FROM targets LEFT OUTER JOIN (SELECT DISTINCT themes.name AS name,checkwps.target AS target 
             FROM themes,checkwps 
-            WHERE themes.rowid=checkwps.themeid AND checkwps.pass=1) themes 
+            WHERE themes.rowid=checkwps.themeid AND checkwps.pass=1 AND approved=1 AND emailverification=1) themes 
             ON targets.shortname=themes.target 
             GROUP BY targets.shortname||targets.mainlcd 
             ORDER BY %s

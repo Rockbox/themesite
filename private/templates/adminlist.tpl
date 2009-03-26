@@ -25,7 +25,7 @@
 {section name=i loop=$themes}
     {assign var='id' value=$themes[i].id}
     <tr>
-        <td>{html_image file="`$datadir`/`$mainlcd`/`$themes[i].shortname`/`$themes[i].sshot_wps`" href="`$datadir`/`$mainlcd`/`$themes[i].shortname`/`$themes[i].zipfile`"}</td>
+        <td>{html_image file="`$datadir`/`$themes[i].mainlcd`/`$themes[i].shortname`/`$themes[i].sshot_wps`" href="`$datadir`/`$mainlcd`/`$themes[i].shortname`/`$themes[i].zipfile`"}</td>
         <td>
             <strong>{$themes[i].name}</strong>
             <p><small>
