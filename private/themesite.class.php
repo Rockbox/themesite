@@ -208,28 +208,34 @@ class themesite {
         else {
             $verified = "";
         }
-        $sql = sprintf("
-            SELECT
-            name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu,
-            emailverification = 1 as verified,
-            themes.RowId as id,
-            c.version_number AS current_version,
-            c.pass AS current_pass,
-            r.version_number as release_version,
-            r.pass as release_pass
-            FROM themes
-            LEFT OUTER JOIN checkwps c ON (themes.rowid=c.themeid and c.version_type='current' and c.target='%s')
 
-            LEFT OUTER JOIN checkwps r ON (themes.rowid=r.themeid and r.version_type='release' and r.target='%s') 
-            WHERE 1 %s %s AND (current_pass=1 OR release_pass=1)
-            ORDER BY %s
-            ",
-            db::quote($target),
-            db::quote($target),
-            $verified,
-            $approved_clause,
-            $orderby
-        );
+        if ($target === false) {
+            $sql = "SELECT DISTINCT themes.name AS name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu, emailverification = 1 as verified, themes.RowId as id FROM themes,checkwps WHERE themes.rowid=checkwps.themeid AND checkwps.pass=1 AND approved=1 AND emailverification=1 ORDER BY " . $orderby;
+        }
+        else {
+            $sql = sprintf("
+                SELECT
+                name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu,
+                emailverification = 1 as verified,
+                themes.RowId as id,
+                c.version_number AS current_version,
+                c.pass AS current_pass,
+                r.version_number as release_version,
+                r.pass as release_pass
+                FROM themes
+                LEFT OUTER JOIN checkwps c ON (themes.rowid=c.themeid and c.version_type='current' and c.target='%s')
+
+                LEFT OUTER JOIN checkwps r ON (themes.rowid=r.themeid and r.version_type='release' and r.target='%s') 
+                WHERE 1 %s %s AND (current_pass=1 OR release_pass=1)
+                ORDER BY %s
+                ",
+                db::quote($target),
+                db::quote($target),
+                $verified,
+                $approved_clause,
+                $orderby
+            );
+        }
         $themes = $this->db->query($sql);
         while ($theme = $themes->next()) {
             $theme['size'] = filesize(sprintf("%s/%s/%s/%s",
