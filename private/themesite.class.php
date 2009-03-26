@@ -49,6 +49,18 @@ class themesite {
 
     private function targetlist($orderby) {
         $sql = "SELECT targets.shortname as shortname, fullname, pic, targets.mainlcd as mainlcd, depth, targets.remotelcd as remotelcd, COUNT(themes.name) AS numthemes FROM targets LEFT OUTER JOIN themes ON targets.mainlcd==themes.mainlcd AND themes.approved=1 AND themes.emailverification=1 GROUP BY targets.shortname||targets.mainlcd ORDER BY " . $orderby;
+        $sql = sprintf("
+            SELECT targets.shortname AS shortname, fullname, pic, targets.mainlcd AS mainlcd, depth, targets.remotelcd AS remotelcd, COUNT(themes.name) AS numthemes 
+            FROM targets LEFT OUTER JOIN (SELECT DISTINCT themes.name AS name,checkwps.target AS target 
+            FROM themes,checkwps 
+            WHERE themes.rowid=checkwps.themeid AND checkwps.pass=1) themes 
+            ON targets.shortname=themes.target 
+            GROUP BY targets.shortname||targets.mainlcd 
+            ORDER BY %s
+            ",
+            $orderby
+        );
+        printf("<tt>$sql</tt>\n");
         return $this->db->query($sql);
     }
 
@@ -75,7 +87,7 @@ class themesite {
         while ($theme = $themes->next()) {
             $starttime = microtime(true);
             $zipfile = sprintf("%s/%s/%s/%s",
-                config::datadir,
+                $theme['approved'] == 1 ? $this->themedir_public : $this->themedir_private,
                 $theme['mainlcd'],
                 $theme['shortname'],
                 $theme['zipfile']
@@ -95,7 +107,7 @@ class themesite {
                      * data, and one with only the latest results for fast
                      * retrieval?
                      */
-                    $this->db->query(sprintf("DELETE FROM checkwps WHERE themeid=%d AND version_type='%s'", $theme['RowID'], db::quote($version_type)));
+                    $this->db->query(sprintf("DELETE FROM checkwps WHERE themeid=%d AND version_type='%s' AND target='%s'", $theme['RowID'], db::quote($version_type), db::quote($target)));
                     $sql = sprintf("INSERT INTO checkwps (themeid, version_type, version_number, target, pass) VALUES (%d, '%s', '%s', '%s', '%s')",
                         $theme['RowID'],
                         db::quote($version_type),
@@ -132,6 +144,24 @@ class themesite {
         return $result === false ? '' : $result['fullname'];
     }
 
+    public function hasrwps($zipfile) {
+        $ret = false;
+        foreach ($this->zipcontents($zipfile) as $file) {
+            $pathinfo = $this->my_pathinfo($file);
+        }
+        return $ret;
+    }
+
+    private function zipcontents($zipfile) {
+        $zip = zip_open($zipfile);
+        $files = array();
+        while ($ze = zip_read($zip)) {
+            $filename = zip_entry_name($ze);
+            $files[] = $filename;
+        }
+        return $files;
+    }
+
     public function themedetails($id) {
         $sql = sprintf("
             SELECT
@@ -155,18 +185,12 @@ class themesite {
             $theme['shortname'],
             $theme['zipfile']
         );
-        $zip = zip_open($zipfile);
-        $files = array();
-        while ($ze = zip_read($zip)) {
-            $filename = zip_entry_name($ze);
-            $files[] = $filename;
-        }
-        $theme['files'] = $files;
+        $theme['files'] = $this->zipcontents($zipfile);
 
         return $theme;
     }
 
-    public function listthemes($mainlcd = false, $orderby = 'timestamp DESC', $approved = 'approved', $onlyverified = true) {
+    public function listthemes($target = false, $orderby = 'timestamp DESC', $approved = 'approved', $onlyverified = true) {
         $ret = array();
         switch($approved) {
             case 'any':
@@ -196,14 +220,16 @@ class themesite {
             r.version_number as release_version,
             r.pass as release_pass
             FROM themes
-            LEFT OUTER JOIN checkwps c ON (themes.rowid=c.themeid and c.version_type='current')
-            LEFT OUTER JOIN checkwps r ON (themes.rowid=r.themeid and r.version_type='release')
-            WHERE 1 %s %s AND (mainlcd='%s')
+            LEFT OUTER JOIN checkwps c ON (themes.rowid=c.themeid and c.version_type='current' and c.target='%s')
+
+            LEFT OUTER JOIN checkwps r ON (themes.rowid=r.themeid and r.version_type='release' and r.target='%s') 
+            WHERE 1 %s %s AND (current_pass=1 OR release_pass=1)
             ORDER BY %s
             ",
+            db::quote($target),
+            db::quote($target),
             $verified,
             $approved_clause,
-            $mainlcd === false ? "' or '1'='1" : db::quote($mainlcd), /* SQL injection on purpose! */
             $orderby
         );
         $themes = $this->db->query($sql);
@@ -541,6 +567,7 @@ END;
             $lcd = ($p['extension'] == 'rwps' ? $remotelcd : $mainlcd);
             foreach(array('release', 'current') as $version) {
                 foreach($this->lcd2targets($lcd) as $shortname) {
+                    printf("Check %s against %s on %s<br />\n", $file, $version, $shortname);
                     $result = array();
                     $checkwps = sprintf("%s/checkwps/%s/checkwps.%s",
                         '..', /* We'll be in a subdir of the private dir */

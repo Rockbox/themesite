@@ -30,7 +30,7 @@ if (isset($_REQUEST['target']) && isset($_REQUEST['themename'])) {
 /* Show all themes for a specific target */
 elseif (isset($_REQUEST['target'])) {
     $lcd = $site->target2lcd($_REQUEST['target']);
-    $values['themes'] = $site->listthemes($lcd['mainlcd']);
+    $values['themes'] = $site->listthemes($_REQUEST['target']);
     $t->assign('mainlcd', $lcd['mainlcd']);
     $t->assign('target', $site->target2fullname($_REQUEST['target']));
     $template = 'themelist.tpl';

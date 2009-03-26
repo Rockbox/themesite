@@ -22,7 +22,7 @@
 
 require_once('preconfig.inc.php');
 
-header("Content-type: application/xhtml+xml");
+header("Content-type: application/rss+xml");
 if (isset($_REQUEST['target'])) {
     $lcd = $site->target2lcd($_REQUEST['target']);
     $t->assign('target', $site->target2fullname($_REQUEST['target']));
