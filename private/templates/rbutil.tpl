@@ -10,7 +10,7 @@ msg="The theme site is in beta and still doesn't contain many themes. If you don
 {section name=i loop=$themes}
 [{$themes[i].shortname}]
 name="{$themes[i].name|escape:'html'}"
-size={math equation="x / 1024" x=$themes[i].size}
+size={$themes[i].size}
 descriptionfile=""
 image="{$root}/{$datadir}/{$themes[i].mainlcd}/{$themes[i].shortname}/{$themes[i].sshot_wps}"
 {if $themes[i].sshot_menu neq ""}
