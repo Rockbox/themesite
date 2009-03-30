@@ -571,7 +571,6 @@ END;
             $lcd = ($p['extension'] == 'rwps' ? $remotelcd : $mainlcd);
             foreach(array('release', 'current') as $version) {
                 foreach($this->lcd2targets($lcd) as $shortname) {
-                    printf("Check %s against %s on %s<br />\n", $file, $version, $shortname);
                     $result = array();
                     $checkwps = sprintf("%s/checkwps/%s/checkwps.%s",
                         '..', /* We'll be in a subdir of the private dir */
@@ -640,6 +639,7 @@ END;
         $files = array();
         $wpsfound = array();
         $rwpsfound = array();
+        $cfgfound = array();
         $shortname = '';
         $cfg = '';
 
@@ -668,6 +668,7 @@ END;
                 case 'cfg':
                     /* Save the contents for later checking */
                     $cfg = $this->getzipentrycontents($zip, $ze);
+                    $cfgfound[] = $filename;
                 case 'wps':
                 case 'rwps':
                     if ($shortname === '')
@@ -729,6 +730,11 @@ END;
             $err[] = sprintf("More than one .wps found (%s).", implode(', ', $wpsfound));
         elseif (count($wpsfound) == 0)
             $err[] = "No .wps files found.";
+
+        if (count($cfgfound) > 1)
+            $err[] = sprintf("More than one .cfg found (%s).", implode(', ', $cfgfound));
+        elseif (count($cfgfound) == 0)
+            $err[] = "No .cfg files found.";
 
         if (count($rwpsfound) > 1)
             $err[] = sprintf("More than one .rwps found (%s).", implode(', ', $rwpsfound));
