@@ -28,6 +28,7 @@ a img {
 }
 </style>
 {/literal}
+<script type="text/javascript" src="{$root}/rbscript.js"></script>
 </head>
 <body>
 <table border=0 cellpadding=7 cellspacing=0>
