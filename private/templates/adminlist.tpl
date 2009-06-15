@@ -25,7 +25,12 @@
 {section name=i loop=$themes}
     {assign var='id' value=$themes[i].id}
     <tr>
-        <td>{html_image file="`$datadir`/`$themes[i].mainlcd`/`$themes[i].shortname`/`$themes[i].sshot_wps`" href="`$datadir`/`$mainlcd`/`$themes[i].shortname`/`$themes[i].zipfile`"}</td>
+        {if $themes[i].sshot_menu != ""}
+            {assign var="oversrc" value="`$datadir`/`$themes[i].mainlcd`/`$themes[i].shortname`/`$themes[i].sshot_menu`"}
+        {else}
+            {assign var="oversrc" value=""}
+        {/if}
+        <td>{html_image file="`$datadir`/`$themes[i].mainlcd`/`$themes[i].shortname`/`$themes[i].sshot_wps`" href="`$datadir`/`$mainlcd`/`$themes[i].shortname`/`$themes[i].zipfile`" oversrc=$oversrc}</td>
         <td>
             <strong>{$themes[i].name}</strong>
             <p><small>
