@@ -30,12 +30,12 @@ loop=$smarty.section.tr.index+$cols}
     {if $themes[td]}
     <td>
     <p align="center">
-{if $themes[td].sshot_menu != ""}
-{assign var="oversrc" value="`$datadir`/`$mainlcd`/`$themes[td].shortname`/`$themes[td].sshot_menu`"}
-{else}
-{assign var="oversrc" value=""}
-{/if}
-{html_image file="`$datadir`/`$mainlcd`/`$themes[td].shortname`/`$themes[td].sshot_wps`" href="`$datadir`/`$mainlcd`/`$themes[td].shortname`/`$themes[td].zipfile`" oversrc=$oversrc}
+    {if $themes[td].sshot_menu != ""}
+        {assign var="oversrc" value="`$datadir`/`$mainlcd`/`$themes[td].shortname`/`$themes[td].sshot_menu`"}
+    {else}
+        {assign var="oversrc" value=""}
+    {/if}
+    {html_image file="`$datadir`/`$mainlcd`/`$themes[td].shortname`/`$themes[td].sshot_wps`" href="`$datadir`/`$mainlcd`/`$themes[td].shortname`/`$themes[td].zipfile`" oversrc=$oversrc}<br />
     <small>Size: {$themes[td].size|siprefix}B</small>
     </p>
     <small>

@@ -1,11 +1,17 @@
+{if ! $smarty.request.target}
+[error]
+code=1
+description="Please update Rockbox Utility to version 1.2.1, which fixes a bug with theme handling. Theme installation will not work with this version."
+{else}
 [error]
 code={$errno}
 {if $errno neq 0}
 description="{$errmsg}"
 {/if}
+{/if}
 
 [status]
-msg="The theme site is in beta and still doesn't contain many themes. If you don't find a theme you like, please try again later."
+msg=""
 
 {section name=i loop=$themes}
 [{$themes[i].shortname}]

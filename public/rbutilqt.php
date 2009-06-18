@@ -24,13 +24,12 @@ require_once('preconfig.inc.php');
 header('Content-type: text/plain');
 
 $themes = array();
-if (!isset($_REQUEST['res'])) {
+if (!isset($_REQUEST['target'])) {
     $t->assign('errno', 1);
     $t->assign('errmsg', "Invalid URL");
 }
 else {
-    $mainlcd = substr($_REQUEST['res'], 0, strrpos($_REQUEST['res'], 'x'));
-    $themes = $site->listthemes($mainlcd);
+    $themes = $site->listthemes($_REQUEST['target']);
 }
 
 if (count($themes) == 0) {
