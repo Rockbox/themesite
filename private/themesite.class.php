@@ -566,9 +566,9 @@ END;
          * For all .wps and .rwps, run checkwps of both release and current for
          * all applicable targets
          */
-        foreach(glob('.rockbox/wps/*wps') as $file) {
+        foreach(glob('.rockbox/wps/*{wps,sbs}',GLOB_BRACE) as $file) {
             $p = $this->my_pathinfo($file);
-            $lcd = ($p['extension'] == 'rwps' ? $remotelcd : $mainlcd);
+            $lcd = ($p['extension'] == 'rwps' || $p['extension'] == 'rsbs'  ? $remotelcd : $mainlcd);
             foreach(array('release', 'current') as $version) {
                 foreach($this->lcd2targets($lcd) as $shortname) {
                     $result = array();
@@ -639,6 +639,8 @@ END;
         $files = array();
         $wpsfound = array();
         $rwpsfound = array();
+        $sbsfound = array();
+        $rsbsfound = array();
         $cfgfound = array();
         $shortname = '';
         $cfg = '';
@@ -653,11 +655,15 @@ END;
             $totalsize += zip_entry_filesize($ze);
             $files[] = $filename;
 
-            /* Count .wps and .rwps files for later checking */
+            /* Count .wps and .rwps  and [.r]sbs files for later checking */
             if (strtolower($pathinfo['extension']) == 'wps')
                 $wpsfound[] = $filename;
             if (strtolower($pathinfo['extension']) == 'rwps')
                 $rwpsfound[] = $filename;
+            if (strtolower($pathinfo['extension']) == 'sbs')
+                $sbsfound[] = $filename;
+            if (strtolower($pathinfo['extension']) == 'rsbs')
+                $rsbsfound[] = $filename;
 
             /* Check that all files are within .rockbox */
             if (strpos($filename, '.rockbox') !== 0)
@@ -669,6 +675,8 @@ END;
                     /* Save the contents for later checking */
                     $cfg = $this->getzipentrycontents($zip, $ze);
                     $cfgfound[] = $filename;
+                case 'sbs':
+                case 'rsbs':
                 case 'wps':
                 case 'rwps':
                     if ($shortname === '')
@@ -738,6 +746,12 @@ END;
 
         if (count($rwpsfound) > 1)
             $err[] = sprintf("More than one .rwps found (%s).", implode(', ', $rwpsfound));
+            
+        if (count($sbsfound) > 1)
+            $err[] = sprintf("More than one .sbs found (%s).", implode(', ', $sbsfound));
+            
+        if (count($rsbsfound) > 1)
+            $err[] = sprintf("More than one .rsbs found (%s).", implode(', ', $rsbsfound));
         return $err;
     }
 
