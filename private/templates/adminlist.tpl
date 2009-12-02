@@ -30,7 +30,7 @@
         {else}
             {assign var="oversrc" value=""}
         {/if}
-        <td>{html_image file="`$datadir`/`$themes[i].mainlcd`/`$themes[i].shortname`/`$themes[i].sshot_wps`" href="`$datadir`/`$mainlcd`/`$themes[i].shortname`/`$themes[i].zipfile`" oversrc=$oversrc}</td>
+        <td>{html_image file="`$datadir`/`$themes[i].mainlcd`/`$themes[i].shortname`/`$themes[i].sshot_wps`" href="`$datadir`/`$themes[i].mainlcd`/`$themes[i].shortname`/`$themes[i].zipfile`" oversrc=$oversrc}</td>
         <td>
             <strong>{$themes[i].name}</strong>
             <p><small>
