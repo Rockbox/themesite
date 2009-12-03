@@ -1,0 +1,9 @@
+.broken_build
+{
+    color: red;
+}
+
+.build_info
+{
+    border-bottom: dotted 1px;
+}
