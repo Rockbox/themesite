@@ -11,13 +11,13 @@
 
 <h2>Upload your own theme</h2>
 <p>Have you made a theme that is not listed on this site? Please read <a
-href="http://www.rockbox.org/twiki/bin/view/Main/ThemeGuidelines">the theme
+href="http://www.rockbox.org/wiki/ThemeGuidelines">the theme
 guidelines</a> and then <a href="upload.php">upload your theme</a>.</p> 
 {/if}
 
 <h2>Downloading themes</h2> <p>All themes on this website can be downloaded and
 installed via the integrated themes browser in <a
-href="http://www.rockbox.org/twiki/bin/view/Main/RockboxUtility">Rockbox
+href="http://www.rockbox.org/wiki/RockboxUtility">Rockbox
 Utility</a>. You can also download themes manually by clicking on the picture
 of your player in the table below:</p>
 

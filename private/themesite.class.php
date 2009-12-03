@@ -565,6 +565,9 @@ END;
         /* 
          * For all .wps and .rwps, run checkwps of both release and current for
          * all applicable targets
+         *
+         * 2009-06-20: Changed to only check .wps, since matching on remotelcd
+         *             had some less desirable side effects.
          */
         foreach(glob('.rockbox/wps/*{wps,sbs}',GLOB_BRACE) as $file) {
             $p = $this->my_pathinfo($file);

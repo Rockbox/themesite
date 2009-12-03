@@ -11,6 +11,7 @@
 
 {* Decide the number of columns by the lcd width *}
 {math assign="cols" equation="floor(min(10, x / y))" x=1000 y=$mainlcd|regex_replace:'/x.*/':''}
+{assign var="cols" value="3"}
 
 <table class="rockbox">
   {section name=tr loop=$themes step=$cols}
@@ -19,7 +20,7 @@
     {section name=td start=$smarty.section.tr.index
 loop=$smarty.section.tr.index+$cols}
     {if $themes[td]}
-    <th align="center" width="110">{$themes[td].name|escape:'html'}</th>
+    <th align="center" width="320">{$themes[td].name|escape:'html'}</th>
     {/if}
     {/section}
   </tr>
@@ -31,11 +32,11 @@ loop=$smarty.section.tr.index+$cols}
     <td>
     <p align="center">
     {if $themes[td].sshot_menu != ""}
-        {assign var="oversrc" value="`$datadir`/`$mainlcd`/`$themes[td].shortname`/`$themes[td].sshot_menu`"}
+        {assign var="oversrc" value="`$datadir`/`$themes[td].mainlcd`/`$themes[td].shortname`/`$themes[td].sshot_menu`"}
     {else}
         {assign var="oversrc" value=""}
     {/if}
-    {html_image file="`$datadir`/`$mainlcd`/`$themes[td].shortname`/`$themes[td].sshot_wps`" href="`$datadir`/`$mainlcd`/`$themes[td].shortname`/`$themes[td].zipfile`" oversrc=$oversrc}<br />
+    {html_image file="`$datadir`/`$themes[td].mainlcd`/`$themes[td].shortname`/`$themes[td].sshot_wps`" href="`$datadir`/`$themes[td].mainlcd`/`$themes[td].shortname`/`$themes[td].zipfile`" oversrc=$oversrc}<br />
     <small>Size: {$themes[td].size|siprefix}B</small>
     </p>
     <small>
@@ -44,7 +45,9 @@ loop=$smarty.section.tr.index+$cols}
     <strong>Description:</strong><br />  
     &nbsp;{$themes[td].description|escape:'html'}<br />
     {if $themes[td].current_pass}
-    <strong>Works with <span title="{$themes[td].current_version}">current build</span></strong><br />
+    <strong>Works with <span class="build_info" title="{$themes[td].current_version}">current build</span></strong><br />
+    {else}
+    <strong class="broken_build">Doesn't work with <span class="build_info" title="{$themes[td].current_version}">current build</span></strong><br />
     {/if}
     {if $themes[td].release_pass}
     <strong>Works with release {$themes[td].release_version}</strong><br />
@@ -62,7 +65,7 @@ loop=$smarty.section.tr.index+$cols}
 
 <h2>Upload your own theme</h2> <p>Have you made a theme that is not listed
 here? Please read <a
-href="http://www.rockbox.org/twiki/bin/view/Main/ThemeGuidelines">the theme
+href="http://www.rockbox.org/wiki/ThemeGuidelines">the theme
 guidelines</a> and then <a
 href="upload.php?target={$smarty.request.target}">upload your theme</a>.</p> 
 

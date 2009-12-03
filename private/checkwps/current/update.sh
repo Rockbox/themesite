@@ -1,5 +1,5 @@
 #!/bin/sh
-rockbox_dir="/path/to/rockbox/sources"
+rockbox_dir="/home/themes/rockbox-current"
 
 cd `dirname "$0"`
 target=`pwd`
@@ -9,6 +9,6 @@ svn up
 cd "tools/checkwps"
 ./cleanall.sh
 ./buildall.sh
-cp checkwps.* "${target}/"
+cp output/checkwps.* "${target}/"
 cd "${target}"
 rm -f checkwps.c checkwps.h

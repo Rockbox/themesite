@@ -1,7 +1,7 @@
 {if ! $smarty.request.target}
 [error]
 code=1
-description="Please update Rockbox Utility to version 1.2.1, which fixes a bug with theme handling. Theme installation will not work with this version."
+description="Please update Rockbox Utility to version 1.2.1 or later, which fixes a bug with theme handling. Theme installation will not work with this version."
 {else}
 [error]
 code={$errno}
@@ -26,7 +26,11 @@ archive="{$root}/{$datadir}/{$themes[i].mainlcd}/{$themes[i].shortname}/{$themes
 author="{$themes[i].author|escape:'html'}"
 version="{$themes[i].timestamp}"
 about="{$themes[i].description|escape:'html'}"
+{if $themes[i].current_pass}
 pass_release="{$themes[i].release_version}"
+{/if}
+{if $themes[i].current_pass}
 pass_current="{$themes[i].current_version}"
+{/if}
 
 {/section}

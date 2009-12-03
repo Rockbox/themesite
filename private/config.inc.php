@@ -32,7 +32,7 @@ class config {
 
     // Fully qualified hostname of your server. Without trailing slash or path.
     // Including http://
-    const hostname = "http://home.rasher.dk"; 
+    const hostname = "http://themes.rockbox.org"; 
 
     // Path to the theme site, relative to your server's document root, without trailing slash (might be '')
     const path = "";

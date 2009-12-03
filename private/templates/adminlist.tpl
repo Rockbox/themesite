@@ -15,6 +15,7 @@
 <form method="POST" action="{$smarty.server.SCRIPT_NAME}">
 <input type="hidden" name="target" value="{$smarty.request.target}" />
 <input type="hidden" name="approved" value="{$smarty.request.approved}" />
+<input type="hidden" name="changestatuses" value="1" />
 <table class="rockbox">
     <tr>
         <th>Screenshot</th>
@@ -30,7 +31,7 @@
         {else}
             {assign var="oversrc" value=""}
         {/if}
-        <td>{html_image file="`$datadir`/`$themes[i].mainlcd`/`$themes[i].shortname`/`$themes[i].sshot_wps`" href="`$datadir`/`$themes[i].mainlcd`/`$themes[i].shortname`/`$themes[i].zipfile`" oversrc=$oversrc}</td>
+        <td>{html_image file="`$datadir`/`$themes[i].mainlcd`/`$themes[i].shortname`/`$themes[i].sshot_wps`" href="`$datadir`/`$mainlcd`/`$themes[i].shortname`/`$themes[i].zipfile`" oversrc=$oversrc}</td>
         <td>
             <strong>{$themes[i].name}</strong>
             <p><small>
