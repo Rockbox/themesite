@@ -42,6 +42,8 @@ loop=$smarty.section.tr.index+$cols}
     <small>
     <strong>Submitter:</strong><br />  
     &nbsp;{$themes[td].author|escape:'html'}<br />
+    <strong>Submited:</strong><br />  
+    &nbsp;{$themes[td].timestamp|escape:'html'}<br />
     <strong>Description:</strong><br />  
     &nbsp;{$themes[td].description|escape:'html'}<br />
     {if $themes[td].current_pass}

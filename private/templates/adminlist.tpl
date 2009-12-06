@@ -39,6 +39,8 @@
             {if $themes[i].verified == 0}
             <strong style='color:red'>The author has not verified this theme</strong><br />
             {/if}
+            <strong>Submited:</strong><br />  
+            &nbsp;{$themes[td].timestamp|escape:'html'}<br />
             {$themes[i].description|escape:'html'}
             {if $themes[i].current_pass}
             <br /><strong>Works with <span title="$themes[i].current_version}">current build</span></strong>
