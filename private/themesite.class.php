@@ -215,7 +215,7 @@ class themesite {
         else {
             $sql = sprintf("
                 SELECT
-                name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu,
+                name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu,email,
                 emailverification = 1 as verified,
                 themes.RowId as id,
                 c.version_number AS current_version,
