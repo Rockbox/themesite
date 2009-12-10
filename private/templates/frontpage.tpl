@@ -42,39 +42,16 @@ of your player in the table below:</p>
 <p><a href="{$smarty.server.SCRIPT_NAME}?runcheckwps">Run checkwps on all themes</a></p>
 <hr />
 {if $adminmsg}<p>{$adminmsg}</p>{/if}
-<h2>Add a missing target</h2>
+<h2>Edit/Add targets</h2>
 <form method="POST" action="{$smarty.server.SCRIPT_NAME}">
-<input type="hidden" name="addtarget" value="yes" />
-<table>
-    <tr>
-        <td>Name</td>
-        <td><input type="text" name="fullname" /></td><td>(e.g. Apple Ipod Video)</td>
-    </tr>
-    <tr>
-        <td>Shortname</td>
-        <td><input type="text" name="shortname" /></td><td>(e.g. ipodvideo - must match checkwps usage)</td>
-    </tr>
-    <tr>
-        <td>Main LCD resolution</td>
-        <td><input type="text" name="mainlcd" /></td><td>(e.g. 320x240)</td>
-    </tr>
-    <tr>
-        <td>Main LCD screen depth</td>
-        <td><input type="text" name="depth" /></td><td>(e.g. 16)</td>
-    </tr>
-    <tr>
-        <td>Remote LCD resolution</td>
-        <td><input type="text" name="remotelcd" /></td><td>(e.g. 320x240)</td>
-    </tr>
-    <tr>
-        <td>Picture</td>
-        <td><input type="text" name="pic" /></td><td>(e.g. ipodvideo-small.png)</td>
-    </tr>
-    <tr>
-        <td colspan="2" align="right"><input type="submit" value="Add" /></td>
-        <td></td>
-    </tr>
-</table>
+    <input type="hidden" name="showtarget" value="yes" />
+    <select name=curtarget>
+        <option>New target</option>
+        {foreach from=$targets item=target}
+            <option>{$target.shortname}</option>
+        {/foreach}
+    </select>
+    <input type="submit" value="Edit" />
 </form>
 <h2>TODO list</h2>
 <pre>

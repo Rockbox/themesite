@@ -357,6 +357,22 @@ END;
         }
     }
 
+    public function edittarget($shortname, $fullname, $mainlcd, $pic, $depth, $remotelcd = false) {    
+        $this->log(sprintf("Edit target %s", $fullname));
+
+        $sql = sprintf("UPDATE targets SET shortname='%s', fullname='%s', mainlcd='%s',
+                         pic='%s', depth='%s', remotelcd='%s' WHERE shortname='%s'",
+            db::quote($shortname),
+            db::quote($fullname),
+            db::quote($mainlcd),
+            db::quote($pic),
+            db::quote($depth),
+            $remotelcd === false ? 'NULL' : sprintf("'%s'", db::quote($remotelcd)),
+            db::quote($shortname)
+        );
+        $this->db->query($sql);
+    }
+    
     private function send_mail($subject, $to, $msg) {
         $msg = wordwrap($msg, 78);
         $headers = 'From: themes@rockbox.org';

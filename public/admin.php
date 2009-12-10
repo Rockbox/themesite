@@ -99,6 +99,27 @@ else {
         );
         $t->assign('adminmsg', 'Target added');
     }
+    /* Edit a target */
+    elseif (isset($_REQUEST['edittarget'])) {
+        $site->edittarget(
+            $_REQUEST['shortname'],
+            $_REQUEST['fullname'],
+            $_REQUEST['mainlcd'],
+            $_REQUEST['pic'],
+            $_REQUEST['depth'],
+            empty($_REQUEST['remotelcd']) ? false : $_REQUEST['remotelcd']
+        );
+        $t->assign('adminmsg', 'Target edited');
+    }
+    /* Show target */
+    elseif (isset($_REQUEST['showtarget'])) {
+        foreach($site->listtargets() as $target) {
+            if($target['shortname'] == $_REQUEST['curtarget']) {
+                $t->assign("target",$target);
+            }
+        }
+        $template = 'target.tpl';
+    }
     /* Run checkwps on all themes */
     elseif (isset($_REQUEST['runcheckwps'])) {
         $results = $site->checkallthemes();
