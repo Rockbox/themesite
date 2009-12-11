@@ -184,7 +184,13 @@ class themesite {
             $theme['zipfile']
         );
         $theme['files'] = $this->zipcontents($zipfile);
-
+        
+        $theme['size'] = filesize(sprintf("%s/%s/%s/%s",
+                $theme['approved'] == 1 ? $this->themedir_public : $this->themedir_private,
+                $theme['mainlcd'],
+                $theme['shortname'],
+                $theme['zipfile']
+            ));
         return $theme;
     }
 

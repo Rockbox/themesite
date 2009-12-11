@@ -20,7 +20,7 @@
     {section name=td start=$smarty.section.tr.index
 loop=$smarty.section.tr.index+$cols}
     {if $themes[td]}
-    <th align="center" width="320">{$themes[td].name|escape:'html'}</th>
+    <th align="center" width="320"><a href="index.php?themeid={$themes[td].id}&amp;target={$smarty.request.target}">{$themes[td].name|escape:'html'}</a></th>
     {/if}
     {/section}
   </tr>
