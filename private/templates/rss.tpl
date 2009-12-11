@@ -2,7 +2,11 @@
 <rss version="2.0">
     <channel>
 {if $smarty.request.target}
-        <title>Rockbox themes for {$target}</title>
+{if count($themes) == 1}
+        <title>{$target} theme</title>
+{else}
+        <title>Rockbox themes for {$target}</title>    
+{/if}        
 {else}
         <title>Rockbox themes for all targets</title>
 {/if}

@@ -2,7 +2,7 @@
 {assign var="self" value="$themename Theme"}
 {assign var="parent" value="index.php?target=`$smarty.request.target`|Themes for `$target`"}
 {assign var="grandparent" value="index.php|Frontpage"}
-{include file="header.tpl" title=$self rss="rss.php?target=`$smarty.request.target`" rsstitle="`$smarty.request.theme.shortname` theme for `$smarty.request.target`"}
+{include file="header.tpl" title=$self rss="rss.php?target=`$smarty.request.target`&amp;themeid=`$theme.id` " rsstitle="`$smarty.request.theme.shortname` theme for `$smarty.request.target`"}
 
 <h1>{$self}</h1>
 {include file="breadcrumbs.tpl"}

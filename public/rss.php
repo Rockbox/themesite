@@ -23,7 +23,11 @@
 require_once('preconfig.inc.php');
 
 header("Content-type: application/rss+xml");
-if (isset($_REQUEST['target'])) {
+if (isset($_REQUEST['target'])&& isset($_REQUEST['themeid'])) {
+    $t->assign('target', $site->target2fullname($_REQUEST['target']));
+    $res = array($site->themedetails($_REQUEST['themeid']));
+}
+else if (isset($_REQUEST['target'])) {
     $t->assign('target', $site->target2fullname($_REQUEST['target']));
     $res = $site->listthemes($_REQUEST['target']);
 }
