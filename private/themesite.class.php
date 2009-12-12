@@ -96,7 +96,6 @@ class themesite {
              * Store the results and check if at least one check passed (for
              * the summary)
              */
-            if($id == 0) $this->db->query("DELETE FROM checkwps"); 
             $passany = false;
             foreach($result as $version_type => $targets) {
                 foreach($targets as $target => $result) {
@@ -105,8 +104,8 @@ class themesite {
                      * Maybe we want to have two tables - one with historic
                      * data, and one with only the latest results for fast
                      * retrieval?
-                     */             
-                    if($id != 0) $this->db->query(sprintf("DELETE FROM checkwps WHERE themeid=%d AND version_type='%s' AND target='%s'", $theme['RowID'], db::quote($version_type), db::quote($target)));
+                     */     
+                    $this->db->query(sprintf("DELETE FROM checkwps WHERE themeid=%d AND version_type='%s' AND target='%s'", $theme['RowID'], db::quote($version_type), db::quote($target)));
                     $sql = sprintf("INSERT INTO checkwps (themeid, version_type, version_number, target, pass) VALUES (%d, '%s', '%s', '%s', '%s')",
                         $theme['RowID'],
                         db::quote($version_type),
