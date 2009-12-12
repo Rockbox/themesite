@@ -523,7 +523,7 @@ END;
         
         
         /* get complete table */ 
-        $sql = sprintf("SELECT * from %s", 
+        $sql = sprintf("SELECT RowID,* from %s", 
                 db::quote($table));
         $tabledata = $this->db->query($sql);
         $tabletypes = $this->db->columntypes(db::quote($table));
@@ -545,11 +545,11 @@ END;
         
         /* fill in data */
         while($tableentry = $tabledata->next()){
-            $sql = sprintf("INSERT INTO %s (",db::quote($table));
+            $sql = sprintf("INSERT INTO %s (rowid, ",db::quote($table));
             foreach ($tabletypes as $entry => $type) {
                 $sql = sprintf("%s%s ,",$sql,$entry);
             }
-            $sql = sprintf("%s%s) VALUES(",$sql,db::quote($column));
+            $sql = sprintf("%s%s) VALUES(%s, ",$sql,db::quote($column),db::quote($tableentry['RowID']));
             foreach ($tabletypes as $entry => $type) {
                 $sql = sprintf("%s'%s' ,",$sql, db::quote($tableentry[$entry]));
             }
