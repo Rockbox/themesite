@@ -53,6 +53,29 @@ of your player in the table below:</p>
     </select>
     <input type="submit" value="Edit" />
 </form>
+<h2>Add column to table</h2>
+<form method="POST" action="{$smarty.server.SCRIPT_NAME}">
+  <input type="hidden" name="addcolumn" value="yes" />
+  <table class="rockbox">
+    <tr>
+        <td><b>Table name</b></td>
+        <td><input type="text" name="table" size="20"/></td>
+    </tr>
+    <tr>
+        <td><b>Column name</b></td>
+        <td><input type="text" name="column" size="20" /></td>
+    </tr>
+    <tr>
+        <td><b>Column value</b></td>
+        <td><input type="text" name="columnvalue" size="20" /></td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <input type="submit" value="Add" />
+        </td>
+    </tr>
+  </table>  
+</form>
 <h2>TODO list</h2>
 <pre>
 {include file="TODO"}

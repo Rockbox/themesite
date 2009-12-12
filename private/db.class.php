@@ -163,6 +163,16 @@ class result {
             return $row;
         }
     }
+    
+    public function current($field = false) {
+        $row = sqlite_current($this->rh);
+        if ($field !== false && isset($row[$field])) {
+            return $row[$field];
+        }
+        else {
+            return $row;
+        }
+    }
 
     public function insertid() {
         return sqlite_last_insert_rowid($this->dh);
