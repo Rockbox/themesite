@@ -551,7 +551,7 @@ END;
             }
             $sql = sprintf("%s%s) VALUES(",$sql,db::quote($column));
             foreach($keys as $key) {
-                $sql = sprintf("%s'%s' ,",$sql,$tableentry[$key]);
+                $sql = sprintf("%s'%s' ,",$sql,db::quote($tableentry[$key]));
             }
             $sql = sprintf("%s'%s')",$sql,db::quote($value));
             $this->db->query($sql);
