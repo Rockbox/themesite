@@ -96,6 +96,7 @@ class themesite {
              * Store the results and check if at least one check passed (for
              * the summary)
              */
+            if($id == 0) $this->db->query("DELETE FROM checkwps"); 
             $passany = false;
             foreach($result as $version_type => $targets) {
                 foreach($targets as $target => $result) {
@@ -104,8 +105,8 @@ class themesite {
                      * Maybe we want to have two tables - one with historic
                      * data, and one with only the latest results for fast
                      * retrieval?
-                     */
-                    $this->db->query(sprintf("DELETE FROM checkwps WHERE themeid=%d AND version_type='%s' AND target='%s'", $theme['RowID'], db::quote($version_type), db::quote($target)));
+                     */             
+                    if($id != 0) $this->db->query(sprintf("DELETE FROM checkwps WHERE themeid=%d AND version_type='%s' AND target='%s'", $theme['RowID'], db::quote($version_type), db::quote($target)));
                     $sql = sprintf("INSERT INTO checkwps (themeid, version_type, version_number, target, pass) VALUES (%d, '%s', '%s', '%s', '%s')",
                         $theme['RowID'],
                         db::quote($version_type),
@@ -526,6 +527,7 @@ END;
         $sql = sprintf("SELECT * from %s", 
                 db::quote($table));
         $tabledata = $this->db->query($sql);
+        $tabletypes = $this->db->columntypes(db::quote($table));
         
         /* wrap in transaction */
         $sql = "BEGIN TRANSACTION;";
@@ -536,22 +538,21 @@ END;
         
         /* create new table */
         $sql = sprintf("CREATE TABLE %s(",db::quote($table));
-        $keys = array_keys($tabledata->current());
-        foreach($keys as $entry) {
-            $sql = sprintf("%s%s ,",$sql,$entry);
-        }         
+        foreach ($tabletypes as $entry => $type) {
+            $sql = sprintf("%s%s %s ,",$sql,$entry,$type);
+        } 
         $sql = sprintf("%s%s)",$sql,db::quote($column));
         $this->db->query($sql);
         
         /* fill in data */
         while($tableentry = $tabledata->next()){
             $sql = sprintf("INSERT INTO %s (",db::quote($table));
-            foreach($keys as $key) {
-                $sql = sprintf("%s%s ,",$sql,$key);
+            foreach ($tabletypes as $entry => $type) {
+                $sql = sprintf("%s%s ,",$sql,$entry);
             }
             $sql = sprintf("%s%s) VALUES(",$sql,db::quote($column));
-            foreach($keys as $key) {
-                $sql = sprintf("%s'%s' ,",$sql,db::quote($tableentry[$key]));
+            foreach ($tabletypes as $entry => $type) {
+                $sql = sprintf("%s'%s' ,",$sql, db::quote($tableentry[$entry]));
             }
             $sql = sprintf("%s'%s')",$sql,db::quote($value));
             $this->db->query($sql);
