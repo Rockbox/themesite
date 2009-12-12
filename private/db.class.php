@@ -112,6 +112,10 @@ END;
         }
     }
 
+    public function columntypes($table) {
+        return @sqlite_fetch_column_types($table, $this->dh, SQLITE_ASSOC);
+    }
+    
     private function error($err, $sql = "") {
         /* 
          * Sometimes the error is empty, in which case the explanation can be
