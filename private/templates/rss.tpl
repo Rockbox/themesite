@@ -15,7 +15,7 @@
     {assign var="picture" value="`$hostname`/`$root`/`$datadir`/`$themes[i].mainlcd`/`$themes[i].shortname`/`$themes[i].sshot_wps`"}
         <item>
             <title>{$themes[i].name|escape} by {$themes[i].author|escape:'html'}{if not $smarty.request.target} for {$themes[i].mainlcd} screens{/if}</title>
-            <link>{$hostname}/{$datadir}/{$themes[i].mainlcd}/{$themes[i].shortname|escape:'html'}/{$themes[i].zipfile|escape:'html'}</link>
+            <link>{$hostname}/download.php?themeid={$themes[i].id}</link>
             <description>
                 {"<img src='$picture' />"|escape:'html'}
                 {$themes[i].description|escape:'html'}
