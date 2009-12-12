@@ -31,7 +31,7 @@
         {else}
             {assign var="oversrc" value=""}
         {/if}
-        <td>{html_image file="`$datadir`/`$themes[i].mainlcd`/`$themes[i].shortname`/`$themes[i].sshot_wps`" href="download.php?themeid=`$themes[i].id`" oversrc=$oversrc}</td>
+        <td>{html_image file="`$datadir`/`$themes[i].mainlcd`/`$themes[i].shortname`/`$themes[i].sshot_wps`" href="`$datadir`/`$themes[i].mainlcd`/`$themes[i].shortname`/`$themes[i].zipfile`" oversrc=$oversrc}</td>
         <td>
             <strong>{$themes[i].name}</strong>
             <p><small>
@@ -39,8 +39,8 @@
             {if $themes[i].verified == 0}
             <strong style='color:red'>The author has not verified this theme</strong><br />
             {/if}
-            <strong>Submited:</strong>&nbsp;{$themes[td].timestamp|escape:'html'}<br />
-            <strong>Download Count:</strong>&nbsp;{$themes[i].downloadcnt|escape:'html'}<br />
+            <strong>Submited:</strong><br />  
+            &nbsp;{$themes[td].timestamp|escape:'html'}<br />
             {$themes[i].description|escape:'html'}
             {if $themes[i].current_pass}
             <br /><strong>Works with <span title="$themes[i].current_version}">current build</span></strong>

@@ -22,13 +22,14 @@
     {else}
         {assign var="oversrc" value=""}
     {/if}
-    {html_image file="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_wps`" href="download.php?themeid=`$theme.id`" oversrc=$oversrc}<br />
+    {html_image file="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_wps`" href="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.zipfile`" oversrc=$oversrc}<br />
     <small>Size: {$theme.size|siprefix}B</small>
     </p>
     <small>
-    <strong>Submitter:</strong>&nbsp;{$theme.author|escape:'html'}<br />
-    <strong>Submited:</strong>&nbsp;{$theme.timestamp|escape:'html'}<br />
-    <strong>Download Count:</strong>&nbsp;{$theme.downloadcnt|escape:'html'}<br />
+    <strong>Submitter:</strong><br />  
+    &nbsp;{$theme.author|escape:'html'}<br />
+    <strong>Submited:</strong><br />  
+    &nbsp;{$theme.timestamp|escape:'html'}<br />
     <strong>Description:</strong><br />  
     &nbsp;{$theme.description|escape:'html'}<br />
     {if $theme.current_pass}

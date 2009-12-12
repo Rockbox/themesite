@@ -22,7 +22,7 @@ image="{$root}/{$datadir}/{$themes[i].mainlcd}/{$themes[i].shortname}/{$themes[i
 {if $themes[i].sshot_menu neq ""}
 image2="{$root}/{$datadir}/{$themes[i].mainlcd}/{$themes[i].shortname}/{$themes[i].sshot_menu}"
 {/if}
-archive="{$root}/download.php?themeid={$themes[i].id}"
+archive="{$root}/{$datadir}/{$themes[i].mainlcd}/{$themes[i].shortname}/{$themes[i].zipfile}"
 author="{$themes[i].author|escape:'html'}"
 version="{$themes[i].timestamp}"
 about="{$themes[i].description|escape:'html'}"

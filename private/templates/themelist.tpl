@@ -36,13 +36,14 @@ loop=$smarty.section.tr.index+$cols}
     {else}
         {assign var="oversrc" value=""}
     {/if}
-    {html_image file="`$datadir`/`$themes[td].mainlcd`/`$themes[td].shortname`/`$themes[td].sshot_wps`" href="download.php?themeid=`$themes[td].id`" oversrc=$oversrc}<br />
+    {html_image file="`$datadir`/`$themes[td].mainlcd`/`$themes[td].shortname`/`$themes[td].sshot_wps`" href="`$datadir`/`$themes[td].mainlcd`/`$themes[td].shortname`/`$themes[td].zipfile`" oversrc=$oversrc}<br />
     <small>Size: {$themes[td].size|siprefix}B</small>
     </p>
     <small>
-    <strong>Submitter:</strong> &nbsp;{$themes[td].author|escape:'html'}<br />
-    <strong>Submited:</strong>  &nbsp;{$themes[td].timestamp|escape:'html'}<br />
-    <strong>Download Count:</strong>&nbsp;{$themes[td].downloadcnt|escape:'html'}<br />
+    <strong>Submitter:</strong><br />  
+    &nbsp;{$themes[td].author|escape:'html'}<br />
+    <strong>Submited:</strong><br />  
+    &nbsp;{$themes[td].timestamp|escape:'html'}<br />
     <strong>Description:</strong><br />  
     &nbsp;{$themes[td].description|escape:'html'}<br />
     {if $themes[td].current_pass}

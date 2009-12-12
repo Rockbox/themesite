@@ -163,7 +163,7 @@ class themesite {
     public function themedetails($id) {
         $sql = sprintf("
             SELECT
-            name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu, email, downloadcnt,
+            name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu, email,
             emailverification = 1 as verified,
             themes.RowId as id,
             c.version_number AS current_version,
@@ -216,12 +216,12 @@ class themesite {
         }
 
         if ($target === false) {
-            $sql = "SELECT DISTINCT themes.name AS name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu, downloadcnt , emailverification = 1 as verified, themes.RowId as id FROM themes,checkwps WHERE themes.rowid=checkwps.themeid AND checkwps.pass=1 AND approved=1 AND emailverification=1 ORDER BY " . $orderby;
+            $sql = "SELECT DISTINCT themes.name AS name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu, emailverification = 1 as verified, themes.RowId as id FROM themes,checkwps WHERE themes.rowid=checkwps.themeid AND checkwps.pass=1 AND approved=1 AND emailverification=1 ORDER BY " . $orderby;
         }
         else {
             $sql = sprintf("
                 SELECT
-                name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu, email, downloadcnt,
+                name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu,email,
                 emailverification = 1 as verified,
                 themes.RowId as id,
                 c.version_number AS current_version,
@@ -254,21 +254,7 @@ class themesite {
         }
         return $ret;
     }
-    
-    public function downloadUrl($themeid) {
-        $sql = sprintf("SELECT mainlcd, shortname, zipfile FROM themes WHERE RowId='%s'",
-            db::quote($themeid)
-        );
-        $data = $this->db->query($sql)->next();
-        $url = sprintf("%s/%s/%s",$data['mainlcd'],$data['shortname'],$data['zipfile']);
-        
-        $sql = sprintf("UPDATE themes SET downloadcnt=downloadcnt+1 WHERE RowId='%s'",
-            db::quote($themeid)
-        );
-        $this->db->query($sql);
-        return $url;
-    }
-    
+
     public function target2lcd($shortname) {
         $sql = sprintf("SELECT mainlcd, remotelcd, depth FROM targets WHERE shortname='%s'",
             db::quote($shortname)
@@ -487,7 +473,7 @@ END;
                 $movedfiles[] = $dest;
             }
         }
-        $sql_f = "INSERT INTO themes (author, email, name, mainlcd, zipfile, sshot_wps, sshot_menu, remotelcd, description, shortname, emailverification, timestamp, approved, downloadcnt) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', %s, %s, '%s', '%s', 0, datetime('now'), %d, 0)";
+        $sql_f = "INSERT INTO themes (author, email, name, mainlcd, zipfile, sshot_wps, sshot_menu, remotelcd, description, shortname, emailverification, timestamp, approved) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', %s, %s, '%s', '%s', 0, datetime('now'), %d)";
         $sql = sprintf($sql_f,
             db::quote($author),
             db::quote($email),
