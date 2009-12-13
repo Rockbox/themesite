@@ -160,7 +160,20 @@ class themesite {
         return $files;
     }
 
-    public function themedetails($id) {
+    public function themedetails($id, $onlyapproved = false, $onlyverified = false) {
+        if ($onlyverified == true) {
+            $verified = " AND verified = 1 ";
+        }
+        else {
+            $verified = "";
+        }
+        if ($onlyapproved == true) {
+            $approved = " AND approved = 1 ";
+        }
+        else {
+            $approved = "";
+        }
+        
         $sql = sprintf("
             SELECT
             name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu, email, downloadcnt,
@@ -173,8 +186,10 @@ class themesite {
             FROM themes
             LEFT OUTER JOIN checkwps c ON (themes.rowid=c.themeid and c.version_type='current')
             LEFT OUTER JOIN checkwps r ON (themes.rowid=r.themeid and r.version_type='release')
-            WHERE id=%d",
-            db::quote($id)
+            WHERE id=%d %s %s",
+            db::quote($id),
+            $verified,
+            $approved
         );
         $theme = $this->db->query($sql)->next();
         $zipfile = sprintf("%s/%s/%s/%s",

@@ -1,3 +1,4 @@
+{if $theme == ''}
 {assign var="themename" value=$theme.name}
 {assign var="self" value="$themename Theme"}
 {assign var="parent" value="index.php?target=`$smarty.request.target`|Themes for `$target`"}
@@ -28,7 +29,7 @@
     <small>
     <strong>Submitter:</strong>&nbsp;{$theme.author|escape:'html'}<br />
     <strong>Submited:</strong>&nbsp;{$theme.timestamp|escape:'html'}<br />
-    <strong>Download Count:</strong>&nbsp;{$theme.downloadcnt|escape:'html'}<br />
+    <strong>Downloaded {$theme.downloadcnt|escape:'html'} times</strong><br />
     <strong>Description:</strong><br />  
     &nbsp;{$theme.description|escape:'html'}<br />
     {if $theme.current_pass}
@@ -43,5 +44,14 @@
     </td>
   </tr>
 </table>
+{else}
 
+{assign var="self" value="This theme doesnt exist"}
+{assign var="parent" value="index.php?target=`$smarty.request.target`|Themes for `$target`"}
+{assign var="grandparent" value="index.php|Frontpage"}
+{include file="header.tpl" title=$self}
+
+<h1>{$self}</h1>
+
+{/if}
 {include file="footer.tpl"}

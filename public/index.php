@@ -26,7 +26,7 @@ require_once('preconfig.inc.php');
 /* This currently doesn't exist - but might show more details about a theme */
 if (isset($_REQUEST['target']) && isset($_REQUEST['themeid'])) {
     $t->assign('target', $site->target2fullname($_REQUEST['target']));
-    $t->assign('theme',$site->themedetails($_REQUEST['themeid']));
+    $t->assign('theme',$site->themedetails($_REQUEST['themeid'],true,true));
     $template = 'theme.tpl';
 }
 /* Show all themes for a specific target */
