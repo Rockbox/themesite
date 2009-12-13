@@ -698,7 +698,10 @@ END;
                         exec(sprintf("%s %s", $checkwps, escapeshellarg($file)), $output, $ret);
                         $result['pass'] = ($ret == 0);
                         $result['output'] = $output;
-                        $return[$version][$shortname] = $result;
+                        /* only overwrite results if there is no previous result or previous did pass */
+                        if(empty($return[$version][$shortname]) || $return[$version][$shortname]['pass']) {
+                            $return[$version][$shortname] = $result;
+                        }              
                     }
                 }
             }
