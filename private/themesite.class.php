@@ -96,6 +96,7 @@ class themesite {
              * Store the results and check if at least one check passed (for
              * the summary)
              */
+            $this->db->query(sprintf("DELETE FROM checkwps WHERE themeid=%d", $theme['RowID']));
             $passany = false;
             foreach($result as $version_type => $targets) {
                 foreach($targets as $target => $result) {
@@ -640,10 +641,12 @@ END;
         }
     }
 
-    public function lcd2targets($lcd) {
+    public function lcd2targets($lcd,$isremote) {
         $ret = array();
-        $sql = sprintf("SELECT shortname FROM targets WHERE mainlcd='%s' OR remotelcd='%s'",
-            db::quote($lcd),
+        if($isremote) $lcdclause = "remotelcd";
+        else $lcdclause="mainlcd";
+        $sql = sprintf("SELECT shortname FROM targets WHERE %s='%s'",
+            $lcdclause,
             db::quote($lcd)
         );
         $targets = $this->db->query($sql);
@@ -682,7 +685,7 @@ END;
             $p = $this->my_pathinfo($file);
             $lcd = ($p['extension'] == 'rwps' || $p['extension'] == 'rsbs'  ? $remotelcd : $mainlcd);
             foreach(array('release', 'current') as $version) {
-                foreach($this->lcd2targets($lcd) as $shortname) {
+                foreach($this->lcd2targets($lcd,($lcd != $mainlcd)) as $shortname) {
                     $result = array();
                     $checkwps = sprintf("%s/checkwps/%s/checkwps.%s",
                         '..', /* We'll be in a subdir of the private dir */
