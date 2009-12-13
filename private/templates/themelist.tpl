@@ -41,8 +41,8 @@ loop=$smarty.section.tr.index+$cols}
     </p>
     <small>
     <strong>Submitter:</strong> &nbsp;{$themes[td].author|escape:'html'}<br />
-    <strong>Submited:</strong>  &nbsp;{$themes[td].timestamp|escape:'html'}<br />
-    <strong>Download {$themes[td].downloadcnt|escape:'html'} times</strong><br />
+    <strong>Submitted:</strong>  &nbsp;{$themes[td].timestamp|escape:'html'}<br />
+    <strong>Downloaded {$themes[td].downloadcnt|escape:'html'} time{if $themes[td].downloadcnt != 1}s{/if}</strong><br />
     <strong>Description:</strong><br />  
     &nbsp;{$themes[td].description|escape:'html'}<br />
     {if $themes[td].current_pass}

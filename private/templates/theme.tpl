@@ -27,8 +27,8 @@
     </p>
     <small>
     <strong>Submitter:</strong>&nbsp;{$theme.author|escape:'html'}<br />
-    <strong>Submited:</strong>&nbsp;{$theme.timestamp|escape:'html'}<br />
-    <strong>Downloaded {$theme.downloadcnt|escape:'html'} times</strong><br />
+    <strong>Submitted:</strong>&nbsp;{$theme.timestamp|escape:'html'}<br />
+    <strong>Downloaded {$theme.downloadcnt|escape:'html'} time{if $theme.downloadcnt != 1}s{/if}</strong><br />
     <strong>Description:</strong><br />  
     &nbsp;{$theme.description|escape:'html'}<br />
     {if $theme.current_pass}
