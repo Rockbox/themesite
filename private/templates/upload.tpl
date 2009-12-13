@@ -36,8 +36,12 @@ This is very unlikely to be your fault.
 
     <tr>
         <td><b>Theme name</b></td>
-        <td><input type="text" name="themename" size="32" value="{$smarty.post.themename|escape:'html'}" /></td>
-        {if is_array($errors) && isset($errors.themename)}<td class='error'>{$errors.themename}</td>{/if}
+        <td><input type="text" name="themename" size="32" value="{$smarty.post.themename|escape:'html'}" /> </td>
+        {if is_array($errors) && isset($errors.themename)} <td class='error'>{$errors.themename} </td> {/if}
+        {if is_array($errors) && isset($errors.update)} <td class='error'>
+            {$errors.update} <br />
+            <input type="checkbox" name="update" />
+        </td> {/if}
     </tr>
 
     <tr>

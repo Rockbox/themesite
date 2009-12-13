@@ -292,9 +292,20 @@ class themesite {
     }
 
     public function themenameexists($name, $mainlcd) {
-        $sql = sprintf("SELECT COUNT(*) as count FROM themes WHERE name='%s' AND mainlcd='%s'",
+        $sql = sprintf("SELECT COUNT(*) as count FROM themes WHERE name='%s' AND mainlcd='%s' AND approved=1",
             db::quote($name),
             db::quote($mainlcd)
+        );
+        $result = $this->db->query($sql)->next();
+        return $result['count'] > 0 ? true : false;
+    }
+    
+    public function themeisupdate($name, $mainlcd,$author,$email) {
+        $sql = sprintf("SELECT COUNT(*) as count FROM themes WHERE name='%s' AND mainlcd='%s' AND approved=1 AND author='%s' AND email='%s'",
+            db::quote($name),
+            db::quote($mainlcd),
+            db::quote($author),
+            db::quote($email)
         );
         $result = $this->db->query($sql)->next();
         return $result['count'] > 0 ? true : false;
@@ -446,6 +457,23 @@ END;
     }
 
     public function verifyemail($token) {
+        /* get theme details to search for updates */
+        $sql = sprintf("SELECT mainlcd, email, name, author FROM themes WHERE emailverification='%s'",
+            db::quote($token)
+        );
+        $searchtheme = $this->db->query($sql)->next();
+        /* hide potentially updated themes */
+        $sql = sprintf("SELECT RowID, approved FROM themes WHERE mainlcd='%s' AND name='%s' AND email='%s' AND author='%s' AND approved='1' AND emailverification='1'",
+            db::quote($searchtheme['mainlcd']),
+            db::quote($searchtheme['name']),
+            db::quote($searchtheme['email']),
+            db::quote($searchtheme['author'])
+        );
+        $themes = $this->db->query($sql);
+        while ($theme = $themes->next()) {
+            $this->changestatus($theme['RowID'],0,$theme['approved'],"Theme was replaced by newer version.");
+        } 
+        /* change theme as verified */
         $sql = sprintf("UPDATE themes SET emailverification=1 WHERE emailverification='%s'",
             db::quote($token)
         );

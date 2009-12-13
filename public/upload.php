@@ -41,9 +41,6 @@ function checkuploadfields(&$site, &$err) {
             if (trim($value) == '') {
                 $err[$field] = "You need to provide a theme name";
             }
-            elseif ($site->themenameexists($value, $lcd['mainlcd'])) {
-                $err[$field] = sprintf("A theme with the name '%s' already exists for this target", $value);
-            }
             break;
         case 'ccbysa':
             if ($value !== "on") {
@@ -58,6 +55,17 @@ function checkuploadfields(&$site, &$err) {
     }
     if (!isset($_REQUEST['ccbysa'])) {
         $err['ccbysa'] = "You need to accept to license your work under the Creative Commons Attribution Share Alike license to share your work here.";
+    }
+    /* check dublicate/update */
+    if ($site->themenameexists($_REQUEST['themename'], $lcd['mainlcd'])) {
+        if($site->themeisupdate($_REQUEST['themename'], $lcd['mainlcd'],$_REQUEST['author'],$_REQUEST['email'])) {
+            if(!isset($_REQUEST['update']) || $_REQUEST['update'] != "on") {
+                $err['update'] = sprintf("A theme with the name '%s' already exists for this target. Do you want to update it?", $_REQUEST['themename']);
+            }
+        } 
+        else {
+            $err['themename'] = sprintf("A theme with the name '%s' already exists for this target.", $_REQUEST['themename']);
+        }
     }
 }
 
