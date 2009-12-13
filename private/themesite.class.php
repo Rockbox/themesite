@@ -99,20 +99,19 @@ class themesite {
             $this->db->query(sprintf("DELETE FROM checkwps WHERE themeid=%d", $theme['RowID']));
             $passany = false;
             foreach($result as $version_type => $targets) {
-                foreach($targets as $target => $result) {
-                    if ($result['pass']) $passany = true; /* For the summary */
+                foreach($targets as $target => $result2) {
+                    if ($result2['pass']) $passany = true; /* For the summary */
                     /*
                      * Maybe we want to have two tables - one with historic
                      * data, and one with only the latest results for fast
                      * retrieval?
                      */     
-                    $this->db->query(sprintf("DELETE FROM checkwps WHERE themeid=%d AND version_type='%s' AND target='%s'", $theme['RowID'], db::quote($version_type), db::quote($target)));
                     $sql = sprintf("INSERT INTO checkwps (themeid, version_type, version_number, target, pass) VALUES (%d, '%s', '%s', '%s', '%s')",
                         $theme['RowID'],
                         db::quote($version_type),
-                        db::quote($result['version']),
+                        db::quote($result2['version']),
                         db::quote($target),
-                        db::quote($result['pass'] ? 1 : 0)
+                        db::quote($result2['pass'] ? 1 : 0)
                     );
                     $this->db->query($sql);
                 }

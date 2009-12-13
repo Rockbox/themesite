@@ -12,8 +12,25 @@
 {else}
     <tt style="color: red">fail</tt>
 {/if}
+&mdash; 
+{$checkwpsresults[i].theme.mainlcd}/{$checkwpsresults[i].theme.shortname}/{$checkwpsresults[i].theme.zipfile} ({$checkwpsresults[i].summary.duration|string_format:'%0.3f'} seconds)
 
-&mdash; {$checkwpsresults[i].theme.mainlcd}/{$checkwpsresults[i].theme.shortname}/{$checkwpsresults[i].theme.zipfile} ({$checkwpsresults[i].summary.duration|string_format:'%0.3f'} seconds)<br />
+{foreach from=$checkwpsresults[i].result key=version item=result}
+    {foreach from=$result key=target item=res}
+        &mdash; {$version} {$target}: 
+        {if $res.pass}
+            <tt style="color: green">pass</tt>
+        {else}
+            <tt style="color: red">fail</tt>
+        {/if}
+    {/foreach}
+{/foreach}
+
+{assign var="resultkeys" value=array_keys($checkwpsresults[i].results)}
+{section name=j loop=$resultkeys}
+  <tt style="color: green">$resultkeys[j]</tt>
+{/section}
+<br />
 {/section}
 
 {include file="footer.tpl"}
