@@ -38,18 +38,18 @@
     {$theme.numratings} vote{if $theme.numratings !=1}s.{/if}
     <br />
     <small>
-    <strong>Submitter:</strong>&nbsp;{$theme.author|escape:'html'}<br />
-    <strong>Submitted:</strong>&nbsp;{$theme.timestamp|escape:'html'}<br />
+    <strong>Submitter: </strong>&nbsp;{$theme.author|escape:'html'}<br />
+    <strong>Submitted: </strong>&nbsp;{$theme.timestamp|escape:'html'}<br />
     <strong>Downloaded {$theme.downloadcnt|escape:'html'} time{if $theme.downloadcnt != 1}s{/if}</strong><br />
     <strong>Description:</strong><br />  
     &nbsp;{$theme.description|escape:'html'}<br />
     {if $theme.current_pass}
-    <strong>Works with <span class="build_info" title="{$themes[td].current_version}">current build</span></strong><br />
+    <strong>Works with <span class="build_info" title="{$theme.current_version}">current build</span></strong><br />
     {else}
-    <strong class="broken_build">Doesn't work with <span class="build_info" title="{$themes[td].current_version}">current build</span></strong><br />
+    <strong class="broken_build">Doesn't work with <span class="build_info" title="{$theme.current_version}">current build</span></strong><br />
     {/if}
     {if $theme.release_pass}
-    <strong>Works with release {$themes[td].release_version}</strong><br />
+    <strong>Works with release {$theme.release_version}</strong><br />
     {/if}
     </small>
     <form method="POST" action="{$smarty.server.SCRIPT_NAME}?themeid={$theme.id}&amp;target={$smarty.request.target}">
