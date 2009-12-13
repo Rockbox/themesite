@@ -39,6 +39,18 @@ loop=$smarty.section.tr.index+$cols}
     {html_image file="`$datadir`/`$themes[td].mainlcd`/`$themes[td].shortname`/`$themes[td].sshot_wps`" href="download.php?themeid=`$themes[td].id`" oversrc=$oversrc}<br />
     <small>Size: {$themes[td].size|siprefix}B</small>
     </p>
+    <strong>Rating:</strong> &nbsp;
+    {section name=i loop=10 step=2}
+        {if $smarty.section.i.iteration*2 <= $themes[td].ratings}
+           <img src="filled.png" style="width:15px; height:15px;" />
+        {elseif ($smarty.section.i.iteration*2)-1 <= $themes[td].ratings}
+            <img src="half.png" style="width:15px; height:15px;" />
+        {else}
+            <img src="empty.png" style="width:15px; height:15px;" />
+        {/if}
+    {/section} 
+    {$themes[td].numratings} vote{if $themes[td].numratings !=1}s.{/if}
+    <br />
     <small>
     <strong>Submitter:</strong> &nbsp;{$themes[td].author|escape:'html'}<br />
     <strong>Submitted:</strong>  &nbsp;{$themes[td].timestamp|escape:'html'}<br />
@@ -53,6 +65,23 @@ loop=$smarty.section.tr.index+$cols}
     {if $themes[td].release_pass}
     <strong>Works with release {$themes[td].release_version}</strong><br />
     {/if}
+    <form method="POST" action="{$smarty.server.SCRIPT_NAME}?target={$smarty.request.target}">
+        <input type="hidden" name="ratetheme" value={$themes[td].id} />
+        <select name=rating>
+            <option value='10'>10 - Top</option>
+            <option value='9'>9</option>
+            <option value='8'>8</option>
+            <option value='7'>7</option>
+            <option value='6'>6</option>
+            <option value='5'>5- Medium</option>
+            <option value='4'>4</option>
+            <option value='3'>3</option>
+            <option value='2'>2</option>
+            <option value='1'>1</option>
+            <option value='0'>0 - Flop</option>
+        </select>
+        <input type="submit" value="Rate" />
+    </form>
     </small>
     </td>
     {/if}

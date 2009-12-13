@@ -176,7 +176,7 @@ class themesite {
         
         $sql = sprintf("
             SELECT
-            name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu, email, downloadcnt,
+            name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu, email, downloadcnt, ratings, numratings,
             emailverification = 1 as verified,
             themes.RowId as id,
             c.version_number AS current_version,
@@ -206,6 +206,7 @@ class themesite {
                 $theme['shortname'],
                 $theme['zipfile']
             ));
+        if($theme['numratings'] > 0) $theme['ratings'] = $theme['ratings'] /$theme['numratings'] ;     
         return $theme;
     }
 
@@ -231,12 +232,12 @@ class themesite {
         }
 
         if ($target === false) {
-            $sql = "SELECT DISTINCT themes.name AS name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu, downloadcnt , emailverification = 1 as verified, themes.RowId as id FROM themes,checkwps WHERE themes.rowid=checkwps.themeid AND checkwps.pass=1 AND approved=1 AND emailverification=1 ORDER BY " . $orderby;
+            $sql = "SELECT DISTINCT themes.name AS name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu, downloadcnt, ratings, numratings, emailverification = 1 as verified, themes.RowId as id FROM themes,checkwps WHERE themes.rowid=checkwps.themeid AND checkwps.pass=1 AND approved=1 AND emailverification=1 ORDER BY " . $orderby;
         }
         else {
             $sql = sprintf("
                 SELECT
-                name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu, email, downloadcnt,
+                name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu, email, downloadcnt, ratings, numratings,
                 emailverification = 1 as verified,
                 themes.RowId as id,
                 c.version_number AS current_version,
@@ -258,6 +259,7 @@ class themesite {
             );
         }
         $themes = $this->db->query($sql);
+        /* create additional data */
         while ($theme = $themes->next()) {
             $theme['size'] = filesize(sprintf("%s/%s/%s/%s",
                 $theme['approved'] == 1 ? $this->themedir_public : $this->themedir_private,
@@ -265,6 +267,7 @@ class themesite {
                 $theme['shortname'],
                 $theme['zipfile']
             ));
+            if($theme['numratings'] > 0) $theme['ratings'] = $theme['ratings'] / $theme['numratings']; 
             $ret[] = $theme;
         }
         return $ret;
@@ -530,7 +533,7 @@ END;
                 $movedfiles[] = $dest;
             }
         }
-        $sql_f = "INSERT INTO themes (author, email, name, mainlcd, zipfile, sshot_wps, sshot_menu, remotelcd, description, shortname, emailverification, timestamp, approved, downloadcnt) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', %s, %s, '%s', '%s', 0, datetime('now'), %d, 0)";
+        $sql_f = "INSERT INTO themes (author, email, name, mainlcd, zipfile, sshot_wps, sshot_menu, remotelcd, description, shortname, emailverification, timestamp, approved, downloadcnt, ratings, numratings) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', %s, %s, '%s', '%s', 0, datetime('now'), %d, 0, 0, 0)";
         $sql = sprintf($sql_f,
             db::quote($author),
             db::quote($email),
@@ -558,6 +561,14 @@ END;
             db::quote($author),
             db::quote($email),
             db::quote($description),
+            db::quote($id)
+        );
+        $this->db->query($sql);
+    }
+    
+    public function ratetheme($id,$rating) {
+        $sql = sprintf("UPDATE themes SET ratings=ratings+'%s', numratings=numratings+1 WHERE RowID=%d",
+            db::quote($rating),
             db::quote($id)
         );
         $this->db->query($sql);

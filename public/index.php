@@ -23,6 +23,11 @@
 require_once('preconfig.inc.php');
 
 /* Decide what to do */
+/* update a rating ? */
+if (isset($_REQUEST['ratetheme'])) {
+    $site->ratetheme($_REQUEST['ratetheme'],$_REQUEST['rating']);
+}
+
 /* This currently doesn't exist - but might show more details about a theme */
 if (isset($_REQUEST['target']) && isset($_REQUEST['themeid'])) {
     $t->assign('target', $site->target2fullname($_REQUEST['target']));
