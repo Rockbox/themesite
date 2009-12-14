@@ -16,6 +16,7 @@
 <form method="POST" action="{$smarty.server.SCRIPT_NAME}?target={$smarty.request.target}">
         <input type="hidden" name="order" value="yes" />
         Ordered by: {html_options name=orderby options=$sortings selected=$smarty.request.orderby} 
+        {html_options name=direction options=$directions selected=$smarty.request.direction}
         <input type="submit" value="Go" />
 </form>
 <table class="rockbox">

@@ -37,16 +37,15 @@ if (isset($_REQUEST['target']) && isset($_REQUEST['themeid'])) {
 /* Show all themes for a specific target */
 elseif (isset($_REQUEST['target'])) {
     $lcd = $site->target2lcd($_REQUEST['target']);
-    if(isset($_REQUEST['order'])) $values['themes'] = $site->listthemes($_REQUEST['target'],$_REQUEST['orderby']);
+    if(isset($_REQUEST['order'])) $values['themes'] = $site->listthemes($_REQUEST['target'],sprintf("%s %s",$_REQUEST['orderby'],$_REQUEST['direction']));
     else $values['themes'] = $site->listthemes($_REQUEST['target']);
-    $t->assign('sortings',array('timestamp DESC' => 'Submitted time - descending',
-                                'timestamp ASC' => 'Submitted time - ascending',
-                                'downloadcnt DESC' => 'Download count - descending',
-                                'downloadcnt ASC' => 'Download count - ascending',
-                                'ratings DESC' => 'Rating - descending',
-                                'ratings ASC' => 'Rating - ascending',
-                                'numratings DESC' => 'Number of Votes - descending',
-                                'numratings ASC' => 'Number of Votes - ascending'));
+    $t->assign('sortings',array('timestamp' => 'Submitted time',
+                                'downloadcnt' => 'Download count',
+                                'ratings' => 'Rating',
+                                'numratings' => 'Number of Votes',
+                                'name' => 'Themename',
+                                'author' => 'Author'));
+    $t->assign('directions',array('DESC' => 'descending','ASC' => 'ascending'));                            
     $t->assign('mainlcd', $lcd['mainlcd']);
     $t->assign('target', $site->target2fullname($_REQUEST['target']));
     $template = 'themelist.tpl';
