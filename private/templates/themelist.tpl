@@ -12,7 +12,12 @@
 {* Decide the number of columns by the lcd width *}
 {math assign="cols" equation="floor(min(10, x / y))" x=1000 y=$mainlcd|regex_replace:'/x.*/':''}
 {assign var="cols" value="3"}
-
+{* let the user select order *}
+<form method="POST" action="{$smarty.server.SCRIPT_NAME}?target={$smarty.request.target}">
+        <input type="hidden" name="order" value="yes" />
+        Ordered by: {html_options name=orderby options=$sortings selected=$smarty.request.orderby} 
+        <input type="submit" value="Go" />
+</form>
 <table class="rockbox">
   {section name=tr loop=$themes step=$cols}
   {* First print a row with theme names *}

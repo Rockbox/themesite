@@ -28,7 +28,7 @@ if (isset($_REQUEST['ratetheme'])) {
     $site->ratetheme($_REQUEST['ratetheme'],$_REQUEST['rating']);
 }
 
-/* This currently doesn't exist - but might show more details about a theme */
+/* show more details about a theme */
 if (isset($_REQUEST['target']) && isset($_REQUEST['themeid'])) {
     $t->assign('target', $site->target2fullname($_REQUEST['target']));
     $t->assign('theme',$site->themedetails($_REQUEST['themeid'],true,true));
@@ -37,7 +37,16 @@ if (isset($_REQUEST['target']) && isset($_REQUEST['themeid'])) {
 /* Show all themes for a specific target */
 elseif (isset($_REQUEST['target'])) {
     $lcd = $site->target2lcd($_REQUEST['target']);
-    $values['themes'] = $site->listthemes($_REQUEST['target']);
+    if(isset($_REQUEST['order'])) $values['themes'] = $site->listthemes($_REQUEST['target'],$_REQUEST['orderby']);
+    else $values['themes'] = $site->listthemes($_REQUEST['target']);
+    $t->assign('sortings',array('timestamp ASC' => 'Submitted time - ascending',
+                                'timestamp DESC' => 'Submitted time - descending',
+                                'downloadcnt ASC' => 'Download count - ascending',
+                                'downloadcnt DESC' => 'Download count - descending',
+                                'ratings ASC' => 'Rating - ascending',
+                                'ratings DESC' => 'Rating - descending',
+                                'numratings ASC' => 'Number of Votes - ascending',
+                                'numratings DESC' => 'Number of Votes - descending'));
     $t->assign('mainlcd', $lcd['mainlcd']);
     $t->assign('target', $site->target2fullname($_REQUEST['target']));
     $template = 'themelist.tpl';

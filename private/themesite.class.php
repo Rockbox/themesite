@@ -255,7 +255,7 @@ class themesite {
                 db::quote($target),
                 $verified,
                 $approved_clause,
-                $orderby
+                db::quote($orderby)
             );
         }
         $themes = $this->db->query($sql);
