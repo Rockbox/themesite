@@ -39,14 +39,14 @@ elseif (isset($_REQUEST['target'])) {
     $lcd = $site->target2lcd($_REQUEST['target']);
     if(isset($_REQUEST['order'])) $values['themes'] = $site->listthemes($_REQUEST['target'],$_REQUEST['orderby']);
     else $values['themes'] = $site->listthemes($_REQUEST['target']);
-    $t->assign('sortings',array('timestamp ASC' => 'Submitted time - ascending',
-                                'timestamp DESC' => 'Submitted time - descending',
-                                'downloadcnt ASC' => 'Download count - ascending',
+    $t->assign('sortings',array('timestamp DESC' => 'Submitted time - descending',
+                                'timestamp ASC' => 'Submitted time - ascending',
                                 'downloadcnt DESC' => 'Download count - descending',
-                                'ratings ASC' => 'Rating - ascending',
+                                'downloadcnt ASC' => 'Download count - ascending',
                                 'ratings DESC' => 'Rating - descending',
-                                'numratings ASC' => 'Number of Votes - ascending',
-                                'numratings DESC' => 'Number of Votes - descending'));
+                                'ratings ASC' => 'Rating - ascending',
+                                'numratings DESC' => 'Number of Votes - descending',
+                                'numratings ASC' => 'Number of Votes - ascending'));
     $t->assign('mainlcd', $lcd['mainlcd']);
     $t->assign('target', $site->target2fullname($_REQUEST['target']));
     $template = 'themelist.tpl';
