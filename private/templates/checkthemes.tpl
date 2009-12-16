@@ -6,31 +6,30 @@
 
 {include file="breadcrumbs.tpl"}
 
+<table class="rockbox">
 {section name=i loop=$checkwpsresults}
-{if $checkwpsresults[i].summary.pass}
-    <tt style="color: green">pass</tt>
-{else}
-    <tt style="color: red">fail</tt>
-{/if}
-&mdash; 
-{$checkwpsresults[i].theme.mainlcd}/{$checkwpsresults[i].theme.shortname}/{$checkwpsresults[i].theme.zipfile} ({$checkwpsresults[i].summary.duration|string_format:'%0.3f'} seconds)
-
-{foreach from=$checkwpsresults[i].result key=version item=result}
-    {foreach from=$result key=target item=res}
-        &mdash; {$version} {$target}: 
-        {if $res.pass}
-            <tt style="color: green">pass</tt>
-        {else}
-            <tt style="color: red">fail</tt>
-        {/if}
+    <tr> <td>
+    {if $checkwpsresults[i].summary.pass}
+        <tt style="color: green">pass</tt>
+    {else}
+        <tt style="color: red">fail</tt>
+    {/if}
+    </td> <td> 
+    {$checkwpsresults[i].theme.mainlcd}/{$checkwpsresults[i].theme.shortname}/{$checkwpsresults[i].theme.zipfile} ({$checkwpsresults[i].summary.duration|string_format:'%0.3f'} seconds)
+    </td>
+    {foreach from=$checkwpsresults[i].result key=version item=result}
+        {foreach from=$result key=target item=res}
+            <td> 
+            {if $res.pass}
+                <tt style="color: green">{$target} {$version} </tt>
+            {else}
+                <tt style="color: red">{$target} {$version} </tt>
+            {/if}
+            </td>
+        {/foreach}
     {/foreach}
-{/foreach}
-
-{assign var="resultkeys" value=array_keys($checkwpsresults[i].results)}
-{section name=j loop=$resultkeys}
-  <tt style="color: green">$resultkeys[j]</tt>
+    </tr>
 {/section}
-<br />
-{/section}
+</table>
 
 {include file="footer.tpl"}

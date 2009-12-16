@@ -679,19 +679,12 @@ END;
         }
     }
 
-    public function lcd2targets($lcd,$isremote) {
+    public function lcd2targets($lcd) {
         $ret = array();
-        if($isremote) $lcdclause = "remotelcd";
-        else $lcdclause="mainlcd";
-        $sql = sprintf("SELECT shortname FROM targets WHERE %s='%s'",
-            $lcdclause,
+        $sql = sprintf("SELECT shortname, remotelcd FROM targets WHERE mainlcd='%s'",
             db::quote($lcd)
         );
-        $targets = $this->db->query($sql);
-        while ($target = $targets->next()) {
-            $ret[] = $target['shortname'];
-        }
-        return $ret;
+        return $this->db->query($sql);
     }
 
     /*
@@ -715,38 +708,44 @@ END;
         /* 
          * For all .wps and .rwps, run checkwps of both release and current for
          * all applicable targets
-         *
-         * 2009-06-20: Changed to only check .wps, since matching on remotelcd
-         *             had some less desirable side effects.
          */
-        foreach(glob('.rockbox/wps/*{wps,sbs}',GLOB_BRACE) as $file) {
-            $p = $this->my_pathinfo($file);
-            $lcd = ($p['extension'] == 'rwps' || $p['extension'] == 'rsbs'  ? $remotelcd : $mainlcd);
+        /* get list of targets to check */ 
+        $targets =  $this->lcd2targets($mainlcd);
+        /* for every target */ 
+        while($target = $targets->next()){
+            /* for both versions */ 
             foreach(array('release', 'current') as $version) {
-                foreach($this->lcd2targets($lcd,($lcd != $mainlcd)) as $shortname) {
+                /* for every skin file in the theme */
+                foreach(glob('.rockbox/wps/*{wps,sbs}',GLOB_BRACE) as $file) {
+                    $p = $this->my_pathinfo($file);
+                    /* skip file if it is a remote file, and remote resolution doesnt fit (ie remotechecking is optional on targets without native remote lcd resolution */
+                    if(($p['extension'] == 'rwps' || $p['extension'] == 'rsbs') && ($target['remotelcd'] != $remotelcd))
+                        continue;
+                        
+                    /* run checkwps */
                     $result = array();
                     $checkwps = sprintf("%s/checkwps/%s/checkwps.%s",
                         '..', /* We'll be in a subdir of the private dir */
                         $version,
-                        $shortname
+                        $target['shortname']
                     );
                     $result['version'] = trim(file_get_contents(sprintf('%s/checkwps/%s/VERSION',
                         '..',
                         $version,
-                        $shortname
+                        $target['shortname']
                     )));
                     if (file_exists($checkwps)) {
                         exec(sprintf("%s %s", $checkwps, escapeshellarg($file)), $output, $ret);
                         $result['pass'] = ($ret == 0);
                         $result['output'] = $output;
                         /* only overwrite results if there is no previous result or previous did pass */
-                        if(empty($return[$version][$shortname]) || $return[$version][$shortname]['pass']) {
-                            $return[$version][$shortname] = $result;
+                        if(empty($return[$version][$target['shortname']]) || $return[$version][$target['shortname']]['pass']) {
+                            $return[$version][$target['shortname']] = $result;
                         }              
                     }
                 }
             }
-        }
+        }        
 
         /* chdir back */
         chdir($olddir);
