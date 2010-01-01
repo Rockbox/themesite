@@ -41,7 +41,7 @@ elseif (isset($_REQUEST['target'])) {
     else $values['themes'] = $site->listthemes($_REQUEST['target']);
     $t->assign('sortings',array('timestamp' => 'Submitted time',
                                 'downloadcnt' => 'Download count',
-                                'ratings' => 'Rating',
+                                'ratings/numratings' => 'Rating',
                                 'numratings' => 'Number of Votes',
                                 'name' => 'Themename',
                                 'author' => 'Author'));
