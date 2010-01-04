@@ -28,6 +28,10 @@ if (isset($_REQUEST['ratetheme'])) {
     $site->ratetheme($_REQUEST['ratetheme'],$_REQUEST['rating']);
 }
 
+if (isset($_REQUEST['reporttheme'])) {
+    $site->changestatus($_REQUEST['reporttheme'], 2, 1, $_REQUEST['reason']);
+}
+
 /* show more details about a theme */
 if (isset($_REQUEST['themeid'])) {
     if (isset($_REQUEST['target'])) {

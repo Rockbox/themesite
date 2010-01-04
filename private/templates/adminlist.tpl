@@ -12,10 +12,12 @@
    <a href="{$smarty.server.SCRIPT_NAME}?target={$smarty.request.target}&amp;approved=any">Show{if $approved=="any"}ing{/if} all</a>
  | <a href="{$smarty.server.SCRIPT_NAME}?target={$smarty.request.target}&amp;approved=approved">Show{if $approved=="approved"}ing{/if} approved</a>
  | <a href="{$smarty.server.SCRIPT_NAME}?target={$smarty.request.target}&amp;approved=hidden">Show{if $approved=="hidden"}ing{/if} hidden</a>
+ | <a href="{$smarty.server.SCRIPT_NAME}?target={$smarty.request.target}&amp;approved=reported">Show{if $approved=="reported"}ing{/if} reported</a>
 {else}
    <a href="{$smarty.server.SCRIPT_NAME}?allthemes&amp;approved=any">Show{if $approved=="any"}ing{/if} all</a>
  | <a href="{$smarty.server.SCRIPT_NAME}?allthemes&amp;approved=approved">Show{if $approved=="approved"}ing{/if} approved</a>
  | <a href="{$smarty.server.SCRIPT_NAME}?allthemes&amp;approved=hidden">Show{if $approved=="hidden"}ing{/if} hidden</a>
+ | <a href="{$smarty.server.SCRIPT_NAME}?allthemes&amp;approved=reported">Show{if $approved=="reported"}ing{/if} reported</a>
 {/if}
 {if count($themes) == 0}
 <p>No themes match your selection</p>
@@ -74,6 +76,9 @@
             <label for="approved[{$id}]">Approved</label>
             <input type="radio" id="approved[{$id}]" name="status[{$id}]" value="1" {if $themes[i].approved == 1}checked="checked" {/if}/><br />
 
+            <label for="reported[{$id}]">Reported</label>
+            <input type="radio" id="reported[{$id}]" name="status[{$id}]" value="2" {if $themes[i].approved == 2}checked="checked" {/if}/><br />
+            
             <label for="hidden[{$id}]">Hidden</label>
             <input type="radio" id="hidden[{$id}]" name="status[{$id}]" value="0" {if $themes[i].approved == 0}checked="checked" {/if}/><br />
             

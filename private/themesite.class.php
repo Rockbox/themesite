@@ -52,7 +52,7 @@ class themesite {
             SELECT targets.shortname AS shortname, fullname, pic, targets.mainlcd AS mainlcd, depth, targets.remotelcd AS remotelcd, COUNT(themes.name) AS numthemes 
             FROM targets LEFT OUTER JOIN (SELECT DISTINCT themes.name AS name,checkwps.target AS target 
             FROM themes,checkwps 
-            WHERE themes.rowid=checkwps.themeid AND checkwps.pass=1 AND approved=1 AND emailverification=1) themes 
+            WHERE themes.rowid=checkwps.themeid AND checkwps.pass=1 AND approved>=1 AND emailverification=1) themes 
             ON targets.shortname=themes.target 
             GROUP BY targets.shortname||targets.mainlcd 
             ORDER BY %s
@@ -85,7 +85,7 @@ class themesite {
         while ($theme = $themes->next()) {
             $starttime = microtime(true);
             $zipfile = sprintf("%s/%s/%s/%s",
-                $theme['approved'] == 1 ? $this->themedir_public : $this->themedir_private,
+                $theme['approved'] >= 1 ? $this->themedir_public : $this->themedir_private,
                 $theme['mainlcd'],
                 $theme['shortname'],
                 $theme['zipfile']
@@ -160,7 +160,7 @@ class themesite {
         return $files;
     }
 
-    public function themedetails($id, $onlyapproved = false, $onlyverified = false) {
+    public function themedetails($id, $onlyapproved = false, $onlyverified = false, $onlyreported =false) {
         if ($onlyverified == true) {
             $verified = " AND verified = 1 ";
         }
@@ -169,6 +169,13 @@ class themesite {
         }
         if ($onlyapproved == true) {
             $approved = " AND approved = 1 ";
+        }
+        else {
+            $approved = "";
+        }
+        
+        if ($onlyreported == true) {
+            $approved = " AND approved = 2 ";
         }
         else {
             $approved = "";
@@ -193,7 +200,7 @@ class themesite {
         );
         $theme = $this->db->query($sql)->next();
         $zipfile = sprintf("%s/%s/%s/%s",
-            $theme['approved'] == 1 ? $this->themedir_public : $this->themedir_private,
+            $theme['approved'] >= 1 ? $this->themedir_public : $this->themedir_private,
             $theme['mainlcd'],
             $theme['shortname'],
             $theme['zipfile']
@@ -201,7 +208,7 @@ class themesite {
         $theme['files'] = $this->zipcontents($zipfile);
         
         $theme['size'] = filesize(sprintf("%s/%s/%s/%s",
-                $theme['approved'] == 1 ? $this->themedir_public : $this->themedir_private,
+                $theme['approved'] >= 1 ? $this->themedir_public : $this->themedir_private,
                 $theme['mainlcd'],
                 $theme['shortname'],
                 $theme['zipfile']
@@ -219,9 +226,12 @@ class themesite {
             case 'hidden':
                 $approved_clause = " AND approved = 0 ";
                 break;
+            case 'reported':
+                $approved_clause = " AND approved = 2 ";
+                break;
             case 'approved':
             default:
-                $approved_clause = " AND approved = 1 ";
+                $approved_clause = " AND approved >= 1 ";
                 break;
         }
         if ($onlyverified == true) {
@@ -232,7 +242,7 @@ class themesite {
         }
 
         if ($target === false) {
-            $sql = "SELECT DISTINCT themes.name AS name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu, downloadcnt, ratings, numratings, emailverification = 1 as verified, themes.RowId as id FROM themes,checkwps WHERE themes.rowid=checkwps.themeid AND checkwps.pass=1 AND approved=1 AND emailverification=1 ORDER BY " . $orderby;
+            $sql = "SELECT DISTINCT themes.name AS name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu, downloadcnt, ratings, numratings, emailverification = 1 as verified, themes.RowId as id FROM themes,checkwps WHERE themes.rowid=checkwps.themeid AND checkwps.pass=1 AND approved>=1 AND emailverification=1 " . $approved_clause . " ORDER BY " . $orderby;
         }
         else {
             $sql = sprintf("
@@ -262,7 +272,7 @@ class themesite {
         /* create additional data */
         while ($theme = $themes->next()) {
             $theme['size'] = filesize(sprintf("%s/%s/%s/%s",
-                $theme['approved'] == 1 ? $this->themedir_public : $this->themedir_private,
+                $theme['approved'] >= 1 ? $this->themedir_public : $this->themedir_private,
                 $theme['mainlcd'],
                 $theme['shortname'],
                 $theme['zipfile']
@@ -295,7 +305,7 @@ class themesite {
     }
 
     public function themenameexists($name, $mainlcd) {
-        $sql = sprintf("SELECT COUNT(*) as count FROM themes WHERE name='%s' AND mainlcd='%s' AND approved=1",
+        $sql = sprintf("SELECT COUNT(*) as count FROM themes WHERE name='%s' AND mainlcd='%s' AND approved>=1",
             db::quote($name),
             db::quote($mainlcd)
         );
@@ -304,7 +314,7 @@ class themesite {
     }
     
     public function themeisupdate($name, $mainlcd,$author,$email) {
-        $sql = sprintf("SELECT COUNT(*) as count FROM themes WHERE name='%s' AND mainlcd='%s' AND approved=1 AND author='%s' AND email='%s'",
+        $sql = sprintf("SELECT COUNT(*) as count FROM themes WHERE name='%s' AND mainlcd='%s' AND approved>=1 AND author='%s' AND email='%s'",
             db::quote($name),
             db::quote($mainlcd),
             db::quote($author),
@@ -315,7 +325,7 @@ class themesite {
     }
 
     public function changestatus($themeid, $newstatus, $oldstatus, $reason) {
-        $status_text = array('1' => 'Approved', '0' => 'hidden', '-1' => 'deleted');
+        $status_text = array('2' => 'Reported', '1' => 'Approved', '0' => 'hidden', '-1' => 'deleted');
         $this->log(sprintf("Changing status of theme %d from %s to %s - Reason: %s",
             $themeid,
             $status_text[$oldstatus],
@@ -360,7 +370,7 @@ class themesite {
             }
             rename($from, $to);
         }
-        if ($oldstatus == 1 && $newstatus < 1) {
+        if ($oldstatus >= 1 && $newstatus < 1) {
             // Send a mail to notify the user that his theme has been
             // hidden/deleted. No reason to distinguish, since the result
             // for him is the same.
@@ -466,7 +476,7 @@ END;
         );
         $searchtheme = $this->db->query($sql)->next();
         /* hide potentially updated themes */
-        $sql = sprintf("SELECT RowID, approved FROM themes WHERE mainlcd='%s' AND name='%s' AND email='%s' AND author='%s' AND approved='1' AND emailverification='1'",
+        $sql = sprintf("SELECT RowID, approved FROM themes WHERE mainlcd='%s' AND name='%s' AND email='%s' AND author='%s' AND approved>='1' AND emailverification='1'",
             db::quote($searchtheme['mainlcd']),
             db::quote($searchtheme['name']),
             db::quote($searchtheme['email']),
