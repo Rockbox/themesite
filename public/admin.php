@@ -53,6 +53,7 @@ if (!isset($_SESSION['user'])) {
 }
 else {
     /* Else, we need to figure out what to do then */
+    /* show list of themes for a target */
     if (isset($_REQUEST['target'])) {
         if (isset($_REQUEST['changestatuses'])) {
             changestatuses($site);
@@ -63,6 +64,17 @@ else {
         $t->assign('themes', $themes);
         $t->assign('approved', $approved);
         $t->assign('target', $site->target2fullname($_REQUEST['target']));
+    }
+    /* show all themes */
+    if (isset($_REQUEST['allthemes'])) {
+        if (isset($_REQUEST['changestatuses'])) {
+            changestatuses($site);
+        }
+        $approved = isset($_REQUEST['approved']) ? $_REQUEST['approved'] : 'any';
+        $template = 'adminlist.tpl';
+        $themes = $site->listthemes(false, 'timestamp DESC',$approved, $onlyverified = false);
+        $t->assign('themes', $themes);
+        $t->assign('approved', $approved);
     }
     /* Show a theme's details, possibly updating it as result of an admin
      * submitting changes */

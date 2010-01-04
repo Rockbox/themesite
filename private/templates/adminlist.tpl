@@ -1,19 +1,31 @@
+{if $target}
 {assign var="self" value="handle themes for $target"}
+{else}
+{assign var="self" value="handle all themes"}
+{/if}
 {assign var="parent" value="admin.php|Admin frontpage"}
 {include file="header.tpl" title="Admin - $self"}
 
 <h1>{$self|capitalize}</h1>
 {include file="breadcrumbs.tpl"}
-   
+{if $target}   
    <a href="{$smarty.server.SCRIPT_NAME}?target={$smarty.request.target}&amp;approved=any">Show{if $approved=="any"}ing{/if} all</a>
  | <a href="{$smarty.server.SCRIPT_NAME}?target={$smarty.request.target}&amp;approved=approved">Show{if $approved=="approved"}ing{/if} approved</a>
  | <a href="{$smarty.server.SCRIPT_NAME}?target={$smarty.request.target}&amp;approved=hidden">Show{if $approved=="hidden"}ing{/if} hidden</a>
-
+{else}
+   <a href="{$smarty.server.SCRIPT_NAME}?allthemes&amp;approved=any">Show{if $approved=="any"}ing{/if} all</a>
+ | <a href="{$smarty.server.SCRIPT_NAME}?allthemes&amp;approved=approved">Show{if $approved=="approved"}ing{/if} approved</a>
+ | <a href="{$smarty.server.SCRIPT_NAME}?allthemes&amp;approved=hidden">Show{if $approved=="hidden"}ing{/if} hidden</a>
+{/if}
 {if count($themes) == 0}
 <p>No themes match your selection</p>
 {else}
 <form method="POST" action="{$smarty.server.SCRIPT_NAME}">
+{if $target}
 <input type="hidden" name="target" value="{$smarty.request.target}" />
+{else}
+<input type="hidden" name="allthemes" value="yes" />
+{/if}
 <input type="hidden" name="approved" value="{$smarty.request.approved}" />
 <input type="hidden" name="changestatuses" value="1" />
 <table class="rockbox">
@@ -41,14 +53,20 @@
             {/if}
             <strong>Submitted:</strong>&nbsp;{$themes[td].timestamp|escape:'html'}<br />
             <strong>Downloaded {$themes[i].downloadcnt|escape:'html'} time{if $themes[i].downloadcnt != 1}s{/if}.</strong><br />
+            {if !$target}
+            <strong>Designed for LCD size: </strong>&nbsp;{$themes[i].mainlcd|escape:'html'}<br />
+            {if $themes[i].remotelcd} <strong>Designed for remote LCD size: </strong>&nbsp;{$themes[i].remotelcd|escape:'html'}<br /> {/if}
+            {/if}
             {$themes[i].description|escape:'html'}
+            {if $target}
             {if $themes[i].current_pass}
             <br /><strong>Works with <span title="$themes[i].current_version}">current build</span></strong>
             {/if}
             {if $themes[i].release_pass}
             <br /><strong>Works with release {$themes[i].release_version}</strong>
             {/if}
-            <br /><a href="admin.php?edittheme={$themes[i].id}&amp;parenttarget={$smarty.request.target}">Edit theme</a>
+            {/if}
+            <br /><a href="admin.php?edittheme={$themes[i].id}&amp;{if $target}parenttarget={$smarty.request.target}{/if}">Edit theme</a>
             </small></p>
         </td>
         <td>

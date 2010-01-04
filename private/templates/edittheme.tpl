@@ -1,5 +1,9 @@
 {assign var="self" value="Edit theme `$theme.name`"}
+{if $parenttarget}
 {assign var="parent" value="admin.php?target=`$smarty.request.parenttarget`|Edit themes for `$theme.mainlcd`"}
+{else}
+{assign var="parent" value="admin.php?allthemes|Edit all themes"}
+{/if}
 {assign var="grandparent" value="admin.php|Admin frontpage"}
 {include file="header.tpl" title=$self}
 
@@ -8,7 +12,7 @@
 
 <form method="post" action="{$smarty.server.SCRIPT_NAME}">
 <input type="hidden" name="edittheme" value="{$theme.id}" />
-<input type="hidden" name="parenttarget" value="{$smarty.request.parenttarget}" />
+{if $parenttarget}<input type="hidden" name="parenttarget" value="{$smarty.request.parenttarget}" /> {/if}
 <table class="rockbox">
     <tr>
         <td><b>Theme name</b></td>
