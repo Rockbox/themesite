@@ -1,6 +1,12 @@
+{if $target}
 {assign var="self" value="Themes for $target"}
 {assign var="parent" value="index.php|Frontpage"}
 {include file="header.tpl" title=$self rss="rss.php?target=`$smarty.request.target`" rsstitle="Themes for `$smarty.request.target`"}
+{else}
+{assign var="self" value="All themes"}
+{assign var="parent" value="index.php|Frontpage"}
+{include file="header.tpl" title=$self rss="rss.php" rsstitle="All themes"}
+{/if}
 
 <h1>{$self}</h1>
 {include file="breadcrumbs.tpl"}
@@ -13,7 +19,11 @@
 {math assign="cols" equation="floor(min(10, x / y))" x=1000 y=$mainlcd|regex_replace:'/x.*/':''}
 {assign var="cols" value="3"}
 {* let the user select order *}
+{if $target}
 <form method="POST" action="{$smarty.server.SCRIPT_NAME}?target={$smarty.request.target}">
+{else}
+<form method="POST" action="{$smarty.server.SCRIPT_NAME}?allthemes">
+{/if}        
         <input type="hidden" name="order" value="yes" />
         Ordered by: {html_options name=orderby options=$sortings selected=$smarty.request.orderby} 
         {html_options name=direction options=$directions selected=$smarty.request.direction}
@@ -23,10 +33,9 @@
   {section name=tr loop=$themes step=$cols}
   {* First print a row with theme names *}
   <tr>
-    {section name=td start=$smarty.section.tr.index
-loop=$smarty.section.tr.index+$cols}
+    {section name=td start=$smarty.section.tr.index loop=$smarty.section.tr.index+$cols}
     {if $themes[td]}
-    <th align="center" width="320"><a href="index.php?themeid={$themes[td].id}&amp;target={$smarty.request.target}">{$themes[td].name|escape:'html'}</a></th>
+    <th align="center" width="320"><a href="index.php?themeid={$themes[td].id}{if $target}&amp;target={$smarty.request.target}{/if}">{$themes[td].name|escape:'html'}</a></th>
     {/if}
     {/section}
   </tr>
@@ -61,6 +70,10 @@ loop=$smarty.section.tr.index+$cols}
     <strong>Submitter:</strong> &nbsp;{$themes[td].author|escape:'html'}<br />
     <strong>Submitted:</strong>  &nbsp;{$themes[td].timestamp|escape:'html'}<br />
     <strong>Downloaded {$themes[td].downloadcnt|escape:'html'} time{if $themes[td].downloadcnt != 1}s{/if}</strong><br />
+    {if !$target}
+    <strong>Designed for LCD size: </strong>&nbsp;{$themes[td].mainlcd|escape:'html'}<br />
+    {if $themes[td].remotelcd} <strong>Designed for remote LCD size: </strong>&nbsp;{$themes[td].remotelcd|escape:'html'}<br /> {/if}
+    {/if}
     <strong>Description:</strong><br />  
     &nbsp;{$themes[td].description|escape:'html'}<br />
     {if $themes[td].current_pass}
@@ -71,7 +84,11 @@ loop=$smarty.section.tr.index+$cols}
     {if $themes[td].release_pass}
     <strong>Works with release {$themes[td].release_version}</strong><br />
     {/if}
-    <form method="POST" action="{$smarty.server.SCRIPT_NAME}?target={$smarty.request.target}">
+    {if $target}
+    <form method="POST" action="{$smarty.server.SCRIPT_NAME}?target={$smarty.request.target}">    
+    {else}
+    <form method="POST" action="{$smarty.server.SCRIPT_NAME}?allthemes">    
+    {/if}
         <input type="hidden" name="ratetheme" value={$themes[td].id} />
         <select name=rating>
             <option value='10'>10 - Top</option>
@@ -102,7 +119,11 @@ loop=$smarty.section.tr.index+$cols}
 <h2>Upload your own theme</h2> <p>Have you made a theme that is not listed
 here? Please read <a
 href="http://www.rockbox.org/wiki/ThemeGuidelines">the theme
-guidelines</a> and then <a
-href="upload.php?target={$smarty.request.target}">upload your theme</a>.</p> 
-
+guidelines</a> and then 
+{if $target}
+<a href="upload.php?target={$smarty.request.target}">
+{else}
+<a href="upload.php">
+{/if}
+upload your theme</a>.</p> 
 {include file="footer.tpl"}

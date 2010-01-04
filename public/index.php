@@ -29,8 +29,10 @@ if (isset($_REQUEST['ratetheme'])) {
 }
 
 /* show more details about a theme */
-if (isset($_REQUEST['target']) && isset($_REQUEST['themeid'])) {
-    $t->assign('target', $site->target2fullname($_REQUEST['target']));
+if (isset($_REQUEST['themeid'])) {
+    if (isset($_REQUEST['target'])) {
+        $t->assign('target', $site->target2fullname($_REQUEST['target']));
+    }
     $t->assign('theme',$site->themedetails($_REQUEST['themeid'],true,true));
     $template = 'theme.tpl';
 }
@@ -48,6 +50,21 @@ elseif (isset($_REQUEST['target'])) {
     $t->assign('directions',array('DESC' => 'descending','ASC' => 'ascending'));                            
     $t->assign('mainlcd', $lcd['mainlcd']);
     $t->assign('target', $site->target2fullname($_REQUEST['target']));
+    $template = 'themelist.tpl';
+}
+/* Show all themes */
+elseif (isset($_REQUEST['allthemes'])) {
+    if(isset($_REQUEST['order'])) $values['themes'] = $site->listthemes(false,sprintf("%s %s",$_REQUEST['orderby'],$_REQUEST['direction']));
+    else $values['themes'] = $site->listthemes(false);
+    $t->assign('sortings',array('timestamp' => 'Submitted time',
+                                'downloadcnt' => 'Download count',
+                                'ratings/numratings' => 'Rating',
+                                'numratings' => 'Number of Votes',
+                                'name' => 'Themename',
+                                'author' => 'Author',
+                                'mainlcd' => 'LCD size',
+                                'remotelcd' => 'Remote LCD size'));
+    $t->assign('directions',array('DESC' => 'descending','ASC' => 'ascending'));                            
     $template = 'themelist.tpl';
 }
 /* Just show the frontpage */

@@ -1,8 +1,14 @@
 {assign var="themename" value=$theme.name}
 {assign var="self" value="$themename Theme"}
-{assign var="parent" value="index.php?target=`$smarty.request.target`|Themes for `$target`"}
-{assign var="grandparent" value="index.php|Frontpage"}
-{include file="header.tpl" title=$self rss="rss.php?target=`$smarty.request.target`&amp;themeid=`$theme.id` " rsstitle="`$smarty.request.theme.shortname` theme for `$smarty.request.target`"}
+{if $target}
+    {assign var="parent" value="index.php?target=`$smarty.request.target`|Themes for `$target`"}
+    {assign var="grandparent" value="index.php|Frontpage"}
+    {include file="header.tpl" title=$self rss="rss.php?target=`$smarty.request.target`&amp;themeid=`$theme.id` " rsstitle="`$smarty.request.theme.shortname` theme for `$smarty.request.target`"}
+{else}
+    {assign var="parent" value="index.php?allthemes|All themes"}
+    {assign var="grandparent" value="index.php|Frontpage"}
+    {include file="header.tpl" title=$self rss="rss.php?themeid=`$theme.id` " rsstitle="`$smarty.request.theme.shortname` theme"}
+{/if}
 
 <h1>{$self}</h1>
 {include file="breadcrumbs.tpl"}
@@ -10,7 +16,7 @@
 <table class="rockbox">
   {* First print a row with theme name *}
   <tr>
-    <th align="center" width="320"><a href="index.php?themeid={$theme.id}&amp;target={$smarty.request.target}">{$theme.name|escape:'html'}</th>
+    <th align="center" width="320"><a href="index.php?themeid={$theme.id}{if $target}&amp;target={$smarty.request.target}{/if}">{$theme.name|escape:'html'}</th>
   </tr>
 
   {* Then a row with "the rest" *}
@@ -41,6 +47,10 @@
     <strong>Submitter: </strong>&nbsp;{$theme.author|escape:'html'}<br />
     <strong>Submitted: </strong>&nbsp;{$theme.timestamp|escape:'html'}<br />
     <strong>Downloaded {$theme.downloadcnt|escape:'html'} time{if $theme.downloadcnt != 1}s{/if}</strong><br />
+    {if !$target}
+    <strong>Designed for LCD size: </strong>&nbsp;{$theme.mainlcd|escape:'html'}<br />
+    {if $theme.remotelcd} <strong>Designed for remote LCD size: </strong>&nbsp;{$theme.remotelcd|escape:'html'}<br /> {/if}
+    {/if}
     <strong>Description:</strong><br />  
     &nbsp;{$theme.description|escape:'html'}<br />
     {if $theme.current_pass}
@@ -52,7 +62,7 @@
     <strong>Works with release {$theme.release_version}</strong><br />
     {/if}
     </small>
-    <form method="POST" action="{$smarty.server.SCRIPT_NAME}?themeid={$theme.id}&amp;target={$smarty.request.target}">
+    <form method="POST" action="{$smarty.server.SCRIPT_NAME}?themeid={$theme.id}{if $target}&amp;target={$smarty.request.target}{/if}">
         <input type="hidden" name="ratetheme" value={$theme.id} />
         <select name=rating>
             <option value='10'>10 - Top</option>
