@@ -242,7 +242,9 @@ class themesite {
         }
 
         if ($target === false) {
-            $sql = "SELECT DISTINCT themes.name AS name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu, downloadcnt, ratings, numratings, emailverification = 1 as verified, themes.RowId as id FROM themes,checkwps WHERE themes.rowid=checkwps.themeid AND checkwps.pass=1 AND approved>=1 AND emailverification=1 " . $approved_clause . " ORDER BY " . $orderby;
+            $sql = sprintf("SELECT DISTINCT themes.name AS name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu, downloadcnt, ratings, numratings, emailverification = 1 as verified, themes.RowId as id FROM themes,checkwps WHERE themes.rowid=checkwps.themeid AND checkwps.pass=1 AND emailverification=1 %s ORDER BY %s",
+              $approved_clause,
+              $orderby);  
         }
         else {
             $sql = sprintf("
