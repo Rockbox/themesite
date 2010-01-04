@@ -315,6 +315,13 @@ class themesite {
         return $result['count'] > 0 ? true : false;
     }
     
+    public function adminworkneeded() {
+        /* any reported themes ? */
+        $sql = "SELECT COUNT(*) as count FROM themes WHERE approved=2";
+        $result = $this->db->query($sql)->next();
+        return $result['count'] > 0 ? true : false;    
+    }
+    
     public function themeisupdate($name, $mainlcd,$author,$email) {
         $sql = sprintf("SELECT COUNT(*) as count FROM themes WHERE name='%s' AND mainlcd='%s' AND approved>=1 AND author='%s' AND email='%s'",
             db::quote($name),

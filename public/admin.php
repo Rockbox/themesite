@@ -147,6 +147,7 @@ else {
     if (!isset($template)) {
         $t->assign('title', 'Admin');
         $t->assign('targets', $site->listtargets());
+        $t->assign('adminworkneeded',$site->adminworkneeded());
         $t->assign('admin', true);
         $template = 'frontpage.tpl';
     }

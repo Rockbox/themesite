@@ -74,6 +74,7 @@ elseif (isset($_REQUEST['allthemes'])) {
 /* Just show the frontpage */
 else {
     $values['targets'] = $site->listtargets();
+    $t->assign('adminworkneeded',$site->adminworkneeded());
     $template = 'frontpage.tpl';
 }
 

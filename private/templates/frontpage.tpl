@@ -1,5 +1,11 @@
 {* This template is also used for the admin frontpage *}
 
+{if $adminworkneeded}
+<div style='float:right;margin:0;padding:0;'>
+<img src="adminworkneeded.png" alt="admin work needed">
+</div>
+{/if}
+
 {if !$title}{assign var="title" value="Frontpage"}{/if}
 {include file="header.tpl" title=$title rss="rss.php"}
 
