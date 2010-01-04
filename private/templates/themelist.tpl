@@ -16,8 +16,9 @@
 {else}
 
 {* Decide the number of columns by the lcd width *}
-{math assign="cols" equation="floor(min(10, x / y))" x=1000 y=$mainlcd|regex_replace:'/x.*/':''}
+{if $mainlcd} {math assign="cols" equation="floor(min(10, x / y))" x=1000 y=$mainlcd|regex_replace:'/x.*/':''} {/if}
 {assign var="cols" value="3"}
+
 {* let the user select order *}
 {if $target}
 <form method="POST" action="{$smarty.server.SCRIPT_NAME}?target={$smarty.request.target}">
@@ -76,6 +77,7 @@
     {/if}
     <strong>Description:</strong><br />  
     &nbsp;{$themes[td].description|escape:'html'}<br />
+    {if $target}
     {if $themes[td].current_pass}
     <strong>Works with <span class="build_info" title="{$themes[td].current_version}">current build</span></strong><br />
     {else}
@@ -83,6 +85,7 @@
     {/if}
     {if $themes[td].release_pass}
     <strong>Works with release {$themes[td].release_version}</strong><br />
+    {/if}
     {/if}
     {if $target}
     <form method="POST" action="{$smarty.server.SCRIPT_NAME}?target={$smarty.request.target}">    
