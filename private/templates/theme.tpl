@@ -86,7 +86,7 @@
     </small>
     <form method="POST" action="{$smarty.server.SCRIPT_NAME}?themeid={$theme.id}{if $target}&amp;target={$smarty.request.target}{/if}">
         <input type="hidden" name="reporttheme" value={$theme.id} />
-        <textarea cols="35" rows="8" name="reason"></textarea> <br />
+        <textarea cols="35" rows="4" name="reason"></textarea> <br />
         <input type="submit" value="Report" />
     </form>
     </td>
