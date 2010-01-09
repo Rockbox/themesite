@@ -372,7 +372,7 @@ class themesite {
             );
             $from = sprintf("%s/%s/%s/%s", $this->themedir_public, $theme['mainlcd'], $theme['shortname'], $theme['zipfile']);
             $to = sprintf("%s/%s/%s/%s", $this->themedir_private, $theme['mainlcd'], $theme['shortname'], $theme['zipfile']);
-            if ($newstatus == 1) {
+            if ($newstatus >= 1) {
                 $temp = $to;
                 $to = $from;
                 $from = $temp;
