@@ -370,14 +370,15 @@ class themesite {
                 db::quote($reason),
                 db::quote($themeid)
             );
-            $from = sprintf("%s/%s/%s/%s", $this->themedir_public, $theme['mainlcd'], $theme['shortname'], $theme['zipfile']);
-            $to = sprintf("%s/%s/%s/%s", $this->themedir_private, $theme['mainlcd'], $theme['shortname'], $theme['zipfile']);
-            if ($newstatus >= 1) {
-                $temp = $to;
-                $to = $from;
-                $from = $temp;
+            
+            $private = sprintf("%s/%s/%s/%s", $this->themedir_public, $theme['mainlcd'], $theme['shortname'], $theme['zipfile']);
+            $public = sprintf("%s/%s/%s/%s", $this->themedir_private, $theme['mainlcd'], $theme['shortname'], $theme['zipfile']);
+            if ($oldstatus == 0 && $newstatus >= 1) {
+                rename($private, $public);
             }
-            rename($from, $to);
+            else if ($oldstatus >=1 && $newstatus == 0 ) {
+                 rename($public, $private);
+            }
         }
         if ($oldstatus >= 1 && $newstatus < 1) {
             // Send a mail to notify the user that his theme has been
