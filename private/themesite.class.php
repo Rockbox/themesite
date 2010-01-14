@@ -371,8 +371,8 @@ class themesite {
                 db::quote($themeid)
             );
             
-            $private = sprintf("%s/%s/%s/%s", $this->themedir_public, $theme['mainlcd'], $theme['shortname'], $theme['zipfile']);
-            $public = sprintf("%s/%s/%s/%s", $this->themedir_private, $theme['mainlcd'], $theme['shortname'], $theme['zipfile']);
+            $public = sprintf("%s/%s/%s/%s", $this->themedir_public, $theme['mainlcd'], $theme['shortname'], $theme['zipfile']);
+            $private = sprintf("%s/%s/%s/%s", $this->themedir_private, $theme['mainlcd'], $theme['shortname'], $theme['zipfile']);
             if ($oldstatus == 0 && $newstatus >= 1) {
                 rename($private, $public);
             }
