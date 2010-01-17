@@ -49,7 +49,7 @@ class themesite {
 
     private function targetlist($orderby) {
         $sql = sprintf("
-            SELECT targets.shortname AS shortname, fullname, pic, targets.mainlcd AS mainlcd, depth, targets.remotelcd AS remotelcd, COUNT(themes.name) AS numthemes 
+            SELECT targets.shortname AS shortname, fullname, pic, targets.mainlcd AS mainlcd, depth, targets.remotelcd AS remotelcd, COUNT(themes.name) AS numthemes, targets.RowId AS id
             FROM targets LEFT OUTER JOIN (SELECT DISTINCT themes.name AS name,checkwps.target AS target 
             FROM themes,checkwps 
             WHERE themes.rowid=checkwps.themeid AND checkwps.pass=1 AND approved>=1 AND emailverification=1) themes 
@@ -426,18 +426,18 @@ END;
         }
     }
 
-    public function edittarget($shortname, $fullname, $mainlcd, $pic, $depth, $remotelcd = false) {    
+    public function edittarget($id, $shortname, $fullname, $mainlcd, $pic, $depth, $remotelcd = false) {    
         $this->log(sprintf("Edit target %s", $fullname));
-
+                
         $sql = sprintf("UPDATE targets SET shortname='%s', fullname='%s', mainlcd='%s',
-                         pic='%s', depth='%s', remotelcd='%s' WHERE shortname='%s'",
+                         pic='%s', depth='%s', remotelcd='%s' WHERE RowId='%s'",
             db::quote($shortname),
             db::quote($fullname),
             db::quote($mainlcd),
             db::quote($pic),
             db::quote($depth),
             $remotelcd === false ? 'NULL' : sprintf("'%s'", db::quote($remotelcd)),
-            db::quote($shortname)
+            db::quote($id)
         );
         $this->db->query($sql);
     }

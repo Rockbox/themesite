@@ -114,6 +114,7 @@ else {
     /* Edit a target */
     elseif (isset($_REQUEST['edittarget'])) {
         $site->edittarget(
+            $_REQUEST['edittarget'],
             $_REQUEST['shortname'],
             $_REQUEST['fullname'],
             $_REQUEST['mainlcd'],
