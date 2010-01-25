@@ -160,7 +160,7 @@ class themesite {
         return $files;
     }
 
-    public function themedetails($id, $onlyapproved = false, $onlyverified = false, $onlyreported =false) {
+    public function themedetails($id, $onlyapproved = false, $onlyverified = false) {
         if ($onlyverified == true) {
             $verified = " AND verified = 1 ";
         }
@@ -168,14 +168,7 @@ class themesite {
             $verified = "";
         }
         if ($onlyapproved == true) {
-            $approved = " AND approved = 1 ";
-        }
-        else {
-            $approved = "";
-        }
-        
-        if ($onlyreported == true) {
-            $approved = " AND approved = 2 ";
+            $approved = " AND approved >= 1 ";
         }
         else {
             $approved = "";
