@@ -13,6 +13,8 @@
 <h1>{$self}</h1>
 {include file="breadcrumbs.tpl"}
 
+{if $msg}<p>{$msg}</p>{/if}
+
 <table class="rockbox">
   {* First print a row with theme name *}
   <tr>
@@ -86,7 +88,18 @@
     </small>
     <form method="POST" action="{$smarty.server.SCRIPT_NAME}?themeid={$theme.id}{if $target}&amp;target={$smarty.request.target}{/if}">
         <input type="hidden" name="reporttheme" value={$theme.id} />
-        <textarea cols="35" rows="4" name="reason"></textarea> <br />
+        <textarea cols="45" rows="4" name="reason"></textarea> <br />
+        <script type="text/javascript"
+            src="http://api.recaptcha.net/challenge?k={$recaptchakey}">
+        </script>
+        <noscript>
+            <iframe src="http://api.recaptcha.net/noscript?k={$recaptchakey}"
+                height="300" width="500" frameborder="0"></iframe><br>
+            <textarea name="recaptcha_challenge_field" rows="3" cols="40">
+            </textarea>
+            <input type="hidden" name="recaptcha_response_field" 
+                value="manual_challenge">
+        </noscript>
         <input type="submit" value="Report" />
     </form>
     </td>

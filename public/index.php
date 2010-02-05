@@ -29,7 +29,20 @@ if (isset($_REQUEST['ratetheme'])) {
 }
 
 if (isset($_REQUEST['reporttheme'])) {
-    $site->changestatus($_REQUEST['reporttheme'], 2, 1, $_REQUEST['reason']);
+    /* check captcha */
+    $resp = recaptcha_check_answer (config::recaptchakey_priv,
+                                $_SERVER["REMOTE_ADDR"],
+                                $_POST["recaptcha_challenge_field"],
+                                $_POST["recaptcha_response_field"]);
+
+    if ($resp->is_valid) {
+      $site->changestatus($_REQUEST['reporttheme'], 2, 1, $_REQUEST['reason']);
+      $t->assign('msg',"Theme successfully reported.");  
+    }
+    else
+    {
+       $t->assign('msg',"Captcha failed ! Are you a bot ?");
+    }   
 }
 
 /* show more details about a theme */

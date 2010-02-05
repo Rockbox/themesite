@@ -23,6 +23,7 @@
 require_once(sprintf("%s/config.inc.php", preconfig::privpath));
 require_once('themesite.class.php');
 require_once('templater.class.php');
+require_once('recaptchalib.php');
 
 $site = new themesite(preconfig::privpath .'/' . config::dbfile);
 $t = new templater(config::smartydir);
@@ -30,6 +31,6 @@ $t->assign('datadir', config::datadir);
 $t->assign('root', config::path);
 $t->assign('hostname', config::hostname);
 $t->assign('maxuploadsize', config::maxzippedsize);
-
+$t->assign('recaptchakey',config::recaptchakey);
 $values = array();
 ?>

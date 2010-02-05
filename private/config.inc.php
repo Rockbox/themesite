@@ -51,6 +51,13 @@ class config {
 
     // Location of 'unzip'
     const unzip = "/usr/bin/unzip";
+    
+    //private key for recaptcha
+    const recaptchakey_priv = "6LfwAQsAAAAAAOGeWVtqpSeIFZKP3WcActZeoVk1";
+    
+    //public key for recaptcha
+    const recaptchakey = "6LfwAQsAAAAAAPrqZMNC_G_gKbFNf2gP2P2YmXQs";
+
 }
 
 ?>
