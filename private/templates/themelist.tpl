@@ -87,27 +87,6 @@
     <strong>Works with release {$themes[td].release_version}</strong><br />
     {/if}
     {/if}
-    {if $target}
-    <form method="POST" action="{$smarty.server.SCRIPT_NAME}?target={$smarty.request.target}">    
-    {else}
-    <form method="POST" action="{$smarty.server.SCRIPT_NAME}?allthemes">    
-    {/if}
-        <input type="hidden" name="ratetheme" value={$themes[td].id} />
-        <select name=rating>
-            <option value='10'>10 - Top</option>
-            <option value='9'>9</option>
-            <option value='8'>8</option>
-            <option value='7'>7</option>
-            <option value='6'>6</option>
-            <option value='5'>5- Medium</option>
-            <option value='4'>4</option>
-            <option value='3'>3</option>
-            <option value='2'>2</option>
-            <option value='1'>1</option>
-            <option value='0'>0 - Flop</option>
-        </select>
-        <input type="submit" value="Rate" />
-    </form>
     </small>
     </td>
     {/if}
