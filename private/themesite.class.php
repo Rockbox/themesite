@@ -795,6 +795,14 @@ END;
         rmdir($dirname);
     }
 
+    private function isfontpackfont($name) {
+        $ourfonts = glob(sprintf("%s/*bdf", config::fontdir));
+        foreach($ourfonts as &$font) {
+            $font = basename($font, '.bdf');
+        }
+        return in_array($name, $ourfonts);
+    }
+
     /*
      * This rather unwieldy function validates the structure of a theme's
      * zipfile. It checks the following:
@@ -846,6 +854,14 @@ END;
             /* Check that all files are within .rockbox */
             if (strpos($filename, '.rockbox') !== 0)
                 $err[] = sprintf("File outside /.rockbox/: %s", $filename);
+
+            /* Check if the font is already included in Rockbox */
+            if (strtolower($pathinfo['extension']) == 'fnt') {
+                if ($this->isfontpackfont($pathinfo['filename'])) {
+                    $err[] = sprintf("This font is included in the Rockbox font pack. Don't include it in your theme: %s", $filename);
+                }
+            }
+
 
             /* Check that all .wps, .rwps and .cfg filenames use the same shortname */
             switch(strtolower($pathinfo['extension'])) {

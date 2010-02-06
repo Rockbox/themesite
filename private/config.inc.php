@@ -51,6 +51,9 @@ class config {
 
     // Location of 'unzip'
     const unzip = "/usr/bin/unzip";
+
+    // Location of the Rockbox source font dir
+    const fontdir = "/home/themes/rockbox-current/fonts";
     
     //private key for recaptcha
     const recaptchakey_priv = "6LfwAQsAAAAAAOGeWVtqpSeIFZKP3WcActZeoVk1";
