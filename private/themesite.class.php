@@ -49,7 +49,7 @@ class themesite {
     
     public function getlog() {
         $ret = array();
-        $sql = "SELECT time, ip, admin, msg FROM log";
+        $sql = "SELECT time, ip, admin, msg FROM log ORDER BY time DESC";
         $results = $this->db->query($sql);
         while ($result = $results->next()) {
             $ret[] = $result;
