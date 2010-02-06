@@ -81,7 +81,20 @@
         </select>
         <input type="submit" value="Rate" />
     </form>
-    <hr />
+    </td>
+    <tr>
+        <th>Zip contents</th>
+    </tr>
+    <tr>
+        <td><pre>
+{section name=i loop=$theme.files}
+{$theme.files[i]}
+{/section} </pre></td>
+    </tr>
+    <tr>
+    <th>Feedback</th>
+    </tr>
+    <td>
     <small>
     If this theme violates any copyright law, or simply doesnt work, you can report it to the admins.   
     Please describe the problem, as detailed as possible, in the input box.
