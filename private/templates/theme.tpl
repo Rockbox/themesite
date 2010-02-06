@@ -45,6 +45,23 @@
     {/section} 
     {$theme.numratings} vote{if $theme.numratings !=1}s.{/if}
     <br />
+    <form method="POST" action="{$smarty.server.SCRIPT_NAME}?themeid={$theme.id}{if $target}&amp;target={$smarty.request.target}{/if}">
+        <input type="hidden" name="ratetheme" value={$theme.id} />
+        <select name=rating>
+            <option value='10'>10 - Top</option>
+            <option value='9'>9</option>
+            <option value='8'>8</option>
+            <option value='7'>7</option>
+            <option value='6'>6</option>
+            <option value='5'>5- Medium</option>
+            <option value='4'>4</option>
+            <option value='3'>3</option>
+            <option value='2'>2</option>
+            <option value='1'>1</option>
+            <option value='0'>0 - Flop</option>
+        </select>
+        <input type="submit" value="Rate" />
+    </form>
     <small>
     <strong>Submitter: </strong>&nbsp;{$theme.author|escape:'html'}<br />
     <strong>Submitted: </strong>&nbsp;{$theme.timestamp|escape:'html'}<br />
@@ -63,24 +80,7 @@
     {if $theme.release_pass}
     <strong>Works with release {$theme.release_version}</strong><br />
     {/if}
-    </small>
-    <form method="POST" action="{$smarty.server.SCRIPT_NAME}?themeid={$theme.id}{if $target}&amp;target={$smarty.request.target}{/if}">
-        <input type="hidden" name="ratetheme" value={$theme.id} />
-        <select name=rating>
-            <option value='10'>10 - Top</option>
-            <option value='9'>9</option>
-            <option value='8'>8</option>
-            <option value='7'>7</option>
-            <option value='6'>6</option>
-            <option value='5'>5- Medium</option>
-            <option value='4'>4</option>
-            <option value='3'>3</option>
-            <option value='2'>2</option>
-            <option value='1'>1</option>
-            <option value='0'>0 - Flop</option>
-        </select>
-        <input type="submit" value="Rate" />
-    </form>
+    </small>    
     </td>
     <tr>
         <th>Zip contents</th>
@@ -92,7 +92,7 @@
 {/section} </pre></td>
     </tr>
     <tr>
-    <th>Feedback</th>
+    <th>Report</th>
     </tr>
     <td>
     <small>
