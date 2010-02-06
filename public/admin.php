@@ -139,6 +139,12 @@ else {
         $template = 'checkthemes.tpl';
         $t->assign('checkwpsresults', $results);
     }
+    /* Show log */
+    elseif (isset($_REQUEST['showlog'])) {
+        $log = $site->getlog();
+        $template = 'showlog.tpl';
+        $t->assign('log', $log);
+    }
     /* Add a Column to a table */
     elseif (isset($_REQUEST['addcolumn'])) {
         $results = $site->addcolumn($_REQUEST['table'],$_REQUEST['column'],$_REQUEST['columnvalue']);

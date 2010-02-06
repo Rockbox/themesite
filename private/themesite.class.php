@@ -46,6 +46,16 @@ class themesite {
         );
         $this->db->query($sql);
     }
+    
+    public function getlog() {
+        $ret = array();
+        $sql = "SELECT time, ip, admin, msg FROM log";
+        $results = $this->db->query($sql);
+        while ($result = $results->next()) {
+            $ret[] = $result;
+        }
+        return $ret;
+    }    
 
     private function targetlist($orderby) {
         $sql = sprintf("

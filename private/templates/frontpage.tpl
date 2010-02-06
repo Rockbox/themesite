@@ -47,7 +47,9 @@ of your player in the table below, or browse all themes <a href="{$smarty.server
 {if $admin}
 <p><a href="{$smarty.server.SCRIPT_NAME}?runcheckwps">Run checkwps on all themes</a></p>
 <hr />
-{if $adminmsg}<p>{$adminmsg}</p>{/if}
+{if $adminmsg}<p>{$adminmsg}</p> <hr />{/if}
+<p><a href="{$smarty.server.SCRIPT_NAME}?showlog">View database log</a></p>
+<hr />
 <h2>Edit/Add targets</h2>
 <form method="POST" action="{$smarty.server.SCRIPT_NAME}">
     <input type="hidden" name="showtarget" value="yes" />
@@ -59,6 +61,7 @@ of your player in the table below, or browse all themes <a href="{$smarty.server
     </select>
     <input type="submit" value="Edit" />
 </form>
+<hr />
 <h2>Add column to table</h2>
 <form method="POST" action="{$smarty.server.SCRIPT_NAME}">
   <input type="hidden" name="addcolumn" value="yes" />
