@@ -91,7 +91,7 @@ function stopImageSwitcher()
 {
     clearTimeout(this.timer);
     this.src = this.origSrc;    
-    this.next = 0;
+    this.next = 1;
 }
 
 addLoadEvent(overSrcInit);
