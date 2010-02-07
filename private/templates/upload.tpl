@@ -109,6 +109,45 @@ This is very unlikely to be your fault.
             </td>
         {/if}
       </tr>
+      <tr>
+        <td><b>Additional screenshot</b><br /><small>(Optional)</small></td>
+        <td><input type="file" name="sshot_1" size="60" /><br /><small>PNG format. The dimensions should be the same as the LCD size</small></td>
+        {if is_array($errors) && array_key_exists('sshot_1', $errors)}
+            <td class='error'>
+                <ul>
+                {section name=i loop=$errors.sshot_1}
+                    <li>{$errors.sshot_1[i]}</li>
+                {/section}
+                </ul>
+            </td>
+        {/if}
+      </tr>
+      <tr>
+        <td><b>Additional screenshot</b><br /><small>(Optional)</small></td>
+        <td><input type="file" name="sshot_2" size="60" /><br /><small>PNG format. The dimensions should be the same as the LCD size</small></td>
+        {if is_array($errors) && array_key_exists('sshot_2', $errors)}
+            <td class='error'>
+                <ul>
+                {section name=i loop=$errors.sshot_2}
+                    <li>{$errors.sshot_2[i]}</li>
+                {/section}
+                </ul>
+            </td>
+        {/if}
+      </tr>
+      <tr>
+        <td><b>Additional screenshot</b><br /><small>(Optional)</small></td>
+        <td><input type="file" name="sshot_3" size="60" /><br /><small>PNG format. The dimensions should be the same as the LCD size</small></td>
+        {if is_array($errors) && array_key_exists('sshot_3', $errors)}
+            <td class='error'>
+                <ul>
+                {section name=i loop=$errors.sshot_3}
+                    <li>{$errors.sshot_3[i]}</li>
+                {/section}
+                </ul>
+            </td>
+        {/if}
+      </tr>
     </table>
 
     <h2>Section 3 - The legal stuff</h2>

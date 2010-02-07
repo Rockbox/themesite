@@ -108,6 +108,9 @@ function checkuploadfiles(&$site, &$err) {
                 break;
             case 'sshot_wps':
             case 'sshot_menu':
+            case 'sshot_1':
+            case 'sshot_2':
+            case 'sshot_3':
                 if (isset($values['tmp_name']) && trim($values['tmp_name']) != "") {
                     $result = $site->validatesshot($values, $lcd['mainlcd']);
                 }
@@ -159,7 +162,10 @@ if (isset($_REQUEST['author'])) {
             $_REQUEST['description'],
             $_FILES['themefile'],
             $_FILES['sshot_wps'],
-            isset($_FILES['sshot_menu']) ? $_FILES['sshot_menu'] : false
+            isset($_FILES['sshot_menu']) ? $_FILES['sshot_menu'] : false,
+            isset($_FILES['sshot_1']) ? $_FILES['sshot_1'] : false,
+            isset($_FILES['sshot_2']) ? $_FILES['sshot_2'] : false,
+            isset($_FILES['sshot_3']) ? $_FILES['sshot_3'] : false
         );
         if (is_array($result)) {
             $t->assign('general_errors', $result);

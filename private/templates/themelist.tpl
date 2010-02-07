@@ -47,12 +47,9 @@
     {if $themes[td]}
     <td>
     <p align="center">
-    {if $themes[td].sshot_menu != ""}
-        {assign var="oversrc" value="`$datadir`/`$themes[td].mainlcd`/`$themes[td].shortname`/`$themes[td].sshot_menu`"}
-    {else}
-        {assign var="oversrc" value=""}
-    {/if}
-    {html_image file="`$datadir`/`$themes[td].mainlcd`/`$themes[td].shortname`/`$themes[td].sshot_wps`" href="download.php?themeid=`$themes[td].id`" oversrc=$oversrc}<br />
+    {assign var="path" value="`$datadir`/`$themes[td].mainlcd`/`$themes[td].shortname`/"}        
+    {html_image file="`$datadir`/`$themes[td].mainlcd`/`$themes[td].shortname`/`$themes[td].sshot_wps`" href="download.php?themeid=`$themes[td].id`" 
+                        path=$path oversrc=$themes[td].sshot_menu oversrc1=$themes[td].sshot_1 oversrc2=$themes[td].sshot_2 oversrc3=$themes[td].sshot_3}<br />
     <small>Size: {$themes[td].size|siprefix}B</small>
     </p>
     <strong>Rating:</strong> &nbsp;

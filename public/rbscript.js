@@ -45,10 +45,53 @@ function overSrcInit()
         if(overSrc)
         {
             img.origSrc = img.src;
-            img.onmouseover = function() { this.src = this.getAttribute('oversrc'); };
-            img.onmouseout = function() { this.src = this.origSrc; };
+            img.next = 1;
+            img.onmouseover = startImageSwitcher;
+            img.onmouseout = stopImageSwitcher;
         }
     }
+}
+
+function startImageSwitcher() 
+{
+    var pos = this.next;
+    switch(pos) {
+        case 0: this.src = this.origSrc;
+            if(this.getAttribute('oversrc') == "") this.next = 0;
+            else this.next = this.next+1;
+            break;
+        case 1: 
+            this.src = this.getAttribute('path') + this.getAttribute('oversrc');
+            if(this.getAttribute('oversrc1') == "") this.next = 0;
+            else this.next = this.next+1;
+            break;
+        case 2:
+            this.src = this.getAttribute('path') + this.getAttribute('oversrc1');
+            if(this.getAttribute('oversrc2') == "") this.next = 0;
+            else this.next = this.next+1;
+            break;
+        case 3: 
+            this.src = this.getAttribute('path') + this.getAttribute('oversrc2');
+            if(this.getAttribute('oversrc3') == "") this.next = 0;
+            else this.next = this.next+1;
+            break;
+        case 4: this.src = this.getAttribute('path') + this.getAttribute('oversrc3');
+            this.next = 0;
+            break;            
+        default: 
+            this.src = this.origSrc;
+            this.next = 0;
+    }
+    
+    this.timer = setTimeout(function(thisObj) { thisObj.onmouseover(); }, 1500, this);
+    
+}
+
+function stopImageSwitcher() 
+{
+    clearTimeout(this.timer);
+    this.src = this.origSrc;    
+    this.next = 0;
 }
 
 addLoadEvent(overSrcInit);

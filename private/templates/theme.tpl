@@ -25,12 +25,9 @@
   <tr valign="top">
     <td>
     <p align="center">
-    {if $theme.sshot_menu != ""}
-        {assign var="oversrc" value="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_menu`"}
-    {else}
-        {assign var="oversrc" value=""}
-    {/if}
-    {html_image file="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_wps`" href="download.php?themeid=`$theme.id`" oversrc=$oversrc}<br />
+    {assign var="path" value="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/"}   
+    {html_image file="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_wps`" href="download.php?themeid=`$theme.id`" 
+            path=$path oversrc=$theme.sshot_menu oversrc1=$theme.sshot_1 oversrc2=$theme.sshot_2 oversrc3=$theme.sshot_3}<br />
     <small>Size: {$theme.size|siprefix}B</small>
     </p>
     <strong>Rating:</strong> &nbsp;

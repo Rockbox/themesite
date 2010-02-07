@@ -186,7 +186,8 @@ class themesite {
         
         $sql = sprintf("
             SELECT
-            name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu, email, downloadcnt, ratings, numratings,
+            name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu, sshot_1, sshot_2,sshot_3,
+            email, downloadcnt, ratings, numratings,
             emailverification = 1 as verified,
             themes.RowId as id,
             c.version_number AS current_version,
@@ -245,14 +246,18 @@ class themesite {
         }
 
         if ($target === false) {
-            $sql = sprintf("SELECT DISTINCT themes.name AS name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu, downloadcnt, ratings, numratings, emailverification = 1 as verified, themes.RowId as id FROM themes,checkwps WHERE themes.rowid=checkwps.themeid AND checkwps.pass=1 AND emailverification=1 %s ORDER BY %s",
+            $sql = sprintf("SELECT DISTINCT themes.name AS name, author, timestamp, mainlcd, approved, reason, description, shortname, 
+                            zipfile, sshot_wps, sshot_menu,sshot_1,sshot_2,sshot_3,downloadcnt, ratings, numratings, 
+                            emailverification = 1 as verified, themes.RowId as id FROM themes,checkwps 
+                            WHERE themes.rowid=checkwps.themeid AND checkwps.pass=1 AND emailverification=1 %s ORDER BY %s",
               $approved_clause,
               $orderby);  
         }
         else {
             $sql = sprintf("
                 SELECT
-                name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu, email, downloadcnt, ratings, numratings,
+                name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu, sshot_1, sshot_2, sshot_3,
+                email, downloadcnt, ratings, numratings,
                 emailverification = 1 as verified,
                 themes.RowId as id,
                 c.version_number AS current_version,
@@ -507,7 +512,7 @@ END;
         return $res->rowsaffected();
     }
 
-    public function addtheme($name, $shortname, $author, $email, $mainlcd, $remotelcd, $description, $zipfile, $sshot_wps, $sshot_menu) {
+    public function addtheme($name, $shortname, $author, $email, $mainlcd, $remotelcd, $description, $zipfile, $sshot_wps, $sshot_menu,$sshot_1,$sshot_2,$sshot_3) {
         $err = array();
         /* return array("Skipping upload"); */
 
@@ -530,9 +535,12 @@ END;
         /* Prepend wps- and menu- to screenshots */
         $sshot_wps['name']  = empty($sshot_wps['name'])  ? '' : 'wps-'.$sshot_wps['name'];
         $sshot_menu['name'] = empty($sshot_menu['name']) ? '' : 'menu-'.$sshot_menu['name'];
+        $sshot_1['name'] = empty($sshot_1['name']) ? '' : '1-'.$sshot_1['name'];
+        $sshot_2['name'] = empty($sshot_1['name']) ? '' : '2-'.$sshot_2['name'];
+        $sshot_3['name'] = empty($sshot_1['name']) ? '' : '3-'.$sshot_3['name'];
 
         /* Start moving files in place */
-        $uploads = array($zipfile, $sshot_wps, $sshot_menu);
+        $uploads = array($zipfile, $sshot_wps, $sshot_menu,$sshot_1,$sshot_2,$sshot_3);
         $movedfiles = array();
         foreach($uploads as $file) {
             if ($file === false || empty($file['tmp_name'])) {
@@ -556,7 +564,9 @@ END;
                 $movedfiles[] = $dest;
             }
         }
-        $sql_f = "INSERT INTO themes (author, email, name, mainlcd, zipfile, sshot_wps, sshot_menu, remotelcd, description, shortname, emailverification, timestamp, approved, downloadcnt, ratings, numratings) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', %s, %s, '%s', '%s', 0, datetime('now'), %d, 0, 0, 0)";
+        $sql_f = "INSERT INTO themes (author, email, name, mainlcd, zipfile, sshot_wps, sshot_menu, sshot_1 , sshot_2 ,sshot_3 , 
+                  remotelcd, description, shortname, emailverification, timestamp, approved, downloadcnt, ratings, numratings)
+                  VALUES ('%s', '%s', '%s', '%s', '%s', '%s', %s,%s ,%s , %s, %s, '%s', '%s', 0, datetime('now'), %d, 0, 0, 0)";
         $sql = sprintf($sql_f,
             db::quote($author),
             db::quote($email),
@@ -565,6 +575,9 @@ END;
             db::quote($zipfile['name']),
             db::quote($sshot_wps['name']),
             $sshot_menu === false ? 'NULL' : sprintf("'%s'", db::quote($sshot_menu['name'])),
+            $sshot_1 === false ? 'NULL' : sprintf("'%s'", db::quote($sshot_1['name'])),
+            $sshot_2 === false ? 'NULL' : sprintf("'%s'", db::quote($sshot_2['name'])),
+            $sshot_3 === false ? 'NULL' : sprintf("'%s'", db::quote($sshot_3['name'])),
             $remotelcd === false ? 'NULL' : sprintf("'%s'", db::quote($remotelcd)),
             db::quote($description),
             db::quote($shortname),
