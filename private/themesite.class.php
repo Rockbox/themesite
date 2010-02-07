@@ -664,7 +664,7 @@ END;
         $sql = "COMMIT";
         $this->db->query($sql);
             
-        $this->log(sprintf("Column %s added to %s. Backup is: ", $column,$table,$backupname));    
+        $this->log(sprintf("Column %s added to %s. Backup is: %s", $column,$table,$backupname));    
         return "Column added";
     }
     

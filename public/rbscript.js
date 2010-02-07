@@ -83,7 +83,7 @@ function startImageSwitcher()
             this.next = 0;
     }
     
-    this.timer = setTimeout(function(thisObj) { thisObj.onmouseover(); }, 1500, this);
+    this.timer = setTimeout(function(thisObj) { thisObj.onmouseover(); }, 2000, this);
     
 }
 
