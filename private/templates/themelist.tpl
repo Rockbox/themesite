@@ -47,10 +47,13 @@
     {if $themes[td]}
     <td>
     <p align="center">
-    {assign var="path" value="`$datadir`/`$themes[td].mainlcd`/`$themes[td].shortname`/"}        
-    {html_image file="`$datadir`/`$themes[td].mainlcd`/`$themes[td].shortname`/`$themes[td].sshot_wps`" href="download.php?themeid=`$themes[td].id`" 
+    {assign var="path" value="`$datadir`/`$themes[td].mainlcd`/`$themes[td].shortname`/"}
+    {if $target}{assign var="url" value="index.php?themeid=`$themes[td].id`&amp;target=`$smarty.request.target`"}
+    {else} {assign var="url" value="index.php?themeid=`$themes[td].id`"}
+    {/if}
+    {html_image file="`$datadir`/`$themes[td].mainlcd`/`$themes[td].shortname`/`$themes[td].sshot_wps`" href=$url 
                         path=$path oversrc=$themes[td].sshot_menu oversrc1=$themes[td].sshot_1 oversrc2=$themes[td].sshot_2 oversrc3=$themes[td].sshot_3}<br />
-    <small>Size: {$themes[td].size|siprefix}B</small>
+    <small><a href="download.php?themeid={$themes[td].id}">Download</a> Size: {$themes[td].size|siprefix}B </small>
     </p>
     <strong>Rating:</strong> &nbsp;
     {section name=i loop=10 step=2}
