@@ -493,19 +493,24 @@ END;
             db::quote($token)
         );
         $searchtheme = $this->db->query($sql)->next();
-        /* hide potentially updated themes */
-        $sql = sprintf("SELECT RowID, approved FROM themes WHERE mainlcd='%s' AND name='%s' AND email='%s' AND author='%s' AND approved>='1' AND emailverification='1'",
+        /* hide potentially updated themes but keep the download count alive */
+        $sql = sprintf("SELECT RowID, approved, downloadcnt FROM themes WHERE mainlcd='%s' AND name='%s' AND email='%s' AND author='%s' AND approved>='1' AND emailverification='1'",
             db::quote($searchtheme['mainlcd']),
             db::quote($searchtheme['name']),
             db::quote($searchtheme['email']),
             db::quote($searchtheme['author'])
         );
         $themes = $this->db->query($sql);
+        $dlcount = 0;
         while ($theme = $themes->next()) {
             $this->changestatus($theme['RowID'],0,$theme['approved'],"Theme was replaced by newer version.");
+            /* the highest download count should be the newest one */
+            if ($theme['downloadcnt'] > $dlcount)
+                $dlcount = $theme['downloadcnt'];
         } 
         /* change theme as verified */
-        $sql = sprintf("UPDATE themes SET emailverification=1 WHERE emailverification='%s'",
+        $sql = sprintf("UPDATE themes SET emailverification=1, downloadcnt=%d WHERE emailverification='%s'",
+            $dlcount,
             db::quote($token)
         );
         $res = $this->db->query($sql);
