@@ -292,21 +292,31 @@ class themesite {
         }
         return $ret;
     }
-    
+
+
     public function downloadUrl($themeid) {
         $sql = sprintf("SELECT mainlcd, shortname, zipfile FROM themes WHERE RowId='%s'",
             db::quote($themeid)
         );
         $data = $this->db->query($sql)->next();
         $url = sprintf("%s/%s/%s",$data['mainlcd'],$data['shortname'],$data['zipfile']);
-        
-        $sql = sprintf("UPDATE themes SET downloadcnt=downloadcnt+1 WHERE RowId='%s'",
-            db::quote($themeid)
-        );
+        $cookiename = "downloadcnt_{$themeid}";
+
+        /* prevent abuse by setting a cookie
+         * it will expire after 3 min, then downloads will be counted again */
+        if (!(isset($_COOKIE[$cookiename])))
+        {
+            $sql = sprintf("UPDATE themes SET downloadcnt=downloadcnt+1 WHERE RowId='%s'",
+                db::quote($themeid)
+            );
+        }
+        setcookie($cookiename, "foo", time()+(3*60)); // 3 min
+
         $this->db->query($sql);
         return $url;
     }
-    
+
+
     public function target2lcd($shortname) {
         $sql = sprintf("SELECT mainlcd, remotelcd, depth FROM targets WHERE shortname='%s'",
             db::quote($shortname)
