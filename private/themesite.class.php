@@ -618,13 +618,19 @@ END;
     }
     
     public function ratetheme($id,$rating) {
-        $sql = sprintf("UPDATE themes SET ratings=ratings+'%s', numratings=numratings+1 WHERE RowID=%d",
-            db::quote($rating),
-            db::quote($id)
-        );
-        $this->db->query($sql);
+        /* prevent abusing with a cookie which virtually never expires
+         * so one can only rate a theme once */
+        $cookiename = "rating_{$id}";
+        if (!(isset($_COOKIE[$cookiename])))
+        {
+            $sql = sprintf("UPDATE themes SET ratings=ratings+'%s', numratings=numratings+1 WHERE RowID=%d",
+                db::quote($rating),
+                db::quote($id)
+            );
+            $this->db->query($sql);
+        }
+        setcookie($cookiename, "bar", time()+(60*60*24*365*10)); // 10 years
     }
-
     /* add a new column to a table, make backup of theme file before */
     /* Sqlite2 doesnt support live column add, so export, drop, import it */
     public function addcolumn($table, $column,$value) {
