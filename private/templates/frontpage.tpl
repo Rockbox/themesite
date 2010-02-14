@@ -62,6 +62,15 @@ of your player in the table below, or browse all themes <a href="{$smarty.server
     <input type="submit" value="Edit" />
 </form>
 <hr />
+<h2> Allowed Themesettings </h2>
+<p><a href="{$smarty.server.SCRIPT_NAME}?showsetting">Add Setting</a> </p>
+Current Themesettings:
+<select>
+    {foreach from=$settings item=setting}
+        <option>{$setting.name} - {$setting.type}</option>
+    {/foreach}
+</select>
+<hr />
 <h2>TODO list</h2>
 <pre>
 {include file="TODO"}

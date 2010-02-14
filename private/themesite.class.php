@@ -661,26 +661,75 @@ END;
         return $ret;
     }
 
+    public function allowedsettings()
+    {
+        $ret = array();
+        $results=$this->db->query("SELECT name, type FROM settings");
+        while ($result = $results->next()) {
+            $ret[] = $result;
+        }
+        return $ret;
+    }
+        
+    public function addsetting($name,$type) 
+    {
+        $this->log(sprintf("Add new setting %s %s", $name,$type));
+
+        $sql = sprintf("INSERT INTO settings
+                        (name, type)
+                        VALUES
+                        ('%s', '%s')",
+            db::quote($name),
+            db::quote($type));
+        $this->db->query($sql);
+    }    
+        
     /*
-     * xxx: I don't know what kind of validation is wanted for cfg files
-     */
+           Check if the settings are all in the allowed list. If they are of filetype, check if file exists 
+         */
     public function validatecfg($cfg, $files) {
-        $conf = array();
+        $settings = $this->allowedsettings();
         foreach(explode("\n", $cfg) as $line) {
             if (substr($line, 0, 1) == '#') continue;
             preg_match("/^(?P<name>[^:]*)\s*:\s*(?P<value>[^#]*)\s*$/", $line, $matches);
             if (count($matches) > 0) {
                 extract($matches);
-                switch($name) {
-                    default:
+                /* check if it is in the list of allowed settings */
+                $found =false;
+                foreach($settings as $setting) 
+                {
+                    if($setting['name'] == $name)
+                    {
+                        /* check file type settings */
+                        if($setting['type'] == "file")
+                        {
+                            $value_info = $this->my_pathinfo($value);
+                            $foundfile = false;
+                            foreach($files as $file)
+                            {
+                                $file_info = $this->my_pathinfo($file);
+                                if($file_info['filename'] == $value_info['filename'])
+                                {
+                                    $foundfile=true;
+                                    break;
+                                }
+                            }
+                            if($foundfile == false)
+                                return sprintf("The file %s from the setting '%s' doesnt exist.",$value,$name);
+                        }
+                        /* all other setting types are currently unchecked */
+                        $found = true;
                         break;
+                    }                    
                 }
+                if($found == false)
+                    return sprintf("%s is not a allowed theme setting.",$name);
             }
         }
+        return "";
     }
 
     public function lcd2targets($lcd) {
-        $ret = array();
         $sql = sprintf("SELECT shortname, remotelcd FROM targets WHERE mainlcd='%s'",
             db::quote($lcd)
         );
@@ -896,8 +945,9 @@ END;
         }
 
         /* Now we check all the things that could be wrong */
-        $this->validatecfg($cfg, $files);
-
+        $error = $this->validatecfg($cfg, $files);
+        if($error != "")
+            $err[] = $error;
         if ($themezipupload['size'] > config::maxzippedsize)
             $err[] = sprintf("Theme zip too large at %s (max size is %s)", $themezipupload['size'], config::maxzippedsize);
         if ($totalsize > config::maxthemesize)

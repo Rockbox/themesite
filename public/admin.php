@@ -133,6 +133,17 @@ else {
         }
         $template = 'target.tpl';
     }
+    /* Show Settings page*/
+    elseif (isset($_REQUEST['showsetting'])) {
+        $template = 'setting.tpl';
+    }
+    /* add a setting */
+    elseif (isset($_REQUEST['addsetting'])) {
+        $site->addsetting(
+            $_REQUEST['name'],
+            $_REQUEST['type']);
+        $t->assign('adminmsg', 'Setting added');
+    }
     /* Run checkwps on all themes */
     elseif (isset($_REQUEST['runcheckwps'])) {
         $results = $site->checkallthemes();
@@ -149,6 +160,7 @@ else {
     if (!isset($template)) {
         $t->assign('title', 'Admin');
         $t->assign('targets', $site->listtargets());
+        $t->assign('settings', $site->allowedsettings());
         $t->assign('adminworkneeded',$site->adminworkneeded());
         $t->assign('admin', true);
         $template = 'frontpage.tpl';

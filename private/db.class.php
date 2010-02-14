@@ -67,7 +67,9 @@ class db {
             'log' => array(    'time'               => 'TEXT',
                                'ip'                 => 'TEXT',
                                'admin'              => 'TEXT',
-                               'msg'                => 'TEXT'));
+                               'msg'                => 'TEXT'),
+            'settings' =>array('name'               => 'TEXT',
+                               'type'               => 'TEXT'));
                                 
     public function __construct($file) {
         $this->file = $file;
@@ -83,7 +85,7 @@ class db {
             /* create all tables if they dont exist */
             foreach($this->tables as $name => $table)
             {
-                if($this->columntypes($name) === false)
+                if($this->columntypes($name) == false)
                 {
                     $sql = sprintf("CREATE TABLE %s(",$name);
                     foreach ($table as $entry => $type) {
