@@ -714,7 +714,7 @@ END;
                                     break;
                                 }
                                 /* fonts from the fontpack dont need to exist */
-                                if($file_info['extension'] == 'bdf' && $this->isfontpackfont($value))
+                                if($file_info['extension'] == 'fnt' && $this->isfontpackfont($value))
                                 {
                                     $foundfile=true;
                                     break;
