@@ -27,76 +27,148 @@
 class db {
     private $file;
     private $dh;
+    /* array of all table in the db */
+    /* if you add tables or entrys the will be automatically added */
+    /* WARNING dont move entry or you will loose data */
+    private $tables = array( 
+            'checkwps' =>array('themeid'            => 'INTEGER' ,
+                               'version_type'       => 'TEXT' ,
+                               'version_number'     => 'TEXT',
+                               'target'             => 'TEXT',
+                               'pass'               => 'INTEGER',),
+            'themes' => array( 'name'               => 'TEXT',
+                               'approved'           => 'INTEGER',
+                               'shortname'          => 'TEXT',
+                               'author'             => 'TEXT',
+                               'email'              => 'TEXT',
+                               'mainlcd'            => 'TEXT',
+                               'remotelcd'          => 'TEXT',
+                               'description'        => 'TEXT',
+                               'zipfile'            => 'TEXT',
+                               'sshot_wps'          => 'TEXT',
+                               'sshot_menu'         => 'TEXT',
+                               'sshot_1'            => 'TEXT',
+                               'sshot_2'            => 'TEXT',
+                               'sshot_3'            => 'TEXT',
+                               'emailverification'  => 'TEXT',
+                               'reason'             => 'TEXT',
+                               'timestamp'          => 'FLOAT',
+                               'downloadcnt'        => 'INTEGER',
+                               'ratings'            => 'INTEGER',
+                               'numratings'         => 'INTEGER'),
+            'admins' => array( 'name'               => 'TEXT' ,
+                               'pass'               => 'TEXT'),
+            'targets' => array('shortname'          => 'TEXT' ,
+                               'fullname'           => 'TEXT',
+                               'mainlcd'            => 'TEXT',
+                               'remotelcd'          => 'TEXT',
+                               'pic'                => 'TEXT',
+                               'depth'              => 'INTEGER' ),
+            'log' => array(    'time'               => 'TEXT',
+                               'ip'                 => 'TEXT',
+                               'admin'              => 'TEXT',
+                               'msg'                => 'TEXT'));
+                                
     public function __construct($file) {
         $this->file = $file;
+        /* open db */
         $this->dh = @sqlite_open($file, 0666, $err);
         if ($this->dh === false) {
             $this->error($err);
         }
         else {
-            $res = $this->query("SELECT COUNT(*) as count FROM sqlite_master WHERE type='table'");
-            if ($res->next('count') === "0") {
-                $checkwps_table = <<<END
-CREATE TABLE checkwps (
-    themeid INTEGER,
-    version_type TEXT,
-    version_number TEXT,
-    target TEXT,
-    pass INTEGER
-);
-END;
-
-                $theme_table = <<<END
-CREATE TABLE themes (
-    name TEXT,
-    approved INTEGER,
-    shortname TEXT,
-    author TEXT,
-    email TEXT,
-    mainlcd TEXT,
-    remotelcd TEXT,
-    description TEXT,
-    zipfile TEXT,
-    sshot_wps TEXT,
-    sshot_menu TEXT,
-    emailverification TEXT,
-    reason TEXT,
-    timestamp FLOAT
-)
-END;
-                $admin_table = <<<END
-CREATE TABLE admins (
-    name TEXT PRIMARY KEY,
-    pass TEXT
-)
-END;
-                $target_table = <<<END
-CREATE TABLE targets (
-    shortname TEXT PRIMARY KEY,
-    fullname TEXT,
-    mainlcd TEXT,
-    remotelcd TEXT,
-    pic TEXT,
-    depth INTEGER
-)
-END;
-                $log_table = <<<END
-CREATE TABLE log (
-    time TEXT,
-    ip TEXT,
-    admin TEXT,
-    msg TEXT
-)
-END;
-                $this->query($target_table);
-                $this->query($checkwps_table);
-                $this->query($theme_table);
-                $this->query($admin_table);
-                $this->query($log_table);
+            /* try to  create tables */
+            /* wrap in transaction */
+            $this->query("BEGIN TRANSACTION");
+            /* create all tables if they dont exist */
+            foreach($this->tables as $name => $table)
+            {
+                if($this->columntypes($name) === false)
+                {
+                    $sql = sprintf("CREATE TABLE %s(",$name);
+                    foreach ($table as $entry => $type) {
+                        $sql = sprintf("%s%s %s ,",$sql,$entry,$type);
+                    } 
+                    $sql = sprintf("%s)",chop($sql,','));
+                    $this->query($sql);
+                }
+            }
+            /* end transaction */
+            $this->query("COMMIT");
+            
+            /* check if we need to add rows */
+            $addColumns = array();
+            foreach($this->tables as $name => $table)
+            {
+                $curtable = $this->columntypes($name);
+                $diff = array_diff($table,$curtable);
+                if(count($diff) > 0) {
+                    $addColumns[$name] = $table;
+                }
+            }
+            
+            /* add rows if needed */
+            if(count($addColumns) > 0) {
+                /* Sqlite2 doesnt support live column add, so backup, export, drop, import it */
+                 /* backup db */
+                $i = 0;
+                do {
+                    $backupname = sprintf("%s/themes-%s.db.bak",preconfig::privpath,"$i");
+                    $i++;
+                } while (file_exists($backupname));
+                $cmd = sprintf("cp %s %s",$file,$backupname);
+                system($cmd,$retval);
+                if($retval != 0) {
+                    $this->log(sprintf("Failed to backup DB for upgrade: %s",$backupname));   
+                    die(sprintf("Failed to backup DB for upgrade: %s",$backupname));
+                }    
+                /* wrap in transaction */
+                $this->query("BEGIN TRANSACTION");   
+                foreach($addColumns as $name => $table)
+                {
+                    /* get complete table */ 
+                    $sql = sprintf("SELECT RowID,* from %s",$name);
+                    $tabledata = $this->query($sql);
+                    $tabletypes = $this->columntypes($name);
+                    /* drop tabe */
+                    $sql = sprintf("DROP TABLE %s",$name); 
+                    $this->query($sql);
+                    /* create new table */
+                    $sql = sprintf("CREATE TABLE %s(",$name);
+                    foreach ($table as $entry => $type) {
+                        $sql = sprintf("%s%s %s ,",$sql,$entry,$type);
+                    } 
+                    $sql = sprintf("%s)",chop($sql,','));
+                    $this->query($sql);
+                    /* fill in data */
+                    while($tableentry = $tabledata->next()){
+                        $sql = sprintf("INSERT INTO %s (rowid, ",$name);
+                        foreach ($tabletypes as $entry => $type) {
+                            $sql = sprintf("%s%s ,",$sql,$entry);
+                        }
+                        $sql = sprintf("%s) VALUES(%s, ",chop($sql,','),$tableentry['RowID']);
+                        
+                        foreach ($tabletypes as $entry => $type) {
+                            $sql = sprintf("%s'%s' ,",$sql,$tableentry[$entry]);
+                        }
+                        $sql = sprintf("%s)",chop($sql,','));
+                        
+                        $this->query($sql);
+                    }
+                }
+                /* end transaction */
+                $this->query("COMMIT");
+                $this->log(sprintf("Database upgraded. Backup is: %s",$backupname));    
             }
         }
     }
-
+    
+    /* Log a message to the log table.   */
+    private function log($message) {
+        $sql = sprintf("INSERT INTO log (time, ip, admin, msg) VALUES (datetime('now'), 'self', 'selfupdate', '%s')",$message);
+        $this->query($sql);
+    }
+    
     public function query($sql) {
         $res = @sqlite_query(
             $this->dh,

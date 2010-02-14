@@ -631,63 +631,6 @@ END;
         }
         setcookie($cookiename, "bar", time()+(60*60*24*365*10)); // 10 years
     }
-    /* add a new column to a table, make backup of theme file before */
-    /* Sqlite2 doesnt support live column add, so export, drop, import it */
-    public function addcolumn($table, $column,$value) {
-        
-        /* backup db */
-        $i = 0;
-        do {
-            $backupname = sprintf("%s/themes-%s.db.bak",preconfig::privpath,"$i");
-            $i++;
-        } while (file_exists($backupname));
-        $cmd = sprintf("cp %s/%s %s",preconfig::privpath,config::dbfile,$backupname);
-        system($cmd,$retval);
-        if($retval != 0)
-            return "backup db failed";
-        
-        
-        /* get complete table */ 
-        $sql = sprintf("SELECT RowID,* from %s", 
-                db::quote($table));
-        $tabledata = $this->db->query($sql);
-        $tabletypes = $this->db->columntypes(db::quote($table));
-        
-        /* wrap in transaction */
-        $sql = "BEGIN TRANSACTION;";
-        $this->db->query($sql);
-        /* drop tabe */
-        $sql = sprintf("DROP TABLE %s",db::quote($table)); 
-        $this->db->query($sql);
-        
-        /* create new table */
-        $sql = sprintf("CREATE TABLE %s(",db::quote($table));
-        foreach ($tabletypes as $entry => $type) {
-            $sql = sprintf("%s%s %s ,",$sql,$entry,$type);
-        } 
-        $sql = sprintf("%s%s)",$sql,db::quote($column));
-        $this->db->query($sql);
-        
-        /* fill in data */
-        while($tableentry = $tabledata->next()){
-            $sql = sprintf("INSERT INTO %s (rowid, ",db::quote($table));
-            foreach ($tabletypes as $entry => $type) {
-                $sql = sprintf("%s%s ,",$sql,$entry);
-            }
-            $sql = sprintf("%s%s) VALUES(%s, ",$sql,db::quote($column),db::quote($tableentry['RowID']));
-            foreach ($tabletypes as $entry => $type) {
-                $sql = sprintf("%s'%s' ,",$sql, db::quote($tableentry[$entry]));
-            }
-            $sql = sprintf("%s'%s')",$sql,db::quote($value));
-            $this->db->query($sql);
-        }
-        
-        $sql = "COMMIT";
-        $this->db->query($sql);
-            
-        $this->log(sprintf("Column %s added to %s. Backup is: %s", $column,$table,$backupname));    
-        return "Column added";
-    }
     
     /*
      * Use this rather than plain pathinfo for compatibility with PHP<5.2.0

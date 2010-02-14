@@ -145,11 +145,6 @@ else {
         $template = 'showlog.tpl';
         $t->assign('log', $log);
     }
-    /* Add a Column to a table */
-    elseif (isset($_REQUEST['addcolumn'])) {
-        $results = $site->addcolumn($_REQUEST['table'],$_REQUEST['column'],$_REQUEST['columnvalue']);
-        $t->assign('adminmsg', $results);
-    }
     /* Or just show the front page */
     if (!isset($template)) {
         $t->assign('title', 'Admin');
