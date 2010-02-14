@@ -713,6 +713,12 @@ END;
                                     $foundfile=true;
                                     break;
                                 }
+                                /* fonts from the fontpack dont need to exist */
+                                if($file_info['extension'] == 'bdf' && $this->isfontpackfont($value))
+                                {
+                                    $foundfile=true;
+                                    break;
+                                }
                             }
                             if($foundfile == false)
                                 return sprintf("The file %s from the setting '%s' doesnt exist.",$value,$name);
