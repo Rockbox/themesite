@@ -714,7 +714,7 @@ END;
                                     break;
                                 }
                                 /* fonts from the fontpack dont need to exist */
-                                if($file_info['extension'] == 'fnt' && $this->isfontpackfont($value))
+                                if($value_info['extension'] == 'fnt' && $this->isfontpackfont($value))
                                 {
                                     $foundfile=true;
                                     break;
