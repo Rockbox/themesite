@@ -704,17 +704,19 @@ END;
                         if($setting['type'] == "file")
                         {
                             $value_info = $this->my_pathinfo($value);
+                            /* fonts from the fontpack dont need to exist */
+                            $fname = preg_replace("/\.fnt\s*$/","",$value_info['filename']);
+                            if (preg_match("/\.fnt\s*$/", $value) && $this->isfontpackfont($fname)) {
+                                $found = true;
+                                break;
+                            }
+                            
+                            /* check if filename exists in $files */                            
                             $foundfile = false;
                             foreach($files as $file)
                             {
                                 $file_info = $this->my_pathinfo($file);
                                 if($file_info['filename'] == $value_info['filename'])
-                                {
-                                    $foundfile=true;
-                                    break;
-                                }
-                                /* fonts from the fontpack dont need to exist */
-                                if($value_info['extension'] == 'fnt' && $this->isfontpackfont($value))
                                 {
                                     $foundfile=true;
                                     break;
