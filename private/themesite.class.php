@@ -690,7 +690,7 @@ END;
     public function validatecfg($cfg, $files) {
         $settings = $this->allowedsettings();
         foreach(explode("\n", $cfg) as $line) {
-            if (substr($line, 0, 1) == '#') continue;
+            if (preg_match("/\s*#/", $line)) continue;
             preg_match("/^(?P<name>[^:]*)\s*:\s*(?P<value>[^#]*)\s*$/", $line, $matches);
             if (count($matches) > 0) {
                 extract($matches);
