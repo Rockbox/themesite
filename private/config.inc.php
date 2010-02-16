@@ -55,6 +55,9 @@ class config {
     // Location of the Rockbox source font dir
     const fontdir = "/home/themes/rockbox-current/fonts";
     
+    //Location of the Rockbox source icons dir
+    const icondir = "/home/themes/rockbox-current/icons";
+    
     //private key for recaptcha
     const recaptchakey_priv = "6LfwAQsAAAAAAOGeWVtqpSeIFZKP3WcActZeoVk1";
     
