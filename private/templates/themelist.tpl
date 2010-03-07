@@ -77,7 +77,6 @@
     {/if}
     <strong>Description:</strong><br />  
     &nbsp;{$themes[td].description|escape:'html'}<br />
-    {if $target}
     {if $themes[td].current_pass}
     <strong>Works with <span class="build_info" title="{$themes[td].current_version}">current build</span></strong><br />
     {else}
@@ -85,7 +84,6 @@
     {/if}
     {if $themes[td].release_pass}
     <strong>Works with release {$themes[td].release_version}</strong><br />
-    {/if}
     {/if}
     </small>
     </td>

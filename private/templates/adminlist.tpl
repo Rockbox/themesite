@@ -56,14 +56,14 @@
             <strong>Designed for LCD size: </strong>&nbsp;{$themes[i].mainlcd|escape:'html'}<br />
             {if $themes[i].remotelcd} <strong>Designed for remote LCD size: </strong>&nbsp;{$themes[i].remotelcd|escape:'html'}<br /> {/if}
             {/if}
-            {$themes[i].description|escape:'html'}
-            {if $target}
+            {$themes[i].description|escape:'html'}<br />
             {if $themes[i].current_pass}
             <br /><strong>Works with <span title="$themes[i].current_version}">current build</span></strong>
+            {else}
+            <strong class="broken_build">Doesn't work with <span class="build_info" title="{$themes[i].current_version}">current build</span></strong><br />
             {/if}
             {if $themes[i].release_pass}
             <br /><strong>Works with release {$themes[i].release_version}</strong>
-            {/if}
             {/if}
             <br /><a href="admin.php?edittheme={$themes[i].id}&amp;{if $target}parenttarget={$smarty.request.target}{/if}">Edit theme</a>
             </small></p>
