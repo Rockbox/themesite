@@ -223,6 +223,8 @@ class themesite {
 
     public function listthemes($target = false, $orderby = 'timestamp DESC', $approved = 'approved', $onlyverified = true) {
         $ret = array();
+        $checkwps_clause = "AND checkwps.pass=1";
+        $checkwps_clause_target = "AND (current_pass=1 OR release_pass=1)";
         switch($approved) {
             case 'any':
                 $approved_clause = "";
@@ -242,6 +244,8 @@ class themesite {
             $verified = " AND emailverification = 1 ";
         }
         else {
+            $checkwps_clause = "";
+            $checkwps_clause_target= "";
             $verified = "";
         }
 
@@ -249,7 +253,9 @@ class themesite {
             $sql = sprintf("SELECT DISTINCT themes.name AS name, author, timestamp, mainlcd, approved, reason, description, shortname, 
                             zipfile, sshot_wps, sshot_menu,sshot_1,sshot_2,sshot_3,downloadcnt, ratings, numratings, 
                             emailverification = 1 as verified, themes.RowId as id FROM themes,checkwps 
-                            WHERE themes.rowid=checkwps.themeid AND checkwps.pass=1 AND emailverification=1 %s ORDER BY %s",
+                            WHERE themes.rowid=checkwps.themeid %s %s %s ORDER BY %s",
+              $checkwps_clause,
+              $verified,
               $approved_clause,
               $orderby);  
         }
@@ -268,13 +274,14 @@ class themesite {
                 LEFT OUTER JOIN checkwps c ON (themes.rowid=c.themeid and c.version_type='current' and c.target='%s')
 
                 LEFT OUTER JOIN checkwps r ON (themes.rowid=r.themeid and r.version_type='release' and r.target='%s') 
-                WHERE 1 %s %s AND (current_pass=1 OR release_pass=1)
+                WHERE 1 %s %s %s
                 ORDER BY %s
                 ",
                 db::quote($target),
                 db::quote($target),
                 $verified,
                 $approved_clause,
+                $checkwps_clause_target,
                 db::quote($orderby)
             );
         }
