@@ -80,7 +80,7 @@
     {if $themes[td].current_pass}
     <strong>Works with <span class="build_info" title="{$themes[td].current_version}">current build</span></strong><br />
     {else}
-    <strong class="broken_build">Doesn't work with <span class="build_info" title="{$themes[td].current_version}">current build</span></strong><br />
+    <strong class="broken_build">Doesn't work with <span class="build_info" title="{$themes[td].current_version} - {$themes[td].checkwps_output}">current build</span></strong><br />
     {/if}
     {if $themes[td].release_pass}
     <strong>Works with release {$themes[td].release_version}</strong><br />

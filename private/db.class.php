@@ -35,7 +35,8 @@ class db {
                                'version_type'       => 'TEXT' ,
                                'version_number'     => 'TEXT',
                                'target'             => 'TEXT',
-                               'pass'               => 'INTEGER',),
+                               'pass'               => 'INTEGER',
+                               'output'             => 'TEXT'),
             'themes' => array( 'name'               => 'TEXT',
                                'approved'           => 'INTEGER',
                                'shortname'          => 'TEXT',
@@ -103,8 +104,16 @@ class db {
             foreach($this->tables as $name => $table)
             {
                 $curtable = $this->columntypes($name);
-                $diff = array_diff($table,$curtable);
-                if(count($diff) > 0) {
+                $diff = 0;
+                foreach($table as $key => $entry)
+                {
+                    if(!array_key_exists($key,$curtable))
+                    {
+                        $diff = 1;
+                    }
+                }
+                
+                if($diff > 0) {
                     $addColumns[$name] = $table;
                 }
             }

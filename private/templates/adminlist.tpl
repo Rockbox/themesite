@@ -58,9 +58,9 @@
             {/if}
             {$themes[i].description|escape:'html'}<br />
             {if $themes[i].current_pass}
-            <br /><strong>Works with <span title="$themes[i].current_version}">current build</span></strong>
+            <br /><strong>Works with <span title="{$themes[i].current_version}">current build</span></strong>
             {else}
-            <strong class="broken_build">Doesn't work with <span class="build_info" title="{$themes[i].current_version}">current build</span></strong><br />
+            <strong class="broken_build">Doesn't work with <span class="build_info" title="{$themes[i].current_version} - {$themes[i].checkwps_output}">current build</span></strong><br />
             {/if}
             {if $themes[i].release_pass}
             <br /><strong>Works with release {$themes[i].release_version}</strong>

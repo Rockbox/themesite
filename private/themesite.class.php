@@ -115,13 +115,14 @@ class themesite {
                      * Maybe we want to have two tables - one with historic
                      * data, and one with only the latest results for fast
                      * retrieval?
-                     */     
-                    $sql = sprintf("INSERT INTO checkwps (themeid, version_type, version_number, target, pass) VALUES (%d, '%s', '%s', '%s', '%s')",
+                     */           
+                    $sql = sprintf("INSERT INTO checkwps (themeid, version_type, version_number, target, pass, output) VALUES (%d, '%s', '%s', '%s', '%s', '%s')",
                         $theme['RowID'],
                         db::quote($version_type),
                         db::quote($result2['version']),
                         db::quote($target),
-                        db::quote($result2['pass'] ? 1 : 0)
+                        db::quote($result2['pass'] ? 1 : 0),
+                        db::quote(implode(" ",$result2['output']))
                     );
                     $this->db->query($sql);
                 }
@@ -193,7 +194,8 @@ class themesite {
             c.version_number AS current_version,
             c.pass AS current_pass,
             r.version_number as release_version,
-            r.pass as release_pass
+            r.pass as release_pass,
+            c.output as checkwps_output
             FROM themes
             LEFT OUTER JOIN checkwps c ON (themes.rowid=c.themeid and c.version_type='current')
             LEFT OUTER JOIN checkwps r ON (themes.rowid=r.themeid and r.version_type='release')
@@ -254,7 +256,8 @@ class themesite {
                             c.version_number AS current_version,
                             c.pass AS current_pass,
                             r.version_number as release_version,
-                            r.pass as release_pass
+                            r.pass as release_pass,
+                            c.output as checkwps_output
                             FROM themes 
                             LEFT OUTER JOIN checkwps c ON (themes.rowid=c.themeid and c.version_type='current')
                             LEFT OUTER JOIN checkwps r ON (themes.rowid=r.themeid and r.version_type='release') 
@@ -274,7 +277,8 @@ class themesite {
                 c.version_number AS current_version,
                 c.pass AS current_pass,
                 r.version_number as release_version,
-                r.pass as release_pass
+                r.pass as release_pass,
+                c.output as checkwps_output
                 FROM themes
                 LEFT OUTER JOIN checkwps c ON (themes.rowid=c.themeid and c.version_type='current' and c.target='%s')
 
