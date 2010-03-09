@@ -56,7 +56,8 @@ class db {
                                'timestamp'          => 'FLOAT',
                                'downloadcnt'        => 'INTEGER',
                                'ratings'            => 'INTEGER',
-                               'numratings'         => 'INTEGER'),
+                               'numratings'         => 'INTEGER',
+                               'filesize'           => 'INTEGER'),
             'admins' => array( 'name'               => 'TEXT' ,
                                'pass'               => 'TEXT'),
             'targets' => array('shortname'          => 'TEXT' ,
@@ -70,7 +71,9 @@ class db {
                                'admin'              => 'TEXT',
                                'msg'                => 'TEXT'),
             'settings' =>array('name'               => 'TEXT',
-                               'type'               => 'TEXT'));
+                               'type'               => 'TEXT'),
+            'zipcontents'=>array('themeid'          => 'INTEGER',
+                                'filename'          => 'TEXT'));
                                 
     public function __construct($file) {
         $this->file = $file;

@@ -132,6 +132,22 @@ class themesite {
                 'result' => $result,
                 'summary' => array('theme' => $theme['name'], 'pass' => $passany, 'duration' => microtime(true) - $starttime)
             );
+            
+            /* update filesize and zipcontents here, so old themes always have this data */
+            $filesize = filesize(sprintf("%s/%s/%s/%s",
+                $theme['approved'] >= 1 ? $this->themedir_public : $this->themedir_private,
+                $theme['mainlcd'],$theme['shortname'],$theme['zipfile']));
+            $sql = sprintf("UPDATE themes SET filesize=%s WHERE RowId='%s'", db::quote($filesize), $theme['RowID']);
+            $this->db->query($sql);
+            
+            $zipfiles = $this->zipcontents(sprintf("%s/%s/%s/%s",
+                $theme['approved'] >= 1 ? $this->themedir_public : $this->themedir_private,
+                $theme['mainlcd'],$theme['shortname'],$theme['zipfile']));
+            $this->db->query(sprintf("DELETE FROM zipcontents WHERE themeid=%d", $theme['RowID']));   
+            foreach($zipfiles as $file)
+            {
+                $this->db->query(sprintf("INSERT into zipcontents(themeid,filename) VALUES(%d , '%s')",$theme['RowID'],db::quote($file)));
+            }            
         }
         return $return;
     }
@@ -188,7 +204,7 @@ class themesite {
         $sql = sprintf("
             SELECT
             name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu, sshot_1, sshot_2,sshot_3,
-            email, downloadcnt, ratings, numratings,
+            email, downloadcnt, ratings, numratings, filesize as size,
             emailverification = 1 as verified,
             themes.RowId as id,
             c.version_number AS current_version,
@@ -205,20 +221,10 @@ class themesite {
             $approved
         );
         $theme = $this->db->query($sql)->next();
-        $zipfile = sprintf("%s/%s/%s/%s",
-            $theme['approved'] >= 1 ? $this->themedir_public : $this->themedir_private,
-            $theme['mainlcd'],
-            $theme['shortname'],
-            $theme['zipfile']
-        );
-        $theme['files'] = $this->zipcontents($zipfile);
-        
-        $theme['size'] = filesize(sprintf("%s/%s/%s/%s",
-                $theme['approved'] >= 1 ? $this->themedir_public : $this->themedir_private,
-                $theme['mainlcd'],
-                $theme['shortname'],
-                $theme['zipfile']
-            ));
+        $fileresult = $this->db->query(sprintf("SELECT filename from zipcontents WHERE themeid=%d",$theme['id']));
+        $files = array();
+        while ($file = $fileresult->next()) {$files[] = $file['filename']; }
+        $theme['files'] = $files;
         if($theme['numratings'] > 0) $theme['ratings'] = $theme['ratings'] /$theme['numratings'] ;     
         return $theme;
     }
@@ -251,7 +257,7 @@ class themesite {
 
         if ($target === false) {
             $sql = sprintf("SELECT DISTINCT themes.name AS name, author, timestamp, mainlcd, approved, reason, description, shortname, 
-                            zipfile, sshot_wps, sshot_menu,sshot_1,sshot_2,sshot_3,downloadcnt, ratings, numratings, 
+                            zipfile, sshot_wps, sshot_menu,sshot_1,sshot_2,sshot_3,downloadcnt, ratings, numratings, filesize as size,
                             emailverification = 1 as verified, themes.RowId as id, 
                             c.version_number AS current_version,
                             c.pass AS current_pass,
@@ -271,7 +277,7 @@ class themesite {
             $sql = sprintf("
                 SELECT
                 name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu, sshot_1, sshot_2, sshot_3,
-                email, downloadcnt, ratings, numratings,
+                email, downloadcnt, ratings, numratings, filesize as size,
                 emailverification = 1 as verified,
                 themes.RowId as id,
                 c.version_number AS current_version,
@@ -295,12 +301,6 @@ class themesite {
         $themes = $this->db->query($sql);
         /* create additional data */
         while ($theme = $themes->next()) {
-            $theme['size'] = filesize(sprintf("%s/%s/%s/%s",
-                $theme['approved'] >= 1 ? $this->themedir_public : $this->themedir_private,
-                $theme['mainlcd'],
-                $theme['shortname'],
-                $theme['zipfile']
-            ));
             if($theme['numratings'] > 0) $theme['ratings'] = $theme['ratings'] / $theme['numratings']; 
             $ret[] = $theme;
         }
