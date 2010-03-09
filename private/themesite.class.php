@@ -241,7 +241,7 @@ class themesite {
             $verified = "AND emailverification = 1";
         }
         
-        $sql = sprintf("SELECT name, author, timestamp, mainlcd, approved, reason, description, shortname, 
+        $sql = sprintf("SELECT DISTINCT name, author, timestamp, mainlcd, approved, reason, description, shortname, 
                 zipfile, sshot_wps, sshot_menu, sshot_1, sshot_2, sshot_3,
                 email, downloadcnt, ratings, numratings, filesize as size,
                 emailverification = 1 as verified,
