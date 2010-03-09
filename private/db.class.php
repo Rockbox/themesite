@@ -158,12 +158,12 @@ class db {
                     while($tableentry = $tabledata->next()){
                         $sql = sprintf("INSERT INTO %s (rowid, ",$name);
                         foreach ($tabletypes as $entry => $type) {
-                            $sql = sprintf("%s%s ,",$sql,$entry);
+                            $sql = sprintf("%s%s ,",$sql,db::quote($entry));
                         }
                         $sql = sprintf("%s) VALUES(%s, ",chop($sql,','),$tableentry['RowID']);
                         
                         foreach ($tabletypes as $entry => $type) {
-                            $sql = sprintf("%s'%s' ,",$sql,$tableentry[$entry]);
+                            $sql = sprintf("%s'%s' ,",$sql,db::quote($tableentry[$entry]));
                         }
                         $sql = sprintf("%s)",chop($sql,','));
                         
