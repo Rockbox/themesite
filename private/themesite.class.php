@@ -241,7 +241,7 @@ class themesite {
             $verified = "AND emailverification = 1";
         }
         
-        $sql = sprintf("SELECT DISTINCT name, author, timestamp, mainlcd, approved, reason, description, shortname, 
+        $sql = sprintf("SELECT themes.name AS name, author, timestamp, mainlcd, approved, reason, description, shortname, 
                 zipfile, sshot_wps, sshot_menu, sshot_1, sshot_2, sshot_3,
                 email, downloadcnt, ratings, numratings, filesize as size,
                 emailverification = 1 as verified,
@@ -253,9 +253,8 @@ class themesite {
                 c.output as checkwps_output
                 FROM themes
                 LEFT OUTER JOIN checkwps c ON (themes.rowid=c.themeid and c.version_type='current')
-
                 LEFT OUTER JOIN checkwps r ON (themes.rowid=r.themeid and r.version_type='release') 
-                WHERE 1 %s %s %s AND %s LIKE '%%%s%%'",
+                WHERE 1 %s %s %s AND %s LIKE '%%%s%%' GROUP BY name",
                 $verified,
                 $approved_clause,
                 $checkwps_clause,
@@ -298,7 +297,7 @@ class themesite {
         }
 
         if ($target === false) {
-            $sql = sprintf("SELECT DISTINCT themes.name AS name, author, timestamp, mainlcd, approved, reason, description, shortname, 
+            $sql = sprintf("SELECT themes.name AS name, author, timestamp, mainlcd, approved, reason, description, shortname, 
                             zipfile, sshot_wps, sshot_menu,sshot_1,sshot_2,sshot_3,downloadcnt, ratings, numratings, filesize as size,
                             emailverification = 1 as verified, themes.RowId as id, 
                             c.version_number AS current_version,
@@ -309,16 +308,15 @@ class themesite {
                             FROM themes 
                             LEFT OUTER JOIN checkwps c ON (themes.rowid=c.themeid and c.version_type='current')
                             LEFT OUTER JOIN checkwps r ON (themes.rowid=r.themeid and r.version_type='release') 
-                            WHERE 1 %s %s %s ORDER BY %s",
+                            WHERE 1 %s %s %s GROUP BY name ORDER BY %s",
               $checkwps_clause,
               $verified,
               $approved_clause,
               $orderby);  
         }
         else {
-            $sql = sprintf("
-                SELECT
-                name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu, sshot_1, sshot_2, sshot_3,
+            $sql = sprintf("SELECT name, author, timestamp, mainlcd, approved, reason, description, shortname,
+                zipfile, sshot_wps, sshot_menu, sshot_1, sshot_2, sshot_3,
                 email, downloadcnt, ratings, numratings, filesize as size,
                 emailverification = 1 as verified,
                 themes.RowId as id,
@@ -331,7 +329,7 @@ class themesite {
                 LEFT OUTER JOIN checkwps c ON (themes.rowid=c.themeid and c.version_type='current' and c.target='%s')
 
                 LEFT OUTER JOIN checkwps r ON (themes.rowid=r.themeid and r.version_type='release' and r.target='%s') 
-                WHERE 1 %s %s %s ORDER BY %s",
+                WHERE 1 %s %s %s GROUP BY name ORDER BY %s",
                 db::quote($target),
                 db::quote($target),
                 $verified,
