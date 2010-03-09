@@ -74,6 +74,12 @@ elseif (isset($_REQUEST['target'])) {
     $t->assign('target', $site->target2fullname($_REQUEST['target']));
     $template = 'themelist.tpl';
 }
+/* search for themes */
+elseif (isset($_REQUEST['searchtheme'])) {
+        $template = 'themelist.tpl';
+        $themes = $site->searchthemes($_REQUEST['searchtype'],$_REQUEST['searchword'],false);
+        $t->assign('themes', $themes);
+    }
 /* Show all themes */
 elseif (isset($_REQUEST['allthemes'])) {
     if(isset($_REQUEST['order'])) $values['themes'] = $site->listthemes(false,sprintf("%s %s",$_REQUEST['orderby'],$_REQUEST['direction']));

@@ -137,7 +137,7 @@ class themesite {
             $filesize = filesize(sprintf("%s/%s/%s/%s",
                 $theme['approved'] >= 1 ? $this->themedir_public : $this->themedir_private,
                 $theme['mainlcd'],$theme['shortname'],$theme['zipfile']));
-            $sql = sprintf("UPDATE themes SET filesize=%s WHERE RowId='%s'", db::quote($filesize), $theme['RowID']);
+            $sql = sprintf("UPDATE themes SET filesize=%s WHERE RowId=%d", db::quote($filesize), $theme['RowID']);
             $this->db->query($sql);
             
             $zipfiles = $this->zipcontents(sprintf("%s/%s/%s/%s",
@@ -229,6 +229,48 @@ class themesite {
         return $theme;
     }
 
+    public function searchthemes($searchrow,$needle,$admin = false) {
+        $ret = array();
+        $checkwps_clause = "";
+        $approved_clause = "";
+        $verified = "";
+        if($admin === false)
+        {
+            $checkwps_clause = "AND (current_pass=1 OR release_pass=1)";
+            $approved_clause = "AND approved >= 1";
+            $verified = "AND emailverification = 1";
+        }
+        
+        $sql = sprintf("SELECT name, author, timestamp, mainlcd, approved, reason, description, shortname, 
+                zipfile, sshot_wps, sshot_menu, sshot_1, sshot_2, sshot_3,
+                email, downloadcnt, ratings, numratings, filesize as size,
+                emailverification = 1 as verified,
+                themes.RowId as id,
+                c.version_number AS current_version,
+                c.pass AS current_pass,
+                r.version_number as release_version,
+                r.pass as release_pass,
+                c.output as checkwps_output
+                FROM themes
+                LEFT OUTER JOIN checkwps c ON (themes.rowid=c.themeid and c.version_type='current')
+
+                LEFT OUTER JOIN checkwps r ON (themes.rowid=r.themeid and r.version_type='release') 
+                WHERE 1 %s %s %s AND %s LIKE '%%%s%%'",
+                $verified,
+                $approved_clause,
+                $checkwps_clause,
+                db::quote($searchrow),
+                db::quote($needle));
+                
+        $themes = $this->db->query($sql);
+        /* create additional data */
+        while ($theme = $themes->next()) {
+            if($theme['numratings'] > 0) $theme['ratings'] = $theme['ratings'] / $theme['numratings']; 
+            $ret[] = $theme;
+        }
+        return $ret;
+    }
+    
     public function listthemes($target = false, $orderby = 'timestamp DESC', $approved = 'approved', $onlyverified = true) {
         $ret = array();
         $checkwps_clause = "AND (current_pass=1 OR release_pass=1)";

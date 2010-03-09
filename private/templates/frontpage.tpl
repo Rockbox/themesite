@@ -43,6 +43,18 @@ of your player in the table below, or browse all themes <a href="{$smarty.server
   </tr>
   {/section}
 </table>
+<br/>
+You can also directly search for specific themes here: <br/>
+<form method="POST" action="{$smarty.server.SCRIPT_NAME}">
+    <input type="hidden" name="searchtheme" value=1 />
+    <select name=searchtype>
+        <option value='name'>Theme name</option>
+        <option value='author'>Author</option>
+        <option value='mainlcd'>Lcd size</option>    
+    </select>
+    <input type="text" name="searchword" />
+    <input type="submit" value="Search" />
+</form>
 
 {if $admin}
 <p><a href="{$smarty.server.SCRIPT_NAME}?runcheckwps">Run checkwps on all themes</a></p>

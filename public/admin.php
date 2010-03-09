@@ -65,6 +65,17 @@ else {
         $t->assign('approved', $approved);
         $t->assign('target', $site->target2fullname($_REQUEST['target']));
     }
+    /* search for themes */
+      if (isset($_REQUEST['searchtheme'])) {
+        if (isset($_REQUEST['changestatuses'])) {
+            changestatuses($site);
+        }
+        $approved = isset($_REQUEST['approved']) ? $_REQUEST['approved'] : 'any';
+        $template = 'adminlist.tpl';
+        $themes = $site->searchthemes($_REQUEST['searchtype'],$_REQUEST['searchword'],true);
+        $t->assign('themes', $themes);
+        $t->assign('approved', $approved);
+    }
     /* show all themes */
     if (isset($_REQUEST['allthemes'])) {
         if (isset($_REQUEST['changestatuses'])) {
