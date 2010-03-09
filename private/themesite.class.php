@@ -137,7 +137,7 @@ class themesite {
             $filesize = filesize(sprintf("%s/%s/%s/%s",
                 $theme['approved'] >= 1 ? $this->themedir_public : $this->themedir_private,
                 $theme['mainlcd'],$theme['shortname'],$theme['zipfile']));
-            $sql = sprintf("UPDATE themes SET filesize=%s WHERE RowId=%d", db::quote($filesize), $theme['RowID']);
+            $sql = sprintf("UPDATE themes SET filesize='%s' WHERE RowId=%d", db::quote($filesize), $theme['RowID']);
             $this->db->query($sql);
             
             $zipfiles = $this->zipcontents(sprintf("%s/%s/%s/%s",
