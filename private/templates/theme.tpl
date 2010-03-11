@@ -18,16 +18,19 @@
 <table class="rockbox">
   {* First print a row with theme name *}
   <tr>
-    <th align="center" width="320"><a href="index.php?themeid={$theme.id}{if $target}&amp;target={$smarty.request.target}{/if}">{$theme.name|escape:'html'}</th>
+    <th align="center" ><a href="index.php?themeid={$theme.id}{if $target}&amp;target={$smarty.request.target}{/if}">{$theme.name|escape:'html'}</th>
   </tr>
 
   {* Then a row with "the rest" *}
   <tr valign="top">
     <td>
     <p align="center">
-    {assign var="path" value="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/"}   
-    {html_image file="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_wps`" href="download.php?themeid=`$theme.id`" 
-            path=$path oversrc=$theme.sshot_menu oversrc1=$theme.sshot_1 oversrc2=$theme.sshot_2 oversrc3=$theme.sshot_3}<br />
+    {html_image file="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_wps`" href="download.php?themeid=`$theme.id`"}
+    {if $theme.sshot_menu != "" }{html_image file="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_menu`" href="download.php?themeid=`$theme.id`"} {/if}
+    {if $theme.sshot_1 != "" }{html_image file="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_1`" href="download.php?themeid=`$theme.id`"} {/if}
+    {if $theme.sshot_2 != "" }{html_image file="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_2`" href="download.php?themeid=`$theme.id`"} {/if}
+    {if $theme.sshot_3 != "" }{html_image file="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_3`" href="download.php?themeid=`$theme.id`"} {/if}
+    <br />
     <small>Size: {$theme.size|siprefix}B</small>
     </p>
     <strong>Rating:</strong> &nbsp;
