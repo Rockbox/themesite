@@ -27,9 +27,9 @@
     <p align="center">
     {html_image file="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_wps`" href="download.php?themeid=`$theme.id`"}
     {if $theme.sshot_menu != "" }{html_image file="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_menu`" href="download.php?themeid=`$theme.id`"} {/if}
-    {if $theme.sshot_1 != "" }{html_image file="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_1`" href="download.php?themeid=`$theme.id`"} {/if}
-    {if $theme.sshot_2 != "" }{html_image file="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_2`" href="download.php?themeid=`$theme.id`"} {/if}
-    {if $theme.sshot_3 != "" }{html_image file="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_3`" href="download.php?themeid=`$theme.id`"} {/if}
+    {if $theme.sshot_1 != "" || $theme.sshot_menu != "1-"}{html_image file="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_1`" href="download.php?themeid=`$theme.id`"} {/if}
+    {if $theme.sshot_2 != "" || $theme.sshot_menu != "2-"}{html_image file="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_2`" href="download.php?themeid=`$theme.id`"} {/if}
+    {if $theme.sshot_3 != "" || $theme.sshot_menu != "3-"}{html_image file="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_3`" href="download.php?themeid=`$theme.id`"} {/if}
     <br />
     <small>Size: {$theme.size|siprefix}B</small>
     </p> <p align="center">
