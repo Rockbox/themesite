@@ -32,7 +32,7 @@
     {if $theme.sshot_3 != "" }{html_image file="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_3`" href="download.php?themeid=`$theme.id`"} {/if}
     <br />
     <small>Size: {$theme.size|siprefix}B</small>
-    </p>
+    </p> <p align="center">
     <strong>Rating:</strong> &nbsp;
     {section name=i loop=10 step=2}
         {if $smarty.section.i.iteration*2 <= $theme.ratings}
@@ -43,10 +43,10 @@
             <img src="empty.png" style="width:15px; height:15px;" />
         {/if}
     {/section} 
-    {$theme.numratings} vote{if $theme.numratings !=1}s.{/if}
-    <br />
+    {$theme.numratings} vote{if $theme.numratings !=1}s.{/if} </p>
     <form method="POST" action="{$smarty.server.SCRIPT_NAME}?themeid={$theme.id}{if $target}&amp;target={$smarty.request.target}{/if}">
         <input type="hidden" name="ratetheme" value={$theme.id} />
+        <p align="center">
         <select name=rating>
             <option value='10'>10 - Top</option>
             <option value='9'>9</option>
@@ -61,7 +61,9 @@
             <option value='0'>0 - Flop</option>
         </select>
         <input type="submit" value="Rate" />
+        </p>
     </form>
+    <p align="center">
     <small>
     <strong>Submitter: </strong>&nbsp;{$theme.author|escape:'html'}<br />
     <strong>Submitted: </strong>&nbsp;{$theme.timestamp|escape:'html'}<br />
@@ -80,7 +82,8 @@
     {if $theme.release_pass}
     <strong>Works with release {$theme.release_version}</strong><br />
     {/if}
-    </small>    
+    </small> 
+    </p>
     </td>
     <tr>
         <th>Zip contents</th>
