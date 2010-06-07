@@ -21,6 +21,34 @@
  ****************************************************************************/
 
 require_once('preconfig.inc.php');
+
+/* workaround to make the script redirect to the old theme site copy for old
+ * Rockbox versions. To be removed once the theme site can handle multiple
+ * theme syntax versions itself.
+ */
+$revision_syntax_changed = 26641;
+$old_script = "/oldsite/www/rbutilqt.php";
+if(array_key_exists("revision", $_REQUEST)) {
+    if($_REQUEST['revision'] > 0 && $_REQUEST['revision'] < $revision_syntax_changed) {
+        $target = "http://" . $_SERVER['SERVER_NAME'] . $old_script;
+        header("Location: " . $target);
+        exit(0);
+    }
+}
+if(array_key_exists("release", $_REQUEST)) {
+    list($major, $minor, $micro) = explode('.', $_REQUEST['release']);
+    if($major > 0 && $major <= 3 && $minor <= 6) {
+        $target = "http://" . $_SERVER['SERVER_NAME'] . $old_script;
+        header("Location: " . $target);
+        exit(0);
+    }
+}
+else {
+    $target = "http://" . $_SERVER['SERVER_NAME'] . $old_script;
+    header("Location: " . $target);
+    exit(0);
+}
+
 header('Content-type: text/plain');
 
 $themes = array();
