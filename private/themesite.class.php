@@ -292,7 +292,7 @@ class themesite {
             $verified = " AND emailverification = 1 ";
         }
         else {
-            $checkwps_clause = "";
+            $checkwps_clause = "AND (current_pass<>2 OR release_pass<>2)";  //workaround. without this we somehow get all themes
             $verified = "";
         }
 
