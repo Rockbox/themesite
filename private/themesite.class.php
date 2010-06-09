@@ -1055,11 +1055,12 @@ END;
         $err = array();
         $size = getimagesize($upload['tmp_name']);
         $dimensions = sprintf("%dx%d", $size[0], $size[1]);
+        $lcdsize = explode("x",$mainlcd);
         if ($size === false) {
             $err[] = sprintf("Couldn't open screenshot %s", $upload['name']);
         }
         else {
-            if ($dimensions != $mainlcd) {
+            if ($lcdsize[0] > ($size[0]+2) || $lcdsize[1] > ($size[1]+2) || $lcdsize[0] < ($size[0]-2) || $lcdsize[1] < ($size[1]-2) ) {
                 $err[] = sprintf("Wrong resolution of %s. Should be %s (is %s).", $upload['name'], $mainlcd, $dimensions);
             }
             if ($size[2] != IMAGETYPE_PNG) {
