@@ -532,7 +532,7 @@ END;
             db::quote($id)
         );
         $this->db->query($sql);
-        $url = sprintf("%s%s/verify.php?t=%s", config::hostname, config::path, $token);
+        $url = sprintf("%s/%s/verify.php?t=%s", config::hostname, config::path, $token);
         /* xxx: Someone rewrite this message to not sound horrible */
         $msg = <<<END
 Hello, you just uploaded a Rockbox theme and now we need you to verify your
