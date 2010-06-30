@@ -1060,8 +1060,14 @@ END;
             $err[] = sprintf("Couldn't open screenshot %s", $upload['name']);
         }
         else {
+            //workaround for archos player screenshots
+            if($lcdsize[0] == 11 && $lcdsize[1] == 2) {
+                $lcdsize[0] = 132;
+                $lcdsize[1] = 64;
+            }
+            //check size
             if ($lcdsize[0] > ($size[0]+2) || $lcdsize[1] > ($size[1]+2) || $lcdsize[0] < ($size[0]-2) || $lcdsize[1] < ($size[1]-2) ) {
-                $err[] = sprintf("Wrong resolution of %s. Should be %s (is %s).", $upload['name'], $mainlcd, $dimensions);
+                $err[] = sprintf("Wrong resolution of %s. Should be %dx%d (is %s).", $upload['name'], $lcdsize[0], $lcdsize[1], $dimensions);
             }
             if ($size[2] != IMAGETYPE_PNG) {
                 $err[] = "Screenshots must be of type PNG.";
