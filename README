@@ -24,3 +24,7 @@
    this.
 6. Add some admin users using private/adduser.sh. This is done through the
    console to create an implicit "superadmin".
+7. (optional) When everything is up and running, add one index to the checkwps
+   table:
+   Run "sqlite private/themes.db" and execute the following SQL:
+   CREATE INDEX checkwps_themeid ON checkwps(themeid);
