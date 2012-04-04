@@ -29,7 +29,7 @@ require_once('preconfig.inc.php');
 $revision_syntax_changed = 26641;
 $old_script = "/oldsite/www/rbutilqt.php";
 if(array_key_exists("revision", $_REQUEST)) {
-    if($_REQUEST['revision'] > 0 && $_REQUEST['revision'] < $revision_syntax_changed) {
+    if(is_numeric($_REQUEST['revision']) && ($_REQUEST['revision'] > 0 && $_REQUEST['revision'] < $revision_syntax_changed)) {
         $target = "http://" . $_SERVER['SERVER_NAME'] . $old_script;
         header("Location: " . $target);
         exit(0);

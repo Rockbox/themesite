@@ -347,6 +347,41 @@ class themesite {
         return $ret;
     }
 
+    public function listthemesbyresolution($mainlcd = false, $remotelcd = false) {
+        $ret = array();
+
+        $lcd = '';
+        if ($mainlcd)
+            $lcd .= sprintf(" AND mainlcd = '%s' ", db::quote($mainlcd));
+
+        if ($remotelcd)
+            $lcd .= sprintf(" AND remotelcd = '%s' ", db::quote($remotelcd));
+
+        $sql = sprintf("SELECT name, author, timestamp, mainlcd, approved, reason, description, shortname,
+            zipfile, sshot_wps, sshot_menu, sshot_1, sshot_2, sshot_3,
+            email, downloadcnt, ratings, numratings, filesize as size,
+            emailverification = 1 as verified,
+            themes.RowId as id,
+            c.version_number AS current_version,
+            c.pass AS current_pass,
+            r.version_number as release_version,
+            r.pass as release_pass,
+            c.output as checkwps_output
+            FROM themes
+            LEFT OUTER JOIN checkwps c ON (themes.rowid=c.themeid and c.version_type='current')
+            LEFT OUTER JOIN checkwps r ON (themes.rowid=r.themeid and r.version_type='release') 
+            WHERE (current_pass=1 OR release_pass=1) AND emailverification = 1 AND approved >= 1 %s GROUP BY name ORDER BY timestamp DESC",
+            $lcd
+        );
+
+        $themes = $this->db->query($sql);
+        /* create additional data */
+        while ($theme = $themes->next()) {
+            if($theme['numratings'] > 0) $theme['ratings'] = $theme['ratings'] / $theme['numratings']; 
+            $ret[] = $theme;
+        }
+        return $ret;
+    }
 
     public function downloadUrl($themeid) {
         $sql = sprintf("SELECT mainlcd, shortname, zipfile FROM themes WHERE RowId='%s'",
@@ -868,7 +903,7 @@ END;
         chdir($olddir);
 
         /* Remove the tempdir */
-        $this->rmdir_recursive($tmpdir);
+        $this->rmdir_recursive($tmpdir); 
         return $return;
     }
 

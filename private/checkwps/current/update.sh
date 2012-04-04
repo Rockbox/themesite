@@ -1,10 +1,13 @@
 #!/bin/sh
 rockbox_dir="/home/themes/rockbox-current"
+export ANDROID_SDK_PATH=""
+export ANDROID_NDK_PATH=""
 
 cd `dirname "$0"`
 target=`pwd`
 cd "${rockbox_dir}"
-svn up
+git pull --rebase
+git checkout master
 ./tools/version.sh . > "${target}/VERSION"
 cd "tools/checkwps"
 ./cleanall.sh
