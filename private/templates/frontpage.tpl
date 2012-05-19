@@ -27,10 +27,6 @@ href="http://www.rockbox.org/wiki/RockboxUtility">Rockbox
 Utility</a>. You can also download themes manually by clicking on the picture
 of your player in the table below, or browse all themes <a href="{$smarty.server.SCRIPT_NAME}?allthemes">here</a>.</p>
 
-<h2>Older themes</h2>
-<p>If you are running release 3.6 or a svn build before r26641 you should download your themes from 
-<a href="http://themes.rockbox.org/oldsite/www/index.php">here</a>.</p> 
-
 {assign var="cols" value=#targetcolumns#}
 <table class="rockbox">
   {section name=tr loop=$targets step=$cols}
