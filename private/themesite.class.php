@@ -62,7 +62,7 @@ class themesite {
             SELECT targets.shortname AS shortname, fullname, pic, targets.mainlcd AS mainlcd, depth, targets.remotelcd AS remotelcd, COUNT(themes.name) AS numthemes, targets.RowId AS id
             FROM targets LEFT OUTER JOIN (SELECT DISTINCT themes.name AS name,checkwps.target AS target 
             FROM themes,checkwps 
-            WHERE themes.rowid=checkwps.themeid AND checkwps.pass=1 AND approved>=1 AND emailverification=1) themes 
+            WHERE themes.themeid=checkwps.themeid AND checkwps.pass=1 AND approved>=1 AND emailverification=1) themes 
             ON targets.shortname=themes.target 
             GROUP BY targets.shortname||targets.mainlcd 
             ORDER BY %s
@@ -213,8 +213,8 @@ class themesite {
             r.pass as release_pass,
             c.output as checkwps_output
             FROM themes
-            LEFT OUTER JOIN checkwps c ON (themes.rowid=c.themeid and c.version_type='current')
-            LEFT OUTER JOIN checkwps r ON (themes.rowid=r.themeid and r.version_type='release')
+            LEFT OUTER JOIN checkwps c ON (themes.themeid=c.themeid and c.version_type='current')
+            LEFT OUTER JOIN checkwps r ON (themes.themeid=r.themeid and r.version_type='release')
             WHERE id=%d %s %s",
             db::quote($id),
             $verified,
@@ -252,8 +252,8 @@ class themesite {
                 r.pass as release_pass,
                 c.output as checkwps_output
                 FROM themes
-                LEFT OUTER JOIN checkwps c ON (themes.rowid=c.themeid and c.version_type='current')
-                LEFT OUTER JOIN checkwps r ON (themes.rowid=r.themeid and r.version_type='release') 
+                LEFT OUTER JOIN checkwps c ON (themes.themeid=c.themeid and c.version_type='current')
+                LEFT OUTER JOIN checkwps r ON (themes.themeid=r.themeid and r.version_type='release') 
                 WHERE 1 %s %s %s AND %s LIKE '%%%s%%' GROUP BY name",
                 $verified,
                 $approved_clause,
@@ -306,8 +306,8 @@ class themesite {
                             r.pass as release_pass,
                             c.output as checkwps_output
                             FROM themes 
-                            LEFT OUTER JOIN checkwps c ON (themes.rowid=c.themeid and c.version_type='current')
-                            LEFT OUTER JOIN checkwps r ON (themes.rowid=r.themeid and r.version_type='release') 
+                            LEFT OUTER JOIN checkwps c ON (themes.themeid=c.themeid and c.version_type='current')
+                            LEFT OUTER JOIN checkwps r ON (themes.themeid=r.themeid and r.version_type='release') 
                             WHERE 1 %s %s %s GROUP BY name ORDER BY %s",
               $checkwps_clause,
               $verified,
@@ -326,9 +326,9 @@ class themesite {
                 r.pass as release_pass,
                 c.output as checkwps_output
                 FROM themes
-                LEFT OUTER JOIN checkwps c ON (themes.rowid=c.themeid and c.version_type='current' and c.target='%s')
+                LEFT OUTER JOIN checkwps c ON (themes.themeid=c.themeid and c.version_type='current' and c.target='%s')
 
-                LEFT OUTER JOIN checkwps r ON (themes.rowid=r.themeid and r.version_type='release' and r.target='%s') 
+                LEFT OUTER JOIN checkwps r ON (themes.themeid=r.themeid and r.version_type='release' and r.target='%s') 
                 WHERE 1 %s %s %s GROUP BY name ORDER BY %s",
                 db::quote($target),
                 db::quote($target),
@@ -368,8 +368,8 @@ class themesite {
             r.pass as release_pass,
             c.output as checkwps_output
             FROM themes
-            LEFT OUTER JOIN checkwps c ON (themes.rowid=c.themeid and c.version_type='current')
-            LEFT OUTER JOIN checkwps r ON (themes.rowid=r.themeid and r.version_type='release') 
+            LEFT OUTER JOIN checkwps c ON (themes.themeid=c.themeid and c.version_type='current')
+            LEFT OUTER JOIN checkwps r ON (themes.themeid=r.themeid and r.version_type='release') 
             WHERE (current_pass=1 OR release_pass=1) AND emailverification = 1 AND approved >= 1 %s GROUP BY name ORDER BY timestamp DESC",
             $lcd
         );
