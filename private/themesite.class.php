@@ -395,7 +395,7 @@ class themesite {
          * it will expire after 3 min, then downloads will be counted again */
         if (!(isset($_COOKIE[$cookiename])))
         {
-            $sql = sprintf("UPDATE themes SET downloadcnt=downloadcnt+1 WHERE themedid ='%s'",
+            $sql = sprintf("UPDATE themes SET downloadcnt=downloadcnt+1 WHERE themeid ='%s'",
                 db::quote($themeid)
             );
         }
