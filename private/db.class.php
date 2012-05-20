@@ -278,13 +278,13 @@ class result {
             return $row;
         }
     }
-    
+
     public function insertid() {
-        return this->dh->lastInsertRowID();
+        return $this->dh->lastInsertRowID();
     }
 
     public function rowsaffected() {
-        return this->dh->changes();
+        return $this->dh->changes();
     }
 }
 
