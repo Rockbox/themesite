@@ -8,7 +8,7 @@ elif [ ! -w "$1" ]; then
 else
     dbfile=$1
 fi
-for util in md5sum sqlite; do
+for util in md5sum sqlite3; do
     if [ ! -x "`which $util 2>/dev/null`" ]; then
         echo "We need the $util utility"
         exit 3
@@ -24,4 +24,4 @@ printf "Password: "
 read pass
 md5pass=`printf "$pass"|md5sum|cut -c 1-32`
 sql=`printf "INSERT INTO admins (name, pass) VALUES ('%s', '%s')" "$user" "$md5pass"`
-sqlite "$dbfile" "$sql"
+sqlite3 "$dbfile" "$sql"
