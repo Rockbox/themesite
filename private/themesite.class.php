@@ -59,7 +59,7 @@ class themesite {
 
     private function targetlist($orderby) {
         $sql = sprintf("
-            SELECT targets.shortname AS shortname, fullname, pic, targets.mainlcd AS mainlcd, depth, targets.remotelcd AS remotelcd, COUNT(themes.name) AS numthemes, targets.RowId AS id
+            SELECT targets.shortname AS shortname, fullname, pic, targets.mainlcd AS mainlcd, depth, targets.remotelcd AS remotelcd, COUNT(themes.name) AS numthemes
             FROM targets LEFT OUTER JOIN (SELECT DISTINCT themes.name AS name,checkwps.target AS target 
             FROM themes,checkwps 
             WHERE themes.themeid=checkwps.themeid AND checkwps.pass=1 AND approved>=1 AND emailverification=1) themes 
@@ -86,7 +86,7 @@ class themesite {
      */
     public function checkallthemes($id = 0) {
         $this->log("Running checkwps");
-        $sql = sprintf("SELECT RowID, * FROM themes WHERE RowID=%d OR %s",
+        $sql = sprintf("SELECT * FROM themes WHERE themeid=%d OR %s",
             $id,
             $id === 0 ? 1 : 0
         );
@@ -106,7 +106,7 @@ class themesite {
              * Store the results and check if at least one check passed (for
              * the summary)
              */
-            $this->db->query(sprintf("DELETE FROM checkwps WHERE themeid=%d", $theme['RowID']));
+            $this->db->query(sprintf("DELETE FROM checkwps WHERE themeid=%d", $theme['themeid']));
             $passany = false;
             foreach($result as $version_type => $targets) {
                 foreach($targets as $target => $result2) {
@@ -117,7 +117,7 @@ class themesite {
                      * retrieval?
                      */           
                     $sql = sprintf("INSERT INTO checkwps (themeid, version_type, version_number, target, pass, output) VALUES (%d, '%s', '%s', '%s', '%s', '%s')",
-                        $theme['RowID'],
+                        $theme['themeid'],
                         db::quote($version_type),
                         db::quote($result2['version']),
                         db::quote($target),
@@ -137,16 +137,16 @@ class themesite {
             $filesize = filesize(sprintf("%s/%s/%s/%s",
                 $theme['approved'] >= 1 ? $this->themedir_public : $this->themedir_private,
                 $theme['mainlcd'],$theme['shortname'],$theme['zipfile']));
-            $sql = sprintf("UPDATE themes SET filesize='%s' WHERE RowId=%d", db::quote($filesize), $theme['RowID']);
+            $sql = sprintf("UPDATE themes SET filesize='%s' WHERE themeid=%d", db::quote($filesize), $theme['themeid']);
             $this->db->query($sql);
             
             $zipfiles = $this->zipcontents(sprintf("%s/%s/%s/%s",
                 $theme['approved'] >= 1 ? $this->themedir_public : $this->themedir_private,
                 $theme['mainlcd'],$theme['shortname'],$theme['zipfile']));
-            $this->db->query(sprintf("DELETE FROM zipcontents WHERE themeid=%d", $theme['RowID']));   
+            $this->db->query(sprintf("DELETE FROM zipcontents WHERE themeid=%d", $theme['themeid']));   
             foreach($zipfiles as $file)
             {
-                $this->db->query(sprintf("INSERT into zipcontents(themeid,filename) VALUES(%d , '%s')",$theme['RowID'],db::quote($file)));
+                $this->db->query(sprintf("INSERT into zipcontents(themeid,filename) VALUES(%d , '%s')",$theme['themeid'],db::quote($file)));
             }            
         }
         return $return;
@@ -206,7 +206,7 @@ class themesite {
             name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu, sshot_1, sshot_2,sshot_3,
             email, downloadcnt, ratings, numratings, filesize as size,
             emailverification = 1 as verified,
-            themes.RowId as id,
+            themes.themeid as id,
             c.version_number AS current_version,
             c.pass AS current_pass,
             r.version_number as release_version,
@@ -245,7 +245,7 @@ class themesite {
                 zipfile, sshot_wps, sshot_menu, sshot_1, sshot_2, sshot_3,
                 email, downloadcnt, ratings, numratings, filesize as size,
                 emailverification = 1 as verified,
-                themes.RowId as id,
+                themes.themeid as id,
                 c.version_number AS current_version,
                 c.pass AS current_pass,
                 r.version_number as release_version,
@@ -299,7 +299,7 @@ class themesite {
         if ($target === false) {
             $sql = sprintf("SELECT themes.name AS name, author, timestamp, mainlcd, approved, reason, description, shortname, 
                             zipfile, sshot_wps, sshot_menu,sshot_1,sshot_2,sshot_3,downloadcnt, ratings, numratings, filesize as size,
-                            emailverification = 1 as verified, themes.RowId as id, 
+                            emailverification = 1 as verified, themes.themeid as id, 
                             c.version_number AS current_version,
                             c.pass AS current_pass,
                             r.version_number as release_version,
@@ -319,7 +319,7 @@ class themesite {
                 zipfile, sshot_wps, sshot_menu, sshot_1, sshot_2, sshot_3,
                 email, downloadcnt, ratings, numratings, filesize as size,
                 emailverification = 1 as verified,
-                themes.RowId as id,
+                themes.themeid as id,
                 c.version_number AS current_version,
                 c.pass AS current_pass,
                 r.version_number as release_version,
@@ -361,7 +361,7 @@ class themesite {
             zipfile, sshot_wps, sshot_menu, sshot_1, sshot_2, sshot_3,
             email, downloadcnt, ratings, numratings, filesize as size,
             emailverification = 1 as verified,
-            themes.RowId as id,
+            themes.themeid as id,
             c.version_number AS current_version,
             c.pass AS current_pass,
             r.version_number as release_version,
@@ -384,7 +384,7 @@ class themesite {
     }
 
     public function downloadUrl($themeid) {
-        $sql = sprintf("SELECT mainlcd, shortname, zipfile FROM themes WHERE RowId='%s'",
+        $sql = sprintf("SELECT mainlcd, shortname, zipfile FROM themes WHERE themeid ='%s'",
             db::quote($themeid)
         );
         $data = $this->db->query($sql)->next();
@@ -395,7 +395,7 @@ class themesite {
          * it will expire after 3 min, then downloads will be counted again */
         if (!(isset($_COOKIE[$cookiename])))
         {
-            $sql = sprintf("UPDATE themes SET downloadcnt=downloadcnt+1 WHERE RowId='%s'",
+            $sql = sprintf("UPDATE themes SET downloadcnt=downloadcnt+1 WHERE themedid ='%s'",
                 db::quote($themeid)
             );
         }
@@ -448,11 +448,11 @@ class themesite {
             $status_text[$newstatus],
             $reason
         ));
-        $sql = sprintf("SELECT shortname, mainlcd, email, name, author, zipfile FROM themes WHERE RowID='%d'", db::quote($themeid));
+        $sql = sprintf("SELECT shortname, mainlcd, email, name, author, zipfile FROM themes WHERE themeid='%d'", db::quote($themeid));
         $theme = $this->db->query($sql)->next();
 
         if ($newstatus == -1) {
-            $sql = sprintf("DELETE FROM themes WHERE RowID='%d'",
+            $sql = sprintf("DELETE FROM themes WHERE themeid='%d'",
                 db::quote($themeid)
             );
 
@@ -472,7 +472,7 @@ class themesite {
             }
         }
         else {
-            $sql = sprintf("UPDATE themes SET approved='%d', reason='%s' WHERE RowID='%d'",
+            $sql = sprintf("UPDATE themes SET approved='%d', reason='%s' WHERE themeid='%d'",
                 db::quote($newstatus),
                 db::quote($reason),
                 db::quote($themeid)
@@ -537,7 +537,7 @@ END;
         $this->log(sprintf("Edit target %s", $fullname));
                 
         $sql = sprintf("UPDATE targets SET shortname='%s', fullname='%s', mainlcd='%s',
-                         pic='%s', depth='%s', remotelcd='%s' WHERE RowId='%s'",
+                         pic='%s', depth='%s', remotelcd='%s' WHERE themeid='%s'",
             db::quote($shortname),
             db::quote($fullname),
             db::quote($mainlcd),
@@ -562,7 +562,7 @@ END;
 
     public function prepareverification($id, $email, $author) {
         $token = md5(uniqid());
-        $sql = sprintf("UPDATE themes SET emailverification='%s' WHERE RowID='%s'",
+        $sql = sprintf("UPDATE themes SET emailverification='%s' WHERE themeid='%s'",
             db::quote($token),
             db::quote($id)
         );
@@ -593,7 +593,7 @@ END;
         );
         $searchtheme = $this->db->query($sql)->next();
         /* hide potentially updated themes but keep the download count alive */
-        $sql = sprintf("SELECT RowID, approved, downloadcnt FROM themes WHERE mainlcd='%s' AND name='%s' AND email='%s' AND author='%s' AND approved>='1' AND emailverification='1'",
+        $sql = sprintf("SELECT themeid, approved, downloadcnt FROM themes WHERE mainlcd='%s' AND name='%s' AND email='%s' AND author='%s' AND approved>='1' AND emailverification='1'",
             db::quote($searchtheme['mainlcd']),
             db::quote($searchtheme['name']),
             db::quote($searchtheme['email']),
@@ -602,7 +602,7 @@ END;
         $themes = $this->db->query($sql);
         $dlcount = 0;
         while ($theme = $themes->next()) {
-            $this->changestatus($theme['RowID'],0,$theme['approved'],"Theme was replaced by newer version.");
+            $this->changestatus($theme['themeid'],0,$theme['approved'],"Theme was replaced by newer version.");
             /* the highest download count should be the newest one */
             if ($theme['downloadcnt'] > $dlcount)
                 $dlcount = $theme['downloadcnt'];
@@ -695,7 +695,7 @@ END;
     }
 
     public function updatetheme($id, $name, $mainlcd, $author, $email, $description) {
-        $sql = sprintf("UPDATE themes SET name='%s', mainlcd='%s', author='%s', email='%s', description='%s' WHERE RowID=%d",
+        $sql = sprintf("UPDATE themes SET name='%s', mainlcd='%s', author='%s', email='%s', description='%s' WHERE themeid=%d",
             db::quote($name),
             db::quote($mainlcd),
             db::quote($author),
@@ -712,7 +712,7 @@ END;
         $cookiename = "rating_{$id}";
         if (!(isset($_COOKIE[$cookiename])))
         {
-            $sql = sprintf("UPDATE themes SET ratings=ratings+'%s', numratings=numratings+1 WHERE RowID=%d",
+            $sql = sprintf("UPDATE themes SET ratings=ratings+'%s', numratings=numratings+1 WHERE themeid=%d",
                 db::quote($rating),
                 db::quote($id)
             );
