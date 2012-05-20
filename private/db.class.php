@@ -215,11 +215,11 @@ class db {
     public function query($sql) {
         $res = @sqlite_query(
             $this->dh,
-            $sql,
-            SQLITE_ASSOC,
-            $err
+            $sql
         );
         if ($res === false) {
+            $code = $this->dh->lastErrorCode();
+            $err = sprintf("%s (%d)", $this->dh->lastErrorMsg(), $code);
             $this->error($err, $sql);
         }
         else {
