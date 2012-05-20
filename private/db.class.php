@@ -34,7 +34,7 @@ function sqlite_query($dbhandle,$query)
     $result = $dbhandle->query($query);
     return $result;
 }
-function sqlite_fetch_array(&$result,$type)
+function sqlite_fetch_array(&$result,$type=0)
 {
     #Get Columns
     $i = 0;
@@ -237,9 +237,9 @@ class db {
          * found like this
          */
         if ($err == "") {
-            $code = sqlite_last_error($this->dh);
+            $code = $this->dh->lastErrorCode();
             $err = sprintf("%s (%d)",
-                sqlite_error_string($code),
+                $this->dh->lastErrorMsg(),
                 $code
             );
         }
