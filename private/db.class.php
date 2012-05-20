@@ -20,6 +20,33 @@
  *
  ****************************************************************************/
 
+// wrapper functions for old SQLite2 calls, copied from php.net
+// see http://www.php.net/manual/en/book.sqlite3.php#106779
+function sqlite_open($location,$mode)
+{
+    $handle = new SQLite3($location);
+    return $handle;
+}
+function sqlite_query($dbhandle,$query)
+{
+    $array['dbhandle'] = $dbhandle;
+    $array['query'] = $query;
+    $result = $dbhandle->query($query);
+    return $result;
+}
+function sqlite_fetch_array(&$result,$type)
+{
+    #Get Columns
+    $i = 0;
+    while ($result->columnName($i))
+    {
+        $columns[ ] = $result->columnName($i);
+        $i++;
+    }
+   
+    $resx = $result->fetchArray(SQLITE3_ASSOC);
+    return $resx;
+} 
 
 /*
  * Simple DB class using sqlite and a bunch of assumptions.
@@ -79,102 +106,104 @@ class db {
         $this->file = $file;
         /* open db */
         $this->dh = @sqlite_open($file, 0666, $err);
-        if ($this->dh === false) {
-            $this->error($err);
-        }
-        else {
-            /* try to  create tables */
-            /* wrap in transaction */
-            $this->query("BEGIN TRANSACTION");
-            /* create all tables if they dont exist */
-            foreach($this->tables as $name => $table)
-            {
-                if($this->columntypes($name) == false)
-                {
-                    $sql = sprintf("CREATE TABLE %s(",$name);
-                    foreach ($table as $entry => $type) {
-                        $sql = sprintf("%s%s %s ,",$sql,$entry,$type);
-                    } 
-                    $sql = sprintf("%s)",chop($sql,','));
-                    $this->query($sql);
-                }
-            }
-            /* end transaction */
-            $this->query("COMMIT");
-            
-            /* check if we need to add rows */
-            $addColumns = array();
-            foreach($this->tables as $name => $table)
-            {
-                $curtable = $this->columntypes($name);
-                $diff = 0;
-                foreach($table as $key => $entry)
-                {
-                    if(!array_key_exists($key,$curtable))
-                    {
-                        $diff = 1;
-                    }
-                }
-                
-                if($diff > 0) {
-                    $addColumns[$name] = $table;
-                }
-            }
-            
-            /* add rows if needed */
-            if(count($addColumns) > 0) {
-                /* Sqlite2 doesnt support live column add, so backup, export, drop, import it */
-                 /* backup db */
-                $i = 0;
-                do {
-                    $backupname = sprintf("%s/themes-%s.db.bak",preconfig::privpath,"$i");
-                    $i++;
-                } while (file_exists($backupname));
-                $cmd = sprintf("cp %s %s",$file,$backupname);
-                system($cmd,$retval);
-                if($retval != 0) {
-                    $this->log(sprintf("Failed to backup DB for upgrade: %s",$backupname));   
-                    die(sprintf("Failed to backup DB for upgrade: %s",$backupname));
-                }    
-                /* wrap in transaction */
-                $this->query("BEGIN TRANSACTION");   
-                foreach($addColumns as $name => $table)
-                {
-                    /* get complete table */ 
-                    $sql = sprintf("SELECT RowID,* from %s",$name);
-                    $tabledata = $this->query($sql);
-                    $tabletypes = $this->columntypes($name);
-                    /* drop tabe */
-                    $sql = sprintf("DROP TABLE %s",$name); 
-                    $this->query($sql);
-                    /* create new table */
-                    $sql = sprintf("CREATE TABLE %s(",$name);
-                    foreach ($table as $entry => $type) {
-                        $sql = sprintf("%s%s %s ,",$sql,$entry,$type);
-                    } 
-                    $sql = sprintf("%s)",chop($sql,','));
-                    $this->query($sql);
-                    /* fill in data */
-                    while($tableentry = $tabledata->next()){
-                        $sql = sprintf("INSERT INTO %s (rowid, ",$name);
-                        foreach ($tabletypes as $entry => $type) {
-                            $sql = sprintf("%s%s ,",$sql,db::quote($entry));
-                        }
-                        $sql = sprintf("%s) VALUES(%s, ",chop($sql,','),$tableentry['RowID']);
-                        
-                        foreach ($tabletypes as $entry => $type) {
-                            $sql = sprintf("%s'%s' ,",$sql,db::quote($tableentry[$entry]));
-                        }
-                        $sql = sprintf("%s)",chop($sql,','));
-                        
-                        $this->query($sql);
-                    }
-                }
-                /* end transaction */
-                $this->query("COMMIT");
-                $this->log(sprintf("Database upgraded. Backup is: %s",$backupname));    
-            }
-        }
+// FIXME: database update currrently not working with SQLite3
+//
+//        if ($this->dh === false) {
+//            $this->error($err);
+//        }
+//        else {
+//            /* try to  create tables */
+//            /* wrap in transaction */
+//            $this->query("BEGIN TRANSACTION");
+//            /* create all tables if they dont exist */
+//            foreach($this->tables as $name => $table)
+//            {
+//                if($this->columntypes($name) == false)
+//                {
+//                    $sql = sprintf("CREATE TABLE %s(",$name);
+//                    foreach ($table as $entry => $type) {
+//                        $sql = sprintf("%s%s %s ,",$sql,$entry,$type);
+//                    } 
+//                    $sql = sprintf("%s)",chop($sql,','));
+//                    $this->query($sql);
+//                }
+//            }
+//            /* end transaction */
+//            $this->query("COMMIT");
+//            
+//            /* check if we need to add rows */
+//            $addColumns = array();
+//            foreach($this->tables as $name => $table)
+//            {
+//                $curtable = $this->columntypes($name);
+//                $diff = 0;
+//                foreach($table as $key => $entry)
+//                {
+//                    if(!array_key_exists($key,$curtable))
+//                    {
+//                        $diff = 1;
+//                    }
+//                }
+//                
+//                if($diff > 0) {
+//                    $addColumns[$name] = $table;
+//                }
+//            }
+//            
+//            /* add rows if needed */
+//            if(count($addColumns) > 0) {
+//                /* Sqlite2 doesnt support live column add, so backup, export, drop, import it */
+//                 /* backup db */
+//                $i = 0;
+//                do {
+//                    $backupname = sprintf("%s/themes-%s.db.bak",preconfig::privpath,"$i");
+//                    $i++;
+//                } while (file_exists($backupname));
+//                $cmd = sprintf("cp %s %s",$file,$backupname);
+//                system($cmd,$retval);
+//                if($retval != 0) {
+//                    $this->log(sprintf("Failed to backup DB for upgrade: %s",$backupname));   
+//                    die(sprintf("Failed to backup DB for upgrade: %s",$backupname));
+//                }    
+//                /* wrap in transaction */
+//                $this->query("BEGIN TRANSACTION");   
+//                foreach($addColumns as $name => $table)
+//                {
+//                    /* get complete table */ 
+//                    $sql = sprintf("SELECT RowID,* from %s",$name);
+//                    $tabledata = $this->query($sql);
+//                    $tabletypes = $this->columntypes($name);
+//                    /* drop tabe */
+//                    $sql = sprintf("DROP TABLE %s",$name); 
+//                    $this->query($sql);
+//                    /* create new table */
+//                    $sql = sprintf("CREATE TABLE %s(",$name);
+//                    foreach ($table as $entry => $type) {
+//                        $sql = sprintf("%s%s %s ,",$sql,$entry,$type);
+//                    } 
+//                    $sql = sprintf("%s)",chop($sql,','));
+//                    $this->query($sql);
+//                    /* fill in data */
+//                    while($tableentry = $tabledata->next()){
+//                        $sql = sprintf("INSERT INTO %s (rowid, ",$name);
+//                        foreach ($tabletypes as $entry => $type) {
+//                            $sql = sprintf("%s%s ,",$sql,db::quote($entry));
+//                        }
+//                        $sql = sprintf("%s) VALUES(%s, ",chop($sql,','),$tableentry['RowID']);
+//                        
+//                        foreach ($tabletypes as $entry => $type) {
+//                            $sql = sprintf("%s'%s' ,",$sql,db::quote($tableentry[$entry]));
+//                        }
+//                        $sql = sprintf("%s)",chop($sql,','));
+//                        
+//                        $this->query($sql);
+//                    }
+//                }
+//                /* end transaction */
+//                $this->query("COMMIT");
+//                $this->log(sprintf("Database upgraded. Backup is: %s",$backupname));    
+//            }
+//        }
     }
     
     /* Log a message to the log table.   */
@@ -223,7 +252,7 @@ class db {
     }
 
     public static function quote($input) {
-        return sqlite_escape_string($input);
+        return SQLite3::escapeString($input);
     }
 }
 
