@@ -269,10 +269,6 @@ class result {
         $this->dh = $dh;
     }
 
-    public function numrows() {
-        return sqlite_num_rows($this->rh);
-    }
-
     public function next($field = false) {
         $row = sqlite_fetch_array($this->rh);
         if ($field !== false && isset($row[$field])) {
@@ -283,22 +279,12 @@ class result {
         }
     }
     
-    public function current($field = false) {
-        $row = sqlite_current($this->rh);
-        if ($field !== false && isset($row[$field])) {
-            return $row[$field];
-        }
-        else {
-            return $row;
-        }
-    }
-
     public function insertid() {
-        return sqlite_last_insert_rowid($this->dh);
+        return this->dh->lastInsertRowID();
     }
 
     public function rowsaffected() {
-        return sqlite_changes($this->dh);
+        return this->dh->changes();
     }
 }
 
