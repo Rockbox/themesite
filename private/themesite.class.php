@@ -254,7 +254,7 @@ class themesite {
                 FROM themes
                 LEFT OUTER JOIN checkwps c ON (themes.themeid=c.themeid and c.version_type='current')
                 LEFT OUTER JOIN checkwps r ON (themes.themeid=r.themeid and r.version_type='release') 
-                WHERE 1 %s %s %s AND %s LIKE '%%%s%%' GROUP BY name",
+                WHERE 1 %s %s %s AND %s LIKE '%%%s%%' GROUP BY name, mainlcd",
                 $verified,
                 $approved_clause,
                 $checkwps_clause,
@@ -308,7 +308,7 @@ class themesite {
                             FROM themes 
                             LEFT OUTER JOIN checkwps c ON (themes.themeid=c.themeid and c.version_type='current')
                             LEFT OUTER JOIN checkwps r ON (themes.themeid=r.themeid and r.version_type='release') 
-                            WHERE 1 %s %s %s GROUP BY name ORDER BY %s",
+                            WHERE 1 %s %s %s GROUP BY name, mainlcd ORDER BY %s",
               $checkwps_clause,
               $verified,
               $approved_clause,
