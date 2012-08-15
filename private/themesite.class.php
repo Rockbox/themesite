@@ -640,8 +640,8 @@ END;
         $sshot_wps['name']  = empty($sshot_wps['name'])  ? '' : 'wps-'.$sshot_wps['name'];
         $sshot_menu['name'] = empty($sshot_menu['name']) ? '' : 'menu-'.$sshot_menu['name'];
         $sshot_1['name'] = empty($sshot_1['name']) ? '' : '1-'.$sshot_1['name'];
-        $sshot_2['name'] = empty($sshot_1['name']) ? '' : '2-'.$sshot_2['name'];
-        $sshot_3['name'] = empty($sshot_1['name']) ? '' : '3-'.$sshot_3['name'];
+        $sshot_2['name'] = empty($sshot_2['name']) ? '' : '2-'.$sshot_2['name'];
+        $sshot_3['name'] = empty($sshot_3['name']) ? '' : '3-'.$sshot_3['name'];
 
         /* Start moving files in place */
         $uploads = array($zipfile, $sshot_wps, $sshot_menu,$sshot_1,$sshot_2,$sshot_3);
