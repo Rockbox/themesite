@@ -6,9 +6,9 @@
 
 == INSTALLATION ==
 
-1. Put the dir "public" somewhere where your webserver can see it. If you're
+1. Put the dir "www" somewhere where your webserver can see it. If you're
    running the main site, making it the document root is expected.
-2. Edit public/preconfig.inc.php to point to the location of
+2. Edit www/preconfig.inc.php to point to the location of
    private/config.inc.php. This directory should absolutely NOT be reachable
    through the webserver.
 3. Edit private/config.inc.php and fix all the paths/settings.
@@ -16,7 +16,7 @@
     - private/themes.db
     - private/templates/cache
     - private/templates/compiled
-    - public/themes
+    - www/themes
     - private/themes
 5. Compile checkwps for all targets and put them in private/checkwps/release
    and private/checkwps/current. Put their versions in a file named VERSION
