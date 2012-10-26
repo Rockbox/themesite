@@ -81,6 +81,18 @@ class themesite {
         return $ret;
     }
 
+    /* Returns the themeid of the newest theme with the same name and mainlcd size */
+    public function getNewsetChildTheme($themeid){
+        $sql = sprintf("SELECT name, approved, mainlcd FROM themes WHERE themeid=\"%s\"", $themeid);
+        $new = '';
+        $old = $this->db->query($sql)->next();
+        if($old['approved'] != '1'){
+            $sql = sprintf("SELECT themeid FROM themes WHERE name=\"%s\" AND mainlcd=\"%s\" AND approved >= \"1\" AND emailverification=\"1\"", $old['name'], $old['mainlcd']);
+            $new = $this->db->query($sql)->next('themeid');
+        }
+        return trim($new) != '' ? $new : $themeid;
+    }
+
     /*
      * Run checkwps on all our themes
      */
