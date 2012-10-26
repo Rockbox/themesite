@@ -80,6 +80,25 @@ class themesite {
         }
         return $ret;
     }
+    
+    /* Returns the themeid of the newest theme with the same name and target */
+    public function getNewsetChildTheme($themeid){
+        // format the sql statement
+        $sql = sprintf("SELECT name, approved, mainlcd FROM themes WHERE themeid=\"%s\"", $themeid);
+        // get the old theme info
+        $old = $this->db->query($sql)->next();
+        // check if the theme is active
+        if($old['approved'] != '1'){
+            // format the new sql
+            $sql = sprintf("SELECT themeid FROM themes WHERE name=\"%s\" AND mainlcd=\"%s\" AND approved >= \"1\" AND emailverification=\"1\"", $old['name'], $old['mainlcd']);
+            // get the new themeid
+            $new = $this->db->query($sql)->next('themeid');
+            // return the newest theme id
+            return trim($new) != '' ? $new : $themeid;
+        }
+        // return the current themeid
+        return $themeid;
+    }
 
     /*
      * Run checkwps on all our themes

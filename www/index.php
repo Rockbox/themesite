@@ -55,6 +55,18 @@ if (isset($_REQUEST['themeid'])) {
     if (isset($_REQUEST['target'])) {
         $t->assign('target', $site->target2fullname($_REQUEST['target']));
     }
+    // get the newest theme that is approved or the current theme
+    $newest = $site->getNewsetChildTheme($_REQUEST['themeid']);
+    // check if this is the newset theme
+    if($newest != $_REQUEST['themeid']){
+        // format the target request string
+        $target = isset($_REQUEST['target']) ? 'target=' . $_REQUEST['target'] . '&' : '';
+        // send the user to the newst theme
+        header('HTTP/1.1 301 Moved Permanently');
+        header('Location: ?' . $target . 'themeid=' . $newest);
+        // kill the current script
+        exit;
+    }
     $t->assign('theme',$site->themedetails($_REQUEST['themeid'],true,true));
     $template = 'theme.tpl';
 }
