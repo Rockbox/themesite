@@ -20,34 +20,6 @@
  *
  ****************************************************************************/
 
-// wrapper functions for old SQLite2 calls, copied from php.net
-// see http://www.php.net/manual/en/book.sqlite3.php#106779
-function sqlite_open($location,$mode)
-{
-    $handle = new SQLite3($location);
-    return $handle;
-}
-function sqlite_query($dbhandle,$query)
-{
-    $array['dbhandle'] = $dbhandle;
-    $array['query'] = $query;
-    $result = $dbhandle->query($query);
-    return $result;
-}
-function sqlite_fetch_array(&$result,$type=0)
-{
-    #Get Columns
-    $i = 0;
-    while ($result->columnName($i))
-    {
-        $columns[ ] = $result->columnName($i);
-        $i++;
-    }
-   
-    $resx = $result->fetchArray(SQLITE3_ASSOC);
-    return $resx;
-} 
-
 /*
  * Simple DB class using sqlite and a bunch of assumptions.
  */
@@ -105,7 +77,7 @@ class db {
     public function __construct($file) {
         $this->file = $file;
         /* open db */
-        $this->dh = @sqlite_open($file, 0666, $err);
+        $this->dh = new SQLite3($file);
 // FIXME: database update currrently not working with SQLite3
 //
 //        if ($this->dh === false) {
@@ -205,24 +177,21 @@ class db {
 //            }
 //        }
     }
-    
+
     /* Log a message to the log table.   */
     private function log($message) {
         $sql = sprintf("INSERT INTO log (time, ip, admin, msg) VALUES (datetime('now'), 'self', 'selfupdate', '%s')",$message);
         $this->query($sql);
     }
-    
+
     public function query($sql) {
-        $res = @sqlite_query(
-            $this->dh,
-            $sql
-        );
+        $res = $this->dh->query($sql);
+
         if ($res === false) {
             $code = $this->dh->lastErrorCode();
             $err = sprintf("%s (%d)", $this->dh->lastErrorMsg(), $code);
             $this->error($err, $sql);
-        }
-        else {
+        } else {
             return new result($res, $this->dh);
         }
     }
@@ -230,7 +199,7 @@ class db {
     public function columntypes($table) {
         return @sqlite_fetch_column_types($table, $this->dh, SQLITE_ASSOC);
     }
-    
+
     private function error($err, $sql = "") {
         /* 
          * Sometimes the error is empty, in which case the explanation can be
@@ -270,11 +239,10 @@ class result {
     }
 
     public function next($field = false) {
-        $row = sqlite_fetch_array($this->rh);
+        $row = $this->rh->fetchArray(SQLITE3_ASSOC);
         if ($field !== false && isset($row[$field])) {
             return $row[$field];
-        }
-        else {
+        } else {
             return $row;
         }
     }
