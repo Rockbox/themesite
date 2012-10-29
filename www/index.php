@@ -56,7 +56,7 @@ if (isset($_REQUEST['themeid'])) {
         $t->assign('target', $site->target2fullname($_REQUEST['target']));
     }
     // get the newest theme that is approved or the current theme
-    $newest = $site->getNewsetChildTheme($_REQUEST['themeid']);
+    $newest = $site->getNewestChildTheme($_REQUEST['themeid']);
     if($newest != $_REQUEST['themeid']){
         $target = isset($_REQUEST['target']) ? 'target=' . $_REQUEST['target'] . '&' : '';
         // send the user to the newst theme
