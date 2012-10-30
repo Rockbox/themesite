@@ -81,6 +81,18 @@ class themesite {
         return $ret;
     }
 
+    /* Returns the themeid of the newest theme with the same name and mainlcd size */
+    public function getNewestChildTheme($themeid){
+        $sql = sprintf("SELECT name, approved, mainlcd, timestamp FROM themes WHERE themeid=%d", $themeid);
+        $new = $themeid;
+        $old = $this->db->query($sql)->next();
+        if($old['approved'] != 1){
+            $sql = sprintf('SELECT themeid, timestamp FROM themes WHERE name="%s" AND mainlcd="%s" AND approved >= 1 AND emailverification = 1 ORDER BY timestamp DESC', db::quote($old['name']), db::quote($old['mainlcd']));
+            $new = $this->db->query($sql)->next('themeid');
+        }
+        return $new;
+    }
+
     /*
      * Run checkwps on all our themes
      */
