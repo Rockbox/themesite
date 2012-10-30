@@ -73,6 +73,24 @@
     },
     {
       "key": {
+        "uuid": "AAAASX///1U\u003d",
+        "filename": "private/themesite.class.php",
+        "patchSetId": 1
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1000010
+      },
+      "writtenOn": "2012-10-30T21:37:13Z",
+      "side": 1,
+      "message": "It is indeed pulled out of the database, but one can never be sure enough.\n\nWhat do you think will happen if a row exists with either `name` or `mainlcd` containing double quotes?\n\nThis is more a bug than a security risk. (unless `name` is user-editable, then it *is* a security risk)",
+      "parentUuid": "AAAASX///1k\u003d",
+      "revId": "077e485e6054a7cf996b73b879260db55763a7ad",
+      "serverId": "583131e1-1a33-4f2b-b8ec-82434880f207",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "AAAASX///10\u003d",
         "filename": "www/index.php",
         "patchSetId": 1
