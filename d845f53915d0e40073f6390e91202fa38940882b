@@ -1,0 +1,106 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "AAAASX///2s\u003d",
+        "filename": "private/themesite.class.php",
+        "patchSetId": 2
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2012-10-30T14:48:24Z",
+      "side": 1,
+      "message": "Spelling: you have \"Newset\" in both places ;)",
+      "revId": "d845f53915d0e40073f6390e91202fa38940882b",
+      "serverId": "583131e1-1a33-4f2b-b8ec-82434880f207",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "AAAASX///24\u003d",
+        "filename": "private/themesite.class.php",
+        "patchSetId": 2
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2012-10-30T14:48:24Z",
+      "side": 1,
+      "message": "The other code in this file implies themeid should be an integer, and thus we probably want to sprintf it with %d here. Ideally this db code would all be using real parameters, though; this is all a sql injection nightmare :)",
+      "revId": "d845f53915d0e40073f6390e91202fa38940882b",
+      "serverId": "583131e1-1a33-4f2b-b8ec-82434880f207",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "AAAASX///20\u003d",
+        "filename": "private/themesite.class.php",
+        "patchSetId": 2
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2012-10-30T14:48:24Z",
+      "side": 1,
+      "message": "This also looks abusable; not sure if it is any worse then the other code that exists here already. :/",
+      "revId": "d845f53915d0e40073f6390e91202fa38940882b",
+      "serverId": "583131e1-1a33-4f2b-b8ec-82434880f207",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "AAAASX///2w\u003d",
+        "filename": "private/themesite.class.php",
+        "patchSetId": 2
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2012-10-30T14:48:24Z",
+      "side": 1,
+      "message": "How is this finding the newest? You aren\u0027t ordering the query.",
+      "revId": "d845f53915d0e40073f6390e91202fa38940882b",
+      "serverId": "583131e1-1a33-4f2b-b8ec-82434880f207",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "AAAASX///2o\u003d",
+        "filename": "private/themesite.class.php",
+        "patchSetId": 2
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2012-10-30T14:48:24Z",
+      "side": 1,
+      "message": "Returning the original themeid doesn\u0027t seem useful since the caller is handling the two cases separately anyway. Just return nothing if there isn\u0027t a newer one?",
+      "revId": "d845f53915d0e40073f6390e91202fa38940882b",
+      "serverId": "583131e1-1a33-4f2b-b8ec-82434880f207",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "AAAASX///2k\u003d",
+        "filename": "www/index.php",
+        "patchSetId": 2
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2012-10-30T14:48:24Z",
+      "side": 1,
+      "message": "spelling again: \"newst\"",
+      "revId": "d845f53915d0e40073f6390e91202fa38940882b",
+      "serverId": "583131e1-1a33-4f2b-b8ec-82434880f207",
+      "unresolved": false
+    }
+  ]
+}
