@@ -307,7 +307,11 @@ class themesite {
             $checkwps_clause = "AND (current_pass<>2 OR release_pass<>2)";  //workaround. without this we somehow get all themes
             $verified = "";
         }
-
+        // special case for ratings
+        if(substr($orderby, 0, 6) == 'rating'){
+            $orderby = explode(' ', $orderby);
+            $orderby = 'ratings/numratings ' . $orderby[count($orderby) - 1] . ', numratings ' . $orderby[count($orderby) - 1];
+        }
         if ($target === false) {
             $sql = sprintf("SELECT themes.name AS name, author, timestamp, mainlcd, approved, reason, description, shortname, 
                             zipfile, sshot_wps, sshot_menu,sshot_1,sshot_2,sshot_3,downloadcnt, ratings, numratings, filesize as size,

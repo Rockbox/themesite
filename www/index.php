@@ -74,11 +74,11 @@ elseif (isset($_REQUEST['target'])) {
     else $values['themes'] = $site->listthemes($_REQUEST['target']);
     $t->assign('sortings',array('timestamp' => 'Submitted time',
                                 'downloadcnt' => 'Download count',
-                                'ratings/numratings' => 'Rating',
+                                'rating' => 'Rating',
                                 'numratings' => 'Number of Votes',
                                 'name' => 'Themename',
                                 'author' => 'Author'));
-    $t->assign('directions',array('DESC' => 'descending','ASC' => 'ascending'));                            
+    $t->assign('directions',array('DESC' => 'Descending','ASC' => 'Ascending'));
     $t->assign('mainlcd', $lcd['mainlcd']);
     $t->assign('target', $site->target2fullname($_REQUEST['target']));
     $template = 'themelist.tpl';
@@ -95,13 +95,13 @@ elseif (isset($_REQUEST['allthemes'])) {
     else $values['themes'] = $site->listthemes(false);
     $t->assign('sortings',array('timestamp' => 'Submitted time',
                                 'downloadcnt' => 'Download count',
-                                'ratings/numratings' => 'Rating',
+                                'rating' => 'Rating',
                                 'numratings' => 'Number of Votes',
                                 'name' => 'Themename',
                                 'author' => 'Author',
                                 'mainlcd' => 'LCD size',
                                 'remotelcd' => 'Remote LCD size'));
-    $t->assign('directions',array('DESC' => 'descending','ASC' => 'ascending'));                            
+    $t->assign('directions',array('DESC' => 'Descending','ASC' => 'Ascending'));
     $template = 'themelist.tpl';
 }
 /* Just show the frontpage */
