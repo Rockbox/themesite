@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "AAAASX///0U\u003d",
+        "filename": "private/themesite.class.php",
+        "patchSetId": 3
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2012-10-31T11:51:59Z",
+      "side": 1,
+      "message": "Integers don\u0027t have quotes in SQL.",
+      "revId": "c5eee01073c1d73c3b6ad7527e65dee4d2ffb92d",
+      "serverId": "583131e1-1a33-4f2b-b8ec-82434880f207",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "AAAASX///0Q\u003d",
+        "filename": "private/themesite.class.php",
+        "patchSetId": 3
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1000000
+      },
+      "writtenOn": "2012-10-31T11:51:59Z",
+      "side": 1,
+      "message": "This would look better with single quotes, as it would remove the need to escape the double quotes.",
+      "revId": "c5eee01073c1d73c3b6ad7527e65dee4d2ffb92d",
+      "serverId": "583131e1-1a33-4f2b-b8ec-82434880f207",
+      "unresolved": false
+    }
+  ]
+}
