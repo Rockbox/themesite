@@ -40,28 +40,30 @@ class config {
     // Full, absolute path to the location of the smarty template engine
     const smartydir = "/usr/share/php/smarty/libs";
 
-    // Location to store theme data. Relative to the path given above - must be web-accessible
+    // Location to store theme data. Relative to the "const path" given above
+    // must be web-accessible
     const datadir = "themes"; 
 
-    // Location of the db within the above dir. Don't make it web-accessible.
+    // Location of the db relative to preconfig::privpath
+    // Should no be web-accessible
     const dbfile = "themes.db";
 
     // Default status for newly uploaded themes. 1=approved. 0=hidden.
     const defaultstatus = 1;
 
-    // Location of 'unzip'
+    // Full, absolute path to the location of 'unzip'
     const unzip = "/usr/bin/unzip";
 
     // Location of the Rockbox source font dir
     const fontdir = "/home/themes/rockbox-current/fonts";
     
-    //Location of the Rockbox source icons dir
+    // Location of the Rockbox source icons dir
     const icondir = "/home/themes/rockbox-current/icons";
     
-    //private key for recaptcha
+    // Private key for recaptcha
     const recaptchakey_priv = "6LfwAQsAAAAAAOGeWVtqpSeIFZKP3WcActZeoVk1";
     
-    //public key for recaptcha
+    // Public key for recaptcha
     const recaptchakey = "6LfwAQsAAAAAAPrqZMNC_G_gKbFNf2gP2P2YmXQs";
 
 }
