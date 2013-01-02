@@ -16,6 +16,24 @@
       "revId": "1bb93767a39b0378b8382fdf8ba5b80ab9e55d89",
       "serverId": "583131e1-1a33-4f2b-b8ec-82434880f207",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "AAAASX///qI\u003d",
+        "filename": "private/config.inc.php",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1000010
+      },
+      "writtenOn": "2013-01-02T15:57:47Z",
+      "side": 1,
+      "message": "Looks like it isn\u0027t changed on the server...",
+      "parentUuid": "AAAASX///qc\u003d",
+      "revId": "1bb93767a39b0378b8382fdf8ba5b80ab9e55d89",
+      "serverId": "583131e1-1a33-4f2b-b8ec-82434880f207",
+      "unresolved": false
     }
   ]
 }
