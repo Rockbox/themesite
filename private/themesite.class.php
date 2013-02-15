@@ -309,6 +309,7 @@ class themesite {
                         $approved_clause,
                         db::quote($orderby)
                     );
+            $args= array();
         } else {
             $sql = sprintf('SELECT name, author, timestamp, mainlcd, approved, reason, description, shortname,
                 zipfile, sshot_wps, sshot_menu, sshot_1, sshot_2, sshot_3,
