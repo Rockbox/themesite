@@ -166,7 +166,7 @@ class themesite {
 
     public function adminlogin($user, $pass) {
         $sql = 'SELECT COUNT(*) as count FROM admins WHERE name=:name AND pass=:pass';
-        $args = array(':user' => $user, ':pass' => md5($pass));
+        $args = array(':name' => $user, ':pass' => md5($pass));
         $result = $this->db->query($sql, $args)->next();
         return $result['count'] == 1 ? true : false;
     }
