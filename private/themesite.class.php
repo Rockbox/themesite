@@ -719,6 +719,7 @@ END;
      */
     private function my_pathinfo($path) {
         $pathinfo = pathinfo($path);
+        if(!isset($pathinfo['extension'])){ $pathinfo['extension'] = ''; }
         /* Make sure we have the $pathinfo['filename'] element added in PHP 5.2.0 */
         if (!isset($pathinfo['filename'])) {
             $pathinfo['filename'] = substr(
