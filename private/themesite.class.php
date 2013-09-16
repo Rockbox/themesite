@@ -702,7 +702,7 @@ END;
         /* prevent abusing with a cookie which virtually never expires
          * so one can only rate a theme once */
         $cookiename = "rating_{$id}";
-        if (!(isset($_COOKIE[$cookiename])))
+        if(!isset($_COOKIE[$cookiename]) && $rating >= 0 && $rating <= 10)
         {
             $sql = 'UPDATE themes SET ratings=ratings+:rating, numratings=numratings+1 WHERE themeid=:id';
             $args = array(
