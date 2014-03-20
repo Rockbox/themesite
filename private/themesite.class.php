@@ -958,7 +958,7 @@ END;
         $rsbsfound = array();
         $cfgfound = array();
         $shortname = '';
-        $cfg = '';
+        $cfg = array();
 
         if (is_int($zip)) {
             $err[] = sprintf("'Couldn't open zipfile %s", $themezipupload['name']);
@@ -995,8 +995,10 @@ END;
             switch(strtolower($pathinfo['extension'])) {
                 case 'cfg':
                     /* Save the contents for later checking */
-                    $cfg = $this->getzipentrycontents($zip, $ze);
+                    $cfg[] = $this->getzipentrycontents($zip, $ze);
                     $cfgfound[] = $filename;
+                    break;
+
                 case 'sbs':
                 case 'rsbs':
                 case 'wps':
@@ -1046,10 +1048,33 @@ END;
             }
         }
 
+        // get shortname if not already set
+        if ($shortname === '') {
+            foreach ($cfgfound as $filename) {
+                $filenameWithoutExtension = substr($filename, 0, -4);
+                if ($shortname === '' || strlen($filenameWithoutExtension) < strlen($shortname)) {
+                    $shortname = $filenameWithoutExtension;
+                }
+            }
+        }
+
+        // we check cfg filenames separately
+        foreach ($cfgfound as $filename) {
+            $filenameWithoutExtension = substr($filename, 0, -4);
+            if ($filenameWithoutExtension !== $shortname) {
+                if (strpos($filenameWithoutExtension, "{$shortname}-") !== 0) {
+                    $err[] = sprintf('Filename invalid: %s (should be %s.cfg or %s-*.cfg)', $filename, $shortname, $shortname);
+                }
+            }
+        }
+
         /* Now we check all the things that could be wrong */
-        $error = $this->validatecfg($cfg, $files);
-        if($error != '')
-            $err[] = $error;
+        foreach ($cfg as $cfgcontent) {
+            $error = $this->validatecfg($cfgcontent, $files);
+            if($error != '')
+                $err[] = $error;
+        }
+
         if ($themezipupload['size'] > config::maxzippedsize)
             $err[] = sprintf("Theme zip too large at %s (max size is %s)", $themezipupload['size'], config::maxzippedsize);
         if ($totalsize > config::maxthemesize)
@@ -1062,9 +1087,7 @@ END;
         elseif (count($wpsfound) == 0)
             $err[] = "No .wps files found.";
 
-        if (count($cfgfound) > 1)
-            $err[] = sprintf("More than one .cfg found (%s).", implode(', ', $cfgfound));
-        elseif (count($cfgfound) == 0)
+        if (count($cfgfound) == 0)
             $err[] = "No .cfg files found.";
 
         if (count($rwpsfound) > 1)
