@@ -99,11 +99,11 @@
     </tr>
     <td>
     <div>
-    If this theme violates any copyright law, you can report it to the admins.
-    Please describe the problem, as detailed as possible, in the input box.
+    If this theme violates any copyright law, you can report it to the admins.<br/>
+    Please describe the problem, as detailed as possible, in the input box.<br/>
 
-    If the theme does not work, please discuss the issue on the forums instead.
-    If the theme causes rockbox to crash or hang, please report a bug instead.
+    If the theme does not work, please discuss the issue on the forums instead.<br/>
+    If the theme causes rockbox to crash or hang, please report a bug instead.<br/>
     </div>
     <form method="POST" action="{$smarty.server.SCRIPT_NAME}?themeid={$theme.id}{if $target}&amp;target={$smarty.request.target}{/if}">
         <input type="hidden" name="reporttheme" value={$theme.id} />
