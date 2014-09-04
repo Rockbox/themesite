@@ -98,10 +98,13 @@
     <th>Report</th>
     </tr>
     <td>
-    <small>
-    If this theme violates any copyright law, or simply doesnt work, you can report it to the admins.   
+    <div>
+    If this theme violates any copyright law, you can report it to the admins.
     Please describe the problem, as detailed as possible, in the input box.
-    </small>
+
+    If the theme does not work, please discuss the issue on the forums instead.
+    If the theme causes rockbox to crash or hang, please report a bug instead.
+    </div>
     <form method="POST" action="{$smarty.server.SCRIPT_NAME}?themeid={$theme.id}{if $target}&amp;target={$smarty.request.target}{/if}">
         <input type="hidden" name="reporttheme" value={$theme.id} />
         <textarea cols="45" rows="4" name="reason"></textarea> <br />
