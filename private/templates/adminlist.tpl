@@ -66,6 +66,7 @@
             <br /><strong>Works with release {$themes[i].release_version}</strong>
             {/if}
             <br /><a href="admin.php?edittheme={$themes[i].id}&amp;{if $target}parenttarget={$smarty.request.target}{/if}">Edit theme</a>
+            <br /><a href="index.php?themeid={$themes[i].id}&amp;{if $target}target={$smarty.request.target}{/if}">Show details</a>
             </small></p>
         </td>
         <td>
