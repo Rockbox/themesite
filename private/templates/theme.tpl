@@ -25,11 +25,11 @@
   <tr valign="top">
     <td>
     <p align="center">
-    {html_image file="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_wps`" href="download.php?themeid=`$theme.id`"}
-    {if $theme.sshot_menu != "" }{html_image file="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_menu`" href="download.php?themeid=`$theme.id`"} {/if}
-    {if $theme.sshot_1 != "" && $theme.sshot_1 != "1-"}{html_image file="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_1`" href="download.php?themeid=`$theme.id`"} {/if}
-    {if $theme.sshot_2 != "" && $theme.sshot_2 != "2-"}{html_image file="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_2`" href="download.php?themeid=`$theme.id`"} {/if}
-    {if $theme.sshot_3 != "" && $theme.sshot_3 != "3-"}{html_image file="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_3`" href="download.php?themeid=`$theme.id`"} {/if}
+    {html_image file="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_wps`" href="download.php?themeid=`$theme.id`" alt="Download"}
+    {if $theme.sshot_menu != "" }{html_image file="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_menu`" href="download.php?themeid=`$theme.id`" alt="Download"} {/if}
+    {if $theme.sshot_1 != "" && $theme.sshot_1 != "1-"}{html_image file="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_1`" href="download.php?themeid=`$theme.id`" alt="Download"} {/if}
+    {if $theme.sshot_2 != "" && $theme.sshot_2 != "2-"}{html_image file="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_2`" href="download.php?themeid=`$theme.id`" alt="Download"} {/if}
+    {if $theme.sshot_3 != "" && $theme.sshot_3 != "3-"}{html_image file="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_3`" href="download.php?themeid=`$theme.id`" alt="Download"} {/if}
     <br />
     <a href="download.php?themeid={$theme.id}">Download</a>
     <br />

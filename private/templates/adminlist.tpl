@@ -42,7 +42,7 @@
     <tr>
         {assign var="path" value="`$datadir`/`$themes[i].mainlcd`/`$themes[i].shortname`/"}
         <td>{html_image file="`$datadir`/`$themes[i].mainlcd`/`$themes[i].shortname`/`$themes[i].sshot_wps`" href="download.php?themeid=`$themes[i].id`" 
-            path=$path oversrc=$themes[i].sshot_menu oversrc1=$themes[i].sshot_1 oversrc2=$themes[i].sshot_2 oversrc3=$themes[i].sshot_3}</td>
+            path=$path oversrc=$themes[i].sshot_menu oversrc1=$themes[i].sshot_1 oversrc2=$themes[i].sshot_2 oversrc3=$themes[i].sshot_3 alt="Download}</td>
         <td>
             <strong>{$themes[i].name}</strong>
             <p><small>
