@@ -31,6 +31,8 @@
     {if $theme.sshot_2 != "" && $theme.sshot_2 != "2-"}{html_image file="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_2`" href="download.php?themeid=`$theme.id`"} {/if}
     {if $theme.sshot_3 != "" && $theme.sshot_3 != "3-"}{html_image file="`$datadir`/`$theme.mainlcd`/`$theme.shortname`/`$theme.sshot_3`" href="download.php?themeid=`$theme.id`"} {/if}
     <br />
+    <a href="download.php?themeid={$theme.id}">Download</a>
+    <br />
     <small>Size: {$theme.size|siprefix}B</small>
     </p> <p align="center">
     <strong>Rating:</strong> &nbsp;
