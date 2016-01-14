@@ -53,7 +53,7 @@
     {/if}
     {html_image file="`$datadir`/`$themes[td].mainlcd`/`$themes[td].shortname`/`$themes[td].sshot_wps`" href=$url 
                         path=$path oversrc=$themes[td].sshot_menu oversrc1=$themes[td].sshot_1 oversrc2=$themes[td].sshot_2 oversrc3=$themes[td].sshot_3
-                        alt="Theme details"}<br />
+                        alt="Theme details" title="Theme details"}<br />
     <small><a href="download.php?themeid={$themes[td].id}">Download</a> Size: {$themes[td].size|siprefix}B </small>
     </p>
     <strong>Rating:</strong> &nbsp;
