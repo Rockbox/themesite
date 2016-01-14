@@ -25,6 +25,8 @@ require_once('themesite.class.php');
 require_once('templater.class.php');
 require_once('recaptchalib.php');
 
+date_default_timezone_set('UTC');
+
 $site = new themesite(preconfig::privpath .'/' . config::dbfile);
 $t = new templater(config::smartydir);
 $t->assign('datadir', config::datadir);
