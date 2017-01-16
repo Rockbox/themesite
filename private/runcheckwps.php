@@ -9,5 +9,4 @@ class preconfig {
 
 require_once('preamble.inc.php');
 $results = $site->checkallthemes();
-print_r($results);
 ?>
