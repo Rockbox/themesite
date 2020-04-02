@@ -28,3 +28,8 @@
    table:
    Run "sqlite private/themes.db" and execute the following SQL:
    CREATE INDEX checkwps_themeid ON checkwps(themeid);
+
+== ONGOING STUFF ==
+
+ 1. Add commit hook or cron to execute checkwps/update.sh
+    (do on every commmit?)
