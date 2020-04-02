@@ -38,11 +38,11 @@ class config {
     const path = "";
 
     // Full, absolute path to the location of the smarty template engine
-    const smartydir = "/usr/share/php/smarty/libs";
+    const smartydir = "/usr/share/php/Smarty";
 
     // Location to store theme data. Relative to the "const path" given above
     // must be web-accessible
-    const datadir = "themes"; 
+    const datadir = "themes";
 
     // Location of the db relative to preconfig::privpath
     // Should no be web-accessible

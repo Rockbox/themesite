@@ -28,19 +28,16 @@ class templater {
         /* Load and set up Smarty */
         require_once(sprintf("%s/Smarty.class.php", $smartydir));
         $s = new smarty();
-        $s->template_dir = sprintf("%s/templates", preconfig::privpath);
-        $s->compile_dir = sprintf("%s/compiled", $s->template_dir);
-        $s->cache_dir = sprintf("%s/cache", $s->template_dir);
-        $s->caching = false;
-        $s->debugging = false;
-        $s->security = true;
-        $s->security_settings['IF_FUNCS'] = array('array_key_exists', 'isset', 'is_array', 'count');
-        $s->secure_dir = array(
-            realpath(config::datadir),
-            realpath($s->template_dir)
-        );
-        $s->config_load(realpath(sprintf("%s/themes.cfg", $s->template_dir)));
-        $s->register_modifier('siprefix', array(&$this, 'siprefix'));
+        $s->setTemplateDir(sprintf("%s/templates", preconfig::privpath));
+        $s->setCompileDir(sprintf("%s/templates/compiled", preconfig::privpath));
+        $s->setCacheDir(sprintf("%s/templates/cache", preconfig::privpath));
+//        $s->caching = false;
+//        $s->debugging = false;
+//        $s->security = true;
+//        $s->security_settings['IF_FUNCS'] = array('array_key_exists', 'isset', 'is_array', 'count');
+//        $s->secure_dir = array(realpath(config::datadir), realpath($s->template_dir));
+        $s->configLoad(sprintf("%s/templates/themes.cfg", preconfig::privpath));
+	$s->registerPlugin("modifier", 'siprefix', array(&$this, 'siprefix'));
         $this->s = $s;
     }
 
