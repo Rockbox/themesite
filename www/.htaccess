@@ -1,3 +1,3 @@
-DirectoryIndex index.php
-php_value default_charset "UTF-8"
-php_flag magic_quotes_gpc off
+# None of this should be needed.
+#php_value default_charset "UTF-8"
+#php_flag magic_quotes_gpc off
