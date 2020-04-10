@@ -20,6 +20,9 @@
  *
  ****************************************************************************/
 
+// Report all errors except E_NOTICE
+error_reporting(E_ALL & ~E_NOTICE);
+
 class preconfig {
     // The path to the private dir. Might be relative or absolute. Should
     // NOT be accessible through the webserver.
