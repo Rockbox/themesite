@@ -838,7 +838,7 @@ END;
         $return = array();
 
         /* First, create a temporary dir */
-        $tmpdir = sprintf('%s/temp-%s', preconfig::privpath, md5(uniqid()));
+        $tmpdir = sprintf('/tmp/temp-%s', md5(uniqid()));
         mkdir($tmpdir);
 
         /* Then, unzip the theme here */
@@ -895,7 +895,7 @@ END;
         chdir($olddir);
 
         /* Remove the tempdir */
-        $this->rmdir_recursive($tmpdir); 
+        $this->rmdir_recursive($tmpdir);
         return $return;
     }
 
