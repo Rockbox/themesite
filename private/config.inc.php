@@ -55,14 +55,14 @@ class config {
     const unzip = "/usr/bin/unzip";
 
     // Location of the Rockbox source font dir
-    const fontdir = "/home/themes/rockbox-current/fonts";
-    
+    const fontdir = "/home/rockbox/rockbox_git_clone/fonts";
+
     // Location of the Rockbox source icons dir
-    const icondir = "/home/themes/rockbox-current/icons";
-    
+    const icondir = "/home/rockbox/rockbox_git_clone/icons";
+
     // Private key for recaptcha
     const recaptchakey_priv = "6LfwAQsAAAAAAOGeWVtqpSeIFZKP3WcActZeoVk1";
-    
+
     // Public key for recaptcha
     const recaptchakey = "6LfwAQsAAAAAAPrqZMNC_G_gKbFNf2gP2P2YmXQs";
 
