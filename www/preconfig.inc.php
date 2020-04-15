@@ -26,7 +26,7 @@ error_reporting(E_ALL & ~E_NOTICE);
 class preconfig {
     // The path to the private dir. Might be relative or absolute. Should
     // NOT be accessible through the webserver.
-    const privpath = "../private";
+    const privpath = "/home/rockbox/themes/private/";
 }
 require_once(sprintf("%s/preamble.inc.php", preconfig::privpath));
 ?>

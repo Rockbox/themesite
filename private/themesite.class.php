@@ -865,16 +865,15 @@ END;
                     /* skip file if it is a remote file, and remote resolution doesnt fit (ie remotechecking is optional on targets without native remote lcd resolution */
                     if(($p['extension'] == 'rwps' || $p['extension'] == 'rsbs' || $p['extension'] == 'rfms') && ($target['remotelcd'] != $remotelcd))
                         continue;
-                        
                     /* run checkwps */
                     $result = array();
                     $checkwps = sprintf('%s/checkwps/%s/checkwps.%s',
-                        '..', /* We'll be in a subdir of the private dir */
+                        preconfig::privpath,
                         $version,
                         $target['shortname']
                     );
                     $result['version'] = trim(file_get_contents(sprintf('%s/checkwps/%s/VERSION',
-                        '..',
+                        preconfig::privpath,
                         $version,
                         $target['shortname']
                     )));
