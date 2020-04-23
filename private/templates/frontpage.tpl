@@ -17,13 +17,13 @@
 
 <h2>Upload your own theme</h2>
 <p>Have you made a theme that is not listed on this site? Please read <a
-href="http://www.rockbox.org/wiki/ThemeGuidelines">the theme
+href="//www.rockbox.org/wiki/ThemeGuidelines">the theme
 guidelines</a> and then <a href="upload.php">upload your theme</a>.</p> 
 {/if}
 
 <h2>Downloading themes</h2> <p>All themes on this website can be downloaded and
 installed via the integrated themes browser in <a
-href="http://www.rockbox.org/wiki/RockboxUtility">Rockbox
+href="//www.rockbox.org/wiki/RockboxUtility">Rockbox
 Utility</a>. You can also download themes manually by clicking on the picture
 of your player in the table below, or browse all themes <a href="{$smarty.server.SCRIPT_NAME}?allthemes">here</a>.</p>
 
@@ -36,7 +36,7 @@ of your player in the table below, or browse all themes <a href="{$smarty.server
 
     <td align='center'>
         <a href="{$smarty.server.SCRIPT_NAME}?target={$targets[td].shortname}" title="{$targets[td].fullname}">
-        <img border="0" src="http://www.rockbox.org/playerpics/{$targets[td].pic}" alt="{$targets[td].fullname}">
+        <img border="0" src="//www.rockbox.org/playerpics/{$targets[td].pic}" alt="{$targets[td].fullname}">
         <p>{$targets[td].fullname}</a><br><small>{$targets[td].numthemes} theme{if $targets[td].numthemes ne 1}s{/if}</small></td>
     {/if}
     {/section}

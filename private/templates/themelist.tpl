@@ -99,7 +99,7 @@
 
 <h2>Upload your own theme</h2> <p>Have you made a theme that is not listed
 here? Please read <a
-href="http://www.rockbox.org/wiki/ThemeGuidelines">the theme
+href="//www.rockbox.org/wiki/ThemeGuidelines">the theme
 guidelines</a> and then 
 {if $target}
 <a href="upload.php?target={$smarty.request.target}">

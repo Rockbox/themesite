@@ -2,8 +2,8 @@
 <html>
 <head>
 <link rel="STYLESHEET" type="text/css" href="{$root}/rbthemes.css">
-<link rel="STYLESHEET" type="text/css" href="http://www.rockbox.org/style.css">
-<link rel="shortcut icon" href="http://www.rockbox.org/favicon.ico">
+<link rel="STYLESHEET" type="text/css" href="//www.rockbox.org/style.css">
+<link rel="shortcut icon" href="//www.rockbox.org/favicon.ico">
 {if $rss}
 <link href="{$rss}" type="application/rss+xml" rel="alternate" title="{$rsstitle}" />
 {/if}

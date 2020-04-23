@@ -8,7 +8,7 @@
 <h2>Before you start</h2>
 
 <p>Make sure you have read and understood the <a
-href="http://www.rockbox.org/wiki/ThemeGuidelines">theme guidelines</a></p>
+href="//www.rockbox.org/wiki/ThemeGuidelines">theme guidelines</a></p>
 
 {if is_array($general_errors)}
 <p class="error">
@@ -50,7 +50,7 @@ This is very unlikely to be your fault.
     </tr>
 
     <tr>
-    <td><b>Your real name</b><br /><small><a href="http://www.rockbox.org/wiki/WhyRealNames">Why do I need to provide this?</a></td>
+    <td><b>Your real name</b><br /><small><a href="//www.rockbox.org/wiki/WhyRealNames">Why do I need to provide this?</a></td>
     <td><input type="text" name="author" size="32" value="{$smarty.post.author|escape:'html'}" /></td>
     {if is_array($errors) && isset($errors.author)}<td class='error'>{$errors.author}</td>{/if}
     </tr>
@@ -72,7 +72,7 @@ This is very unlikely to be your fault.
     <table class="rockbox">
       <tr>
         <td><b>Main zip file</b></td>
-        <td><input type="file" name="themefile" size="60" /><br /><small>Don't forget to read the <a href="http://www.rockbox.org/wiki/ThemeGuidelines">theme guidelines</a>.</small></td>
+        <td><input type="file" name="themefile" size="60" /><br /><small>Don't forget to read the <a href="//www.rockbox.org/wiki/ThemeGuidelines">theme guidelines</a>.</small></td>
         {if is_array($errors) && array_key_exists('themefile', $errors)}
             <td class='error'>
                 <ul>
@@ -168,8 +168,8 @@ This is very unlikely to be your fault.
     </tr>
     <tr>
         <td colspan="2">
-            <img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" />
-            <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/"> Creative Commons Attribution-Share Alike 3.0 Unported License</a>
+            <img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/3.0/88x31.png" />
+            <a rel="license" href="https://creativecommons.org/licenses/by-sa/3.0/"> Creative Commons Attribution-Share Alike 3.0 Unported License</a>
         </td>
     </tr>
     <tr>
