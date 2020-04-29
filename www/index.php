@@ -50,6 +50,15 @@ if (isset($_REQUEST['reporttheme'])) {
     }
 }
 
+/* Bots gonna bot... */
+if (isset($_REQUEST['target'])) {
+    if (!(strstr($_REQUEST['target'], '/') === FALSE) ||
+        !(strstr($_REQUEST['target'], '.') === FALSE)) {
+         header('HTTP/1.1 400 Bad Request');
+         exit;
+    }
+}
+
 /* show more details about a theme */
 if (isset($_REQUEST['themeid'])) {
     if (isset($_REQUEST['target'])) {
