@@ -98,7 +98,7 @@ class themesite {
      */
     public function checkallthemes($id = 0) {
         $this->log('Running checkwps');
-        $sql = 'SELECT * FROM themes WHERE themeid=:id OR :wmtf';
+        $sql = 'SELECT * FROM themes WHERE themeid=:id OR (:wmtf AND approved > 0)';
         $args = array(':id' => $id, ':wmtf' => $id === 0 ? 1 : 0);
         $themes = $this->db->query($sql, $args);
         $return = array();
