@@ -33,3 +33,6 @@
 
  1. Add commit hook or cron to execute checkwps/update.sh
     (do on every commmit?)
+ 2. Admin interface is busted with respect to multiple versions
+    of a single theme.
+ 3. Appears to be no way to actually _delete_ a theme from disk
