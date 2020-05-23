@@ -7,6 +7,9 @@ private/checkwps/*/VERSION
 private/themes
 www/themes
 
+# Private WWW
+www/.well-known
+
 # Templates
 private/templates/compiled
 private/templates/cache
