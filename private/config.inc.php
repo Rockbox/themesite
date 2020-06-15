@@ -32,7 +32,7 @@ class config {
 
     // Fully qualified hostname of your server. Without trailing slash or path.
     // Including http://
-    const hostname = "http://themes.rockbox.org"; 
+    const hostname = "https://themes.rockbox.org";
 
     // Path to the theme site, relative to your server's document root, without trailing slash (might be '')
     const path = "";
@@ -66,6 +66,8 @@ class config {
     // Public key for recaptcha
     const recaptchakey = "6LfwAQsAAAAAAPrqZMNC_G_gKbFNf2gP2P2YmXQs";
 
+    // Outbound email address
+    const outboundemail = "rockbox-themes-noreply@shaftnet.org";
 }
 
 ?>

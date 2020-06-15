@@ -548,7 +548,7 @@ END;
     
     private function send_mail($subject, $to, $msg) {
         $msg = wordwrap($msg, 78);
-        $headers = 'From: themes@rockbox.org';
+        $headers = sprintf("From: %s", config::outboundemail);
         mail($to, $subject, $msg, $headers);
     }
 
