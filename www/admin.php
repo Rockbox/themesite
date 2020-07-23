@@ -157,9 +157,8 @@ else {
     }
     /* Run checkwps on all themes */
     elseif (isset($_REQUEST['runcheckwps'])) {
-        $results = $site->checkallthemes();
-        $template = 'checkthemes.tpl';
-        $t->assign('checkwpsresults', $results);
+	system("/bin/touch " . preconfig::privpath . "../need_update");
+        $t->assign('adminmsg', 'WPS run scheduled');
     }
     /* Show log */
     elseif (isset($_REQUEST['showlog'])) {

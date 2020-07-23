@@ -57,7 +57,7 @@ You can also directly search for specific themes here: <br/>
 </form>
 
 {if $admin}
-<p><a href="{$smarty.server.SCRIPT_NAME}?runcheckwps">Run checkwps on all themes</a></p>
+<p><a href="{$smarty.server.SCRIPT_NAME}?runcheckwps">Schedule checkwps run</a></p>
 <hr />
 {if $adminmsg}<p>{$adminmsg}</p> <hr />{/if}
 <p><a href="{$smarty.server.SCRIPT_NAME}?showlog">View database log</a></p>
