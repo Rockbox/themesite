@@ -96,7 +96,7 @@ class themesite {
     /*
      * Run checkwps on all our themes
      */
-    public function checkallthemes($id = 0) {
+    public function checkallthemes($id = 0, $release = 0) {
         $this->log('Running checkwps');
         $sql = 'SELECT * FROM themes WHERE themeid=:id OR (:wmtf AND approved > 0)';
         $args = array(':id' => $id, ':wmtf' => $id === 0 ? 1 : 0);
@@ -110,7 +110,7 @@ class themesite {
                 $theme['shortname'],
                 $theme['zipfile']
             );
-            $result = $this->checkwps($zipfile, $theme['mainlcd'], $theme['remotelcd']);
+            $result = $this->checkwps($zipfile, $theme['mainlcd'], $theme['remotelcd'], $release);
 
             /* 
              * Store the results and check if at least one check passed (for
@@ -626,7 +626,7 @@ END;
             $mainlcd,
             $shortname
         );
-        
+
         /* Prepend wps- and menu- to screenshots */
         $sshot_wps['name']  = empty($sshot_wps['name'])  ? '' : 'wps-'.$sshot_wps['name'];
         $sshot_menu['name'] = empty($sshot_menu['name']) ? '' : 'menu-'.$sshot_menu['name'];
@@ -680,7 +680,7 @@ END;
         );
         $result = $this->db->query($sql, $args);
         $id = $result->insertid();
-        $this->checkallthemes($id);
+        $this->checkallthemes($id, 1);  // We want to check it against stable!
         $this->log(sprintf("Added theme %d (email: %s)", $id, $email));
         return $id;
     }
@@ -834,7 +834,7 @@ END;
     /*
      * Check a WPS against two revisions: current and the latest release
      */
-    public function checkwps($zipfile, $mainlcd, $remotelcd) {
+    public function checkwps($zipfile, $mainlcd, $remotelcd, $release = 0) {
         $return = array();
 
         /* First, create a temporary dir */
@@ -859,6 +859,9 @@ END;
         while($target = $targets->next()){
             /* for both versions */ 
             foreach(array('release', 'current') as $version) {
+                if ($release == 0 && $version == 'release') {
+                     continue;
+                 }
                 /* for every skin file in the theme */
                 foreach(glob('.rockbox/wps/*{wps,sbs,fms}',GLOB_BRACE) as $file) {
                     $p = $this->my_pathinfo($file);
