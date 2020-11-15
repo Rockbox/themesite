@@ -449,10 +449,16 @@ class themesite {
         $args = array(':id' => $themeid);
         $theme = $this->db->query($sql, $args)->next();
 
-        if ($newstatus == -1) {
+        if ($newstatus == -1) {            
+            $sql = 'DELETE FROM zipcontents WHERE themeid=:id';
+            $args = array(':id' => $themeid);
+            $this->db->query($sql, $args);
+            $sql = 'DELETE FROM checkwps WHERE themeid=:id';
+            $args = array(':id' => $themeid);
+            $this->db->query($sql, $args);
             $sql = 'DELETE FROM themes WHERE themeid=:id';
             $args = array(':id' => $themeid);
-
+            
             /* Delete the files */
             foreach(array($this->themedir_public, $this->themedir_private) as $root) {
                 $dir = sprintf('%s/%s/%s',
@@ -474,7 +480,7 @@ class themesite {
                 ':reason' => $reason,
                 ':id' => $themeid
             );
-            
+
             $public = sprintf('%s/%s/%s/%s', $this->themedir_public, $theme['mainlcd'], $theme['shortname'], $theme['zipfile']);
             $private = sprintf('%s/%s/%s/%s', $this->themedir_private, $theme['mainlcd'], $theme['shortname'], $theme['zipfile']);
             if ($oldstatus == 0 && $newstatus >= 1) {
