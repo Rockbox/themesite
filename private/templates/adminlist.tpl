@@ -44,7 +44,7 @@
         <td>{html_image file="`$datadir`/`$themes[i].mainlcd`/`$themes[i].shortname`/`$themes[i].sshot_wps`" href="download.php?themeid=`$themes[i].id`" 
             path=$path oversrc=$themes[i].sshot_menu oversrc1=$themes[i].sshot_1 oversrc2=$themes[i].sshot_2 oversrc3=$themes[i].sshot_3 alt="Download" title="Download"}</td>
         <td>
-            <strong>{$themes[i].name}</strong>
+            <strong>#{$themes[i].id}: {$themes[i].name}</strong>
             <p><small>
             <strong>Author:</strong> <a href="mailto:{$themes[i].email|escape:'html'}">{$themes[i].author|escape:'html'}</a><br />
             {if $themes[i].verified == 0}
@@ -78,10 +78,10 @@
             <input type="radio" id="reported[{$id}]" name="status[{$id}]" value="2" {if $themes[i].approved == 2}checked="checked" {/if}/><br />
             
             <label for="hidden[{$id}]">Hidden</label>
-            <input type="radio" id="hidden[{$id}]" name="status[{$id}]" value="0" {if $themes[i].approved == 0}checked="checked" {/if}/><br />
+            <input type="radio" id="hidden[{$id}]" name="status[{$id}]" value="0" {if $themes[i].approved == 0 && $themes[i].reason != "Theme was replaced by newer version."}checked="checked" {/if}/><br />
             
             <label for="delete[{$id}]">Delete</label>
-            <input type="radio" id="delete[{$id}]" name="status[{$id}]" value="-1" />
+            <input type="radio" id="delete[{$id}]" name="status[{$id}]" value="-1" {if $themes[i].approved == 0 && $themes[i].reason == "Theme was replaced by newer version."}checked="checked" {/if} />
         </td>
         <td>
             <textarea rows="10" cols="40" name="reason[{$id}]">{$themes[i].reason|escape:'html'}</textarea>
