@@ -11,7 +11,7 @@ cd "${rockbox_dir}"
 ./tools/version.sh . > "${target}/VERSION"
 cd "tools/checkwps"
 ./cleanall.sh
-./buildall.sh --jobs=`nproc`
+./buildall.sh --jobs=`nproc` >/dev/null
 cp output/checkwps.* "${target}/"
 cp checkwps.failures "${target}/"
 cd "${target}"
