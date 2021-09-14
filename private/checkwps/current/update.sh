@@ -1,7 +1,7 @@
 #!/bin/sh
 rockbox_dir="$HOME/rockbox_git_clone"
 
-export ANDROID_NDK_PATH="/home/rbbuild/x-tools/android-ndk-r10e"
+#export ANDROID_NDK_PATH="/home/rbbuild/x-tools/android-ndk-r10e"
 
 cd `dirname "$0"`
 target=`pwd`
