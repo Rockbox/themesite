@@ -78,7 +78,7 @@ class db {
     public function __construct($file) {
         $this->file = $file;
         /* open db */
-        $this->dh = new SQLite3($file);
+        $this->dh = new PDO("sqlite:$file", "", "");
     }
 
     public function query($sql, $args = null){
@@ -94,12 +94,12 @@ class db {
         $res = $stmt->execute();
         //check for errors
         if($res === false){
-            $code = $this->dh->lastErrorCode();
-            $err = sprintf('%s (%d)', $this->dh->lastErrorMsg(), $code);
+            $code = $this->dh->errorCode();
+            $err = sprintf('%s (%d)', $this->dh->errorInfo(), $code);
             $sql = $sql . ' ' . print_r($args, true);
             $this->error($err, $sql);
-        }else{
-            return new result($res, $this->dh);
+        } else{
+            return new result($stmt, $this->dh);
         }
     }
 
@@ -152,7 +152,7 @@ class result {
     }
 
     public function next($field = false) {
-        $row = $this->rh->fetchArray(SQLITE3_ASSOC);
+        $row = $this->rh->fetch();
         if ($field !== false && isset($row[$field])) {
             return $row[$field];
         } else {
@@ -161,11 +161,11 @@ class result {
     }
 
     public function insertid() {
-        return $this->dh->lastInsertRowID();
+        return $this->dh->lastInsertId();
     }
 
     public function rowsaffected() {
-        return $this->dh->changes();
+        return $this->rh->rowCount();
     }
 }
 
