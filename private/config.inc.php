@@ -67,7 +67,7 @@ class config {
     const recaptchakey = "6LfwAQsAAAAAAPrqZMNC_G_gKbFNf2gP2P2YmXQs";
 
     // Outbound email address
-    const outboundemail = "rockbox-themes-noreply@shaftnet.org";
+    const outboundemail = "rockbox-themes-noreply@rockbox.org";
 }
 
 ?>
