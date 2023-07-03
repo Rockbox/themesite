@@ -28,7 +28,7 @@ class config {
     const maxthemesize = 5000000;
 
     // Max number of files in a theme (includes dirs)
-    const maxfiles = 100;
+    const maxfiles = 150;
 
     // Fully qualified hostname of your server. Without trailing slash or path.
     // Including http://
