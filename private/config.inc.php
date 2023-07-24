@@ -22,10 +22,10 @@
 
 class config {
     // Max size of the theme .zip file in bytes
-    const maxzippedsize = 1000000;
+    const maxzippedsize = 16000000;
 
     // Max size of the themes when unzipped in bytes
-    const maxthemesize = 5000000;
+    const maxthemesize = 40000000;
 
     // Max number of files in a theme (includes dirs)
     const maxfiles = 150;
