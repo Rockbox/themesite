@@ -30,7 +30,8 @@ Development
 </div>
 <img width=16 height=16 src='//www.rockbox.org/silk_icons/bug.png' align='top'> <a class="menulink" href="//www.rockbox.org/tracker/index.php?type=2">bugs</a><br>
 <img width=16 height=16 src='//www.rockbox.org/silk_icons/brick.png' align='top'> <a class="menulink" href="https://gerrit.rockbox.org">patches</a><br>
-<img width=16 height=16 src='//www.rockbox.org/silk_icons/help.png' align='top'> <a class="menulink" href="//www.rockbox.org/wiki/DevelopmentGuide">dev guide</a>
+<img width=16 height=16 src='//www.rockbox.org/silk_icons/help.png' align='top'> <a class="menulink" href="//www.rockbox.org/wiki/DevelopmentGuide">dev guide</a><br>
+<img width=16 height=16 src='//www.rockbox.org/silk_icons/application_edit.png' align='top'> <a class="menulink" href="//translate.rockbox.org">translations</a>
 <div class="submenu">
 Search
 </div>
