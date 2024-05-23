@@ -17,3 +17,4 @@ User-agent: *
 Allow: index.php
 Allow: rss.php
 Disallow: /
+Disallow: download.php
