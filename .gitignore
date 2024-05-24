@@ -1,7 +1,7 @@
 # CheckWPS builds
 private/checkwps/current/checkwps*
 private/checkwps/release/checkwps*
-private/checkwps/*/VERSION
+private/checkwps/*/VERSION*
 
 # Themes
 private/themes

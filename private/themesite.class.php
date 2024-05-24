@@ -881,11 +881,17 @@ END;
                         $version,
                         $target['shortname']
                     );
-                    $result['version'] = trim(file_get_contents(sprintf('%s/checkwps/%s/VERSION',
+                    $result['version'] = trim(file_get_contents(sprintf('%s/checkwps/%s/VERSION.%s',
                         preconfig::privpath,
                         $version,
                         $target['shortname']
                     )));
+                    if ($result['version'] === NULL) {
+                        $result['version'] = trim(file_get_contents(sprintf('%s/checkwps/%s/VERSION',
+                            preconfig::privpath,
+                            $version
+                        )));
+                    }
                     if (file_exists($checkwps)) {
                         exec(sprintf('%s %s', $checkwps, escapeshellarg($file)), $output, $ret);
                         $result['pass'] = ($ret == 0);
