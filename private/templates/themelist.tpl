@@ -79,7 +79,7 @@
     <strong>Description:</strong><br />  
     &nbsp;{$themes[td].description|escape:'html'}<br />
     {if $themes[td].current_pass}
-    <strong>Works with <span class="build_info" title="{$themes[td].current_version}">current build</span></strong><br />
+    <strong>Works with <span class="build_info" title="{$themes[td].current_version}">current dev build</span></strong><br />
     {else}
     <strong class="broken_build">Doesn't work with <span class="build_info" title="{$themes[td].current_version} - {$themes[td].checkwps_output}">current build</span></strong><br />
     {/if}

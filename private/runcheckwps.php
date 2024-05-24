@@ -8,5 +8,5 @@ class preconfig {
 }
 
 require_once('preamble.inc.php');
-$results = $site->checkallthemes(0, 0);  // change the second '0' to '1' to check release too
+$results = $site->checkallthemes(0, 1);  // change the second '0' to '1' to check release too
 ?>

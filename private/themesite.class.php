@@ -893,7 +893,7 @@ END;
                         /* only overwrite results if there is no previous result or previous did pass */
                         if(empty($return[$version][$target['shortname']]) || $return[$version][$target['shortname']]['pass']) {
                             $return[$version][$target['shortname']] = $result;
-                        }              
+                        }
                     }
                 }
             }
