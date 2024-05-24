@@ -874,24 +874,27 @@ END;
                     /* skip file if it is a remote file, and remote resolution doesnt fit (ie remotechecking is optional on targets without native remote lcd resolution */
                     if(($p['extension'] == 'rwps' || $p['extension'] == 'rsbs' || $p['extension'] == 'rfms') && ($target['remotelcd'] != $remotelcd))
                         continue;
-                    /* run checkwps */
+
                     $result = array();
+                    /* Read in version info */
+                    $vfn = sprintf('%s/checkwps/%s/VERSION.%s',
+                        preconfig::privpath,
+                        $version,
+                        $target['shortname']);
+                    if (file_exists($vfn)) {
+                        $result['version'] = trim(file_get_contents($vfn));
+                    } else {
+                        $vfn = sprintf('%s/checkwps/%s/VERSION',
+                            preconfig::privpath,
+                            $version);
+                        $result['version'] = trim(file_get_contents($vfn));
+                    }
+                    /* run checkwps */
                     $checkwps = sprintf('%s/checkwps/%s/checkwps.%s',
                         preconfig::privpath,
                         $version,
                         $target['shortname']
                     );
-                    $result['version'] = trim(file_get_contents(sprintf('%s/checkwps/%s/VERSION.%s',
-                        preconfig::privpath,
-                        $version,
-                        $target['shortname']
-                    )));
-                    if ($result['version'] === NULL) {
-                        $result['version'] = trim(file_get_contents(sprintf('%s/checkwps/%s/VERSION',
-                            preconfig::privpath,
-                            $version
-                        )));
-                    }
                     if (file_exists($checkwps)) {
                         exec(sprintf('%s %s', $checkwps, escapeshellarg($file)), $output, $ret);
                         $result['pass'] = ($ret == 0);
