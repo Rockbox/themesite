@@ -1,8 +1,15 @@
 #!/bin/sh
 VERSION="3.15"
-rockbox_dir="$HOME/rockbox_git_clone"
+rockbox_dir="$ROCKBOX_GIT_DIR"
+
 unset ANDROID_SDK_PATH
 unset ANDROID_NDK_PATH
+
+# Don't rebuild if VERSION hasn't changed
+VER2=`cat VERSION`
+if [ "$VER" == "$VER2" ]; then
+    exit 0
+fi
 
 cd `dirname "$0"`
 target=`pwd`

@@ -1,5 +1,5 @@
 #!/bin/sh
-rockbox_dir="$HOME/rockbox_git_clone"
+rockbox_dir="$ROCKBOX_GIT_DIR"
 
 #export ANDROID_NDK_PATH="/home/rbbuild/x-tools/android-ndk-r10e"
 
