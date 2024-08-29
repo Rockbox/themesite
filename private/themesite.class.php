@@ -759,7 +759,7 @@ END;
         }
         return $ret;
     }
-        
+
     public function addsetting($name,$type) 
     {
         $this->log(sprintf("Add new setting %s %s", $name,$type));
@@ -825,7 +825,7 @@ END;
                     }                    
                 }
                 if($found == false)
-                    return sprintf("%s is not a allowed theme setting.",$name);
+                    return sprintf("%s is not an allowed theme setting.",$name);
             }
         }
         return '';
