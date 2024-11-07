@@ -15,6 +15,8 @@
 <p>No themes uploaded yet for this screen size</p>
 {else}
 
+<p><b>Note that	these themes may require the optional Rockbox font pack installed.  The latest version can always be found <a href="//www.rockbox.org/daily.shtml">here</a></b></p>
+
 {* Decide the number of columns by the lcd width *}
 {if $mainlcd} {math assign="cols" equation="floor(min(10, x / y))" x=1000 y=$mainlcd|regex_replace:'/x.*/':''} {/if}
 {assign var="cols" value="3"}
