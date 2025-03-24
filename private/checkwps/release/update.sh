@@ -15,7 +15,7 @@ cd `dirname "$0"`
 target=`pwd`
 cd "${rockbox_dir}"
 git pull --rebase
-git checkout "v$VERSION"
+git checkout "v$VERSION-final"
 ./tools/version.sh . > "${target}/VERSION"
 cd "tools/checkwps"
 ./cleanall.sh
