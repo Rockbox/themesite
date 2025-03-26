@@ -818,6 +818,10 @@ END;
                             }
                             if($foundfile == false)
                                 return sprintf("The file %s from the setting '%s' doesnt exist.",$value,$name);
+                        } elseif ($setting['type'] == 'viewport') {
+                             $array = explode(",", $value);
+                             if (count($array) != 7)
+                                return sprintf("The '%s' setting is malformed.",$name);
                         }
                         /* all other setting types are currently unchecked */
                         $found = true;
