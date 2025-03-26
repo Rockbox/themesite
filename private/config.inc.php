@@ -38,7 +38,8 @@ class config {
     const path = "";
 
     // Full, absolute path to the location of the smarty template engine
-    const smartydir = "/usr/share/php/Smarty";
+//    const smartydir = "/usr/share/php/Smarty";
+    const smartydir = "/home/rockbox/themes/smarty-4.5.4/libs";
 
     // Location to store theme data. Relative to the "const path" given above
     // must be web-accessible
