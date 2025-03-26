@@ -30,7 +30,7 @@ class db {
      * Array of all tables in the db
      * This is used as a reference to the database hierarchy
     */
-    private $tables = array( 
+    private $tables = array(
             'checkwps' =>array('themeid'            => 'INTEGER' ,
                                'version_type'       => 'TEXT' ,
                                'version_number'     => 'TEXT',
@@ -111,7 +111,7 @@ class db {
     }
 
     private function error($err, $sql = '') {
-        /* 
+        /*
          * Sometimes the error is empty, in which case the explanation can be
          * found like this
          */

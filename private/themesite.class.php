@@ -46,7 +46,7 @@ class themesite {
         );
         $this->db->query($sql, $args);
     }
-    
+
     public function getlog() {
         $ret = array();
         $sql = 'SELECT time, ip, admin, msg FROM log ORDER BY time DESC';
@@ -55,15 +55,15 @@ class themesite {
             $ret[] = $result;
         }
         return $ret;
-    }    
+    }
 
     private function targetlist($orderby) {
         $sql = sprintf('SELECT targets.shortname AS shortname, fullname, pic, targets.mainlcd AS mainlcd, depth, targets.remotelcd AS remotelcd, COUNT(themes.name) AS numthemes
-            FROM targets LEFT OUTER JOIN (SELECT DISTINCT themes.name AS name,checkwps.target AS target 
-            FROM themes,checkwps 
-            WHERE themes.themeid=checkwps.themeid AND checkwps.pass=1 AND approved>=1 AND emailverification=1) themes 
-            ON targets.shortname=themes.target 
-            GROUP BY targets.shortname||targets.mainlcd 
+            FROM targets LEFT OUTER JOIN (SELECT DISTINCT themes.name AS name,checkwps.target AS target
+            FROM themes,checkwps
+            WHERE themes.themeid=checkwps.themeid AND checkwps.pass=1 AND approved>=1 AND emailverification=1) themes
+            ON targets.shortname=themes.target
+            GROUP BY targets.shortname||targets.mainlcd
             ORDER BY %s',
             db::quote($orderby)
         );
@@ -112,7 +112,7 @@ class themesite {
             );
             $result = $this->checkwps($zipfile, $theme['mainlcd'], $theme['remotelcd'], $release);
 
-            /* 
+            /*
              * Store the results and check if at least one check passed (for
              * the summary)
              */
@@ -143,7 +143,7 @@ class themesite {
                 'result' => $result,
                 'summary' => array('theme' => $theme['name'], 'pass' => $passany, 'duration' => microtime(true) - $starttime)
             );
-            
+
             /* update filesize and zipcontents here, so old themes always have this data */
             $filesize = filesize(sprintf('%s/%s/%s/%s',
                 $theme['approved'] >= 1 ? $this->themedir_public : $this->themedir_private,
@@ -159,7 +159,7 @@ class themesite {
             foreach($zipfiles as $file)
             {
                 $this->db->query('INSERT into zipcontents(themeid,filename) VALUES(:id , :fn)', array(':id' => $theme['themeid'], ':fn' => $file));
-            }            
+            }
         }
         return $return;
     }
@@ -223,7 +223,7 @@ class themesite {
         $files = array();
         while ($file = $fileresult->next()) {$files[] = $file['filename']; }
         $theme['files'] = $files;
-        if($theme['numratings'] > 0) $theme['ratings'] = $theme['ratings'] /$theme['numratings'] ;     
+        if($theme['numratings'] > 0) $theme['ratings'] = $theme['ratings'] /$theme['numratings'] ;
         return $theme;
     }
 
@@ -262,12 +262,12 @@ class themesite {
         $themes = $this->db->query($sql);
         /* create additional data */
         while ($theme = $themes->next()) {
-            if($theme['numratings'] > 0) $theme['ratings'] = $theme['ratings'] / $theme['numratings']; 
+            if($theme['numratings'] > 0) $theme['ratings'] = $theme['ratings'] / $theme['numratings'];
             $ret[] = $theme;
         }
         return $ret;
     }
-    
+
     public function listthemes($target = false, $orderby = 'timestamp DESC', $approved = 'approved', $onlyverified = true) {
         $ret = array();
         $checkwps_clause = 'AND (current_pass=1 OR release_pass=1)';
@@ -294,13 +294,13 @@ class themesite {
         if ($target === false) {
             $sql = sprintf('SELECT themes.name AS name, author, timestamp, mainlcd, approved, reason, description, shortname,
                             zipfile, sshot_wps, sshot_menu,sshot_1,sshot_2,sshot_3,downloadcnt, ratings, numratings, filesize as size,
-                            emailverification = 1 as verified, themes.themeid as id, 
+                            emailverification = 1 as verified, themes.themeid as id,
                             c.version_number AS current_version,
                             c.pass AS current_pass,
                             r.version_number as release_version,
                             r.pass as release_pass,
                             c.output as checkwps_output
-                            FROM themes 
+                            FROM themes
                             LEFT OUTER JOIN checkwps c ON (themes.themeid=c.themeid and c.version_type="current")
                             LEFT OUTER JOIN checkwps r ON (themes.themeid=r.themeid and r.version_type="release")
                             WHERE 1 %s %s %s GROUP BY name, mainlcd ORDER BY %s',
@@ -338,7 +338,7 @@ class themesite {
         $themes = $this->db->query($sql, $args);
         /* create additional data */
         while ($theme = $themes->next()) {
-            if($theme['numratings'] > 0) $theme['ratings'] = $theme['ratings'] / $theme['numratings']; 
+            if($theme['numratings'] > 0) $theme['ratings'] = $theme['ratings'] / $theme['numratings'];
             $ret[] = $theme;
         }
         return $ret;
@@ -378,7 +378,7 @@ class themesite {
         $themes = $this->db->query($sql, $args);
         /* create additional data */
         while ($theme = $themes->next()) {
-            if($theme['numratings'] > 0) $theme['ratings'] = $theme['ratings'] / $theme['numratings']; 
+            if($theme['numratings'] > 0) $theme['ratings'] = $theme['ratings'] / $theme['numratings'];
             $ret[] = $theme;
         }
         return $ret;
@@ -417,14 +417,14 @@ class themesite {
         $result = $this->db->query($sql, $args)->next();
         return $result['count'] > 0 ? true : false;
     }
-    
+
     public function adminworkneeded() {
         /* any reported themes ? */
         $sql = 'SELECT COUNT(*) as count FROM themes WHERE approved=2';
         $result = $this->db->query($sql)->next();
         return $result['count'] > 0 ? true : false;
     }
-    
+
     public function themeisupdate($name, $mainlcd,$author,$email) {
         $sql = 'SELECT COUNT(*) as count FROM themes WHERE name=:name AND mainlcd=:mainlcd AND approved>=1 AND author=:author AND email=:email';
         $args = array(
@@ -449,7 +449,7 @@ class themesite {
         $args = array(':id' => $themeid);
         $theme = $this->db->query($sql, $args)->next();
 
-        if ($newstatus == -1) {            
+        if ($newstatus == -1) {
             $sql = 'DELETE FROM zipcontents WHERE themeid=:id';
             $args = array(':id' => $themeid);
             $this->db->query($sql, $args);
@@ -458,7 +458,7 @@ class themesite {
             $this->db->query($sql, $args);
             $sql = 'DELETE FROM themes WHERE themeid=:id';
             $args = array(':id' => $themeid);
-            
+
             /* Delete the files */
             foreach(array($this->themedir_public, $this->themedir_private) as $root) {
                 $dir = sprintf('%s/%s/%s',
@@ -512,10 +512,10 @@ END;
         $this->db->query($sql, $args);
     }
 
-    public function addtarget($shortname, $fullname, $mainlcd, $pic, $depth, $remotelcd = false) {    
+    public function addtarget($shortname, $fullname, $mainlcd, $pic, $depth, $remotelcd = false) {
         $this->log(sprintf('Add new target %s', $fullname));
 
-        $sql = 'INSERT INTO targets (shortname, fullname, mainlcd, pic, depth, remotelcd) 
+        $sql = 'INSERT INTO targets (shortname, fullname, mainlcd, pic, depth, remotelcd)
                 VALUES (:sn, :fn, :mainlcd, :pic, :depth, :remotelcd)';
         $args = array(
             ':sn' => $shortname,
@@ -535,10 +535,10 @@ END;
         }
     }
 
-    public function edittarget($id, $shortname, $fullname, $mainlcd, $pic, $depth, $remotelcd = false) {    
+    public function edittarget($id, $shortname, $fullname, $mainlcd, $pic, $depth, $remotelcd = false) {
         $this->log(sprintf('Edit target %s', $fullname));
 
-        $sql = 'UPDATE targets SET shortname=:sn, fullname=:fn, mainlcd=:mainlcd, 
+        $sql = 'UPDATE targets SET shortname=:sn, fullname=:fn, mainlcd=:mainlcd,
                 pic=:pic, depth=:depth, remotelcd=:remotelcd WHERE themeid=:id';
         $args = array(
             ':sn' => $shortname,
@@ -551,7 +551,7 @@ END;
         );
         $this->db->query($sql, $args);
     }
-    
+
     private function send_mail($subject, $to, $msg) {
         $msg = wordwrap($msg, 78);
         $headers = sprintf("From: %s", config::outboundemail);
@@ -602,7 +602,7 @@ END;
             /* the highest download count should be the newest one */
             if ($theme['downloadcnt'] > $dlcount)
                 $dlcount = $theme['downloadcnt'];
-        } 
+        }
         /* change theme as verified */
         $sql = 'UPDATE themes SET emailverification=1, downloadcnt=:dlcount WHERE emailverification=:emv';
         $args = array(
@@ -703,7 +703,7 @@ END;
         );
         $this->db->query($sql, $args);
     }
-    
+
     public function ratetheme($id,$rating) {
         /* prevent abusing with a cookie which virtually never expires
          * so one can only rate a theme once */
@@ -719,7 +719,7 @@ END;
         }
         setcookie($cookiename, "bar", time()+(60*60*24*365*10)); // 10 years
     }
-    
+
     /*
      * Use this rather than plain pathinfo for compatibility with PHP<5.2.0
      */
@@ -760,7 +760,7 @@ END;
         return $ret;
     }
 
-    public function addsetting($name,$type) 
+    public function addsetting($name,$type)
     {
         $this->log(sprintf("Add new setting %s %s", $name,$type));
 
@@ -784,7 +784,7 @@ END;
                 extract($matches);
                 /* check if it is in the list of allowed settings */
                 $found =false;
-                foreach($settings as $setting) 
+                foreach($settings as $setting)
                 {
                     if($setting['name'] == $name)
                     {
@@ -804,8 +804,8 @@ END;
                                 $found = true;
                                 break;
                             }
-                            
-                            /* check if filename exists in $files */                            
+
+                            /* check if filename exists in $files */
                             $foundfile = false;
                             foreach($files as $file)
                             {
@@ -822,7 +822,7 @@ END;
                         /* all other setting types are currently unchecked */
                         $found = true;
                         break;
-                    }                    
+                    }
                 }
                 if($found == false)
                     return sprintf("%s is not an allowed theme setting.",$name);
@@ -855,15 +855,15 @@ END;
         $olddir = getcwd();
         chdir($tmpdir);
 
-        /* 
+        /*
          * For all .wps and .rwps, run checkwps of both release and current for
          * all applicable targets
          */
-        /* get list of targets to check */ 
+        /* get list of targets to check */
         $targets =  $this->lcd2targets($mainlcd);
-        /* for every target */ 
+        /* for every target */
         while($target = $targets->next()){
-            /* for both versions */ 
+            /* for both versions */
             foreach(array('release', 'current') as $version) {
                 if ($release == 0 && $version == 'release') {
                      continue;
@@ -906,7 +906,7 @@ END;
                     }
                 }
             }
-        }        
+        }
 
         /* chdir back */
         chdir($olddir);
@@ -1025,7 +1025,7 @@ END;
                     break;
             }
 
-            /* 
+            /*
              * Check that the dir inside /.rockbox/wps also has the same name.
              * This automatically ensures that there is only one.
              */
@@ -1040,7 +1040,7 @@ END;
              * Check that the only files we have inside /.rockbox/backdrops/
              * and subdirs of /.rockbox/wps/ are .bmp files
              */
-            if (strtolower($pathinfo['extension']) != 'bmp' && 
+            if (strtolower($pathinfo['extension']) != 'bmp' &&
                 ($pathinfo['dirname'] == '.rockbox/backdrops' || // Files inside .rockbox/backdrops
                   ($pathinfo['dirname'] != '.rockbox/wps' && strpos($pathinfo['dirname'], '.rockbox/wps') === 0) // Files in a subdir of .rockbox/wps (first part or dirname is .rockbox/wps, but it's not all of it)
                 )
@@ -1054,7 +1054,7 @@ END;
             }
 
             /* Check for unwanted junk files */
-            switch(strtolower($pathinfo['basename'])) {  
+            switch(strtolower($pathinfo['basename'])) {
                 case 'thumbs.db':
                 case 'desktop.ini':
                 case '.ds_store':
@@ -1086,10 +1086,10 @@ END;
 
         if (count($rwpsfound) > 1)
             $err[] = sprintf("More than one .rwps found (%s).", implode(', ', $rwpsfound));
-            
+
         if (count($sbsfound) > 1)
             $err[] = sprintf("More than one .sbs found (%s).", implode(', ', $sbsfound));
-            
+
         if (count($rsbsfound) > 1)
             $err[] = sprintf("More than one .rsbs found (%s).", implode(', ', $rsbsfound));
         return $err;
