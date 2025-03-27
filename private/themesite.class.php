@@ -821,7 +821,7 @@ END;
                         } elseif ($setting['type'] == 'viewport') {
                              $array = explode(",", $value);
                              if (count($array) == 1) {
-                                if ($array[0] !== '-')
+                                if ($array[0] !== '-' && $array[0] !== '')
                                     return sprintf("The '%s' setting is malformed.",$name);
                              } elseif (count($array) != 7) {
                                 return sprintf("The '%s' setting is malformed.",$name);
