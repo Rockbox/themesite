@@ -1,5 +1,5 @@
 #!/bin/sh
-VERSION="3.15"
+VERSION="4.0"
 rockbox_dir="$ROCKBOX_GIT_DIR"
 
 unset ANDROID_SDK_PATH
