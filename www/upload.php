@@ -62,7 +62,7 @@ function checkuploadfields(&$site, &$err) {
             if(!isset($_REQUEST['update']) || $_REQUEST['update'] != "on") {
                 $err['update'] = sprintf("A theme with the name '%s' already exists for this target. Do you want to update it?", $_REQUEST['themename']);
             }
-        } 
+        }
         else {
             $err['themename'] = sprintf("A theme with the name '%s' already exists for this target.", $_REQUEST['themename']);
         }
@@ -135,22 +135,30 @@ if (isset($_REQUEST['author'])) {
     }
     /* If that went wrong, go on and include the theme */
     else {
-        /* 
+        /*
          * At this stage, the theme has been validated, any possible errors
          * are now our fault.
          */
         $lcd = $site->target2lcd($_REQUEST['target']);
 
-        /* 
+        /* Make sure we have a sane zipfile name. */
+        $tfn = basename(str_replace(' ', '_', mb_strtolower($_FILES['themefile']['name'])), '.zip');
+        if ($tfn == '.rockbox' || $tfn === 'rockbox') {
+           /* If it's a bad name, use a sanitized version of the theme name */
+           $tfn = mb_strtolower($_REQUEST['themename']);
+           $tfn = str_replace(' ', '_', $tfn);
+           $tfn = str_replace('/', '_', $tfn);
+           $tfn = str_replace('\\', '_', $tfn);
+           $tfn = str_replace(':', '_', $tfn);
+        }
+
+        /*
          * Figure out a decent shortname. Use the zipfile name and add some
          * numbers if that exists.
          */
         $i = 0;
         do {
-            $shortname = sprintf("%s%s",
-                basename(str_replace(' ', '_', strtolower($_FILES['themefile']['name'])), '.zip'),
-                $i == 0 ? '' : "-$i"
-            );
+            $shortname = sprintf("%s%s", $tfn, $i == 0 ? '' : "-$i");
             $destdir = sprintf("%s/%s/%s", config::datadir, $lcd['mainlcd'], $shortname);
             $i++;
         } while (file_exists($destdir));
@@ -180,7 +188,7 @@ if (isset($_REQUEST['author'])) {
         }
     }
 }
-/* 
+/*
  * If no template is set, it either means this is the first load, or upload
  * failed
  */
