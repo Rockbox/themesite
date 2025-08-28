@@ -38,16 +38,17 @@ class config {
     const path = "";
 
     // Full, absolute path to the location of the smarty template engine
-//    const smartydir = "/usr/share/php/Smarty";
-    const smartydir = "/home/rockbox/themes/smarty-4.5.4/libs";
+    const smartydir = "/usr/share/php/Smarty";
 
     // Location to store theme data. Relative to the "const path" given above
     // must be web-accessible
     const datadir = "themes";
 
-    // Location of the db relative to preconfig::privpath
+    // Location of the db
     // Should no be web-accessible
-    const dbfile = "themes.db";
+    const dbstr = "sqlite:/path/to/sqlite.db";
+    const dbuser = "";
+    const dbpass = "";
 
     // Default status for newly uploaded themes. 1=approved. 0=hidden.
     const defaultstatus = 1;
@@ -56,16 +57,16 @@ class config {
     const unzip = "/usr/bin/unzip";
 
     // Location of the Rockbox source font dir
-    const fontdir = "/home/rockbox/rockbox_git_clone/fonts";
+    const fontdir = "/path/to/rockbox.git/fonts";
 
     // Location of the Rockbox source icons dir
-    const icondir = "/home/rockbox/rockbox_git_clone/icons";
+    const icondir = "/path/to/rockbox.git/icons";
 
     // Private key for recaptcha
-    const recaptchakey_priv = "6LfwAQsAAAAAAOGeWVtqpSeIFZKP3WcActZeoVk1";
+    const recaptchakey_priv = "";
 
     // Public key for recaptcha
-    const recaptchakey = "6LfwAQsAAAAAAPrqZMNC_G_gKbFNf2gP2P2YmXQs";
+    const recaptchakey = "";
 
     // Outbound email address
     const outboundemail = "rockbox-themes-noreply@rockbox.org";

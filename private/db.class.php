@@ -24,7 +24,6 @@
  * Simple DB class using SQLite3
  */
 class db {
-    private $file;
     private $dh;
     /*
      * Array of all tables in the db
@@ -75,10 +74,9 @@ class db {
             'zipcontents'=>array('themeid'          => 'INTEGER',
                                 'filename'          => 'TEXT'));
 
-    public function __construct($file) {
-        $this->file = $file;
+    public function __construct($dbstr, $dbuser, $dbpass) {
         /* open db */
-        $this->dh = new PDO("sqlite:$file", "", "");
+        $this->dh = new PDO($dbstr, $dbuser, $dbpass);
     }
 
     public function query($sql, $args = null){

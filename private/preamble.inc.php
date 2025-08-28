@@ -27,7 +27,7 @@ require_once('recaptchalib.php');
 
 date_default_timezone_set('UTC');
 
-$site = new themesite(preconfig::privpath .'/' . config::dbfile);
+$site = new themesite(config::dbstr, config::dbuser, config::dbpass);
 $t = new templater(config::smartydir);
 $t->assign('datadir', config::datadir);
 $t->assign('root', config::path);

@@ -27,8 +27,8 @@ class themesite {
     private $themedir_public;
     private $themedir_private;
 
-    public function __construct($dbfile) {
-        $this->db = new db($dbfile);
+    public function __construct($dbstr, $dbuser, $dbpass) {
+        $this->db = new db($dbstr, $dbuser, $dbpass);
         $this->themedir_public = sprintf('%s/%s/%s', $_SERVER['DOCUMENT_ROOT'], config::path, config::datadir);
         $this->themedir_private = sprintf('%s/%s', preconfig::privpath, config::datadir);
     }

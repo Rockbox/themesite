@@ -16,3 +16,4 @@ private/templates/cache
 
 # Database
 private/themes.db
+private/config.inc.php
