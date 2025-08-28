@@ -58,12 +58,13 @@ class themesite {
     }
 
     private function targetlist($orderby) {
-        $sql = sprintf('SELECT targets.shortname AS shortname, fullname, pic, targets.mainlcd AS mainlcd, depth, targets.remotelcd AS remotelcd, COUNT(themes.name) AS numthemes
+        $sql = sprintf('SELECT targets.shortname AS shortname, fullname, pic, targets.mainlcd AS mainlcd, depth,
+                               targets.remotelcd AS remotelcd, COUNT(themes.name) AS numthemes
             FROM targets LEFT OUTER JOIN (SELECT DISTINCT themes.name AS name,checkwps.target AS target
             FROM themes,checkwps
             WHERE themes.themeid=checkwps.themeid AND checkwps.pass=1 AND approved>=1 AND emailverification=1) themes
             ON targets.shortname=themes.target
-            GROUP BY targets.shortname||targets.mainlcd
+            GROUP BY targets.shortname,targets.mainlcd
             ORDER BY %s',
             db::quote($orderby)
         );
@@ -197,7 +198,7 @@ class themesite {
     }
 
     public function themedetails($id, $onlyapproved = false, $onlyverified = false) {
-        $verified = $onlyverified ? ' AND verified=1 ' : '';
+        $verified = $onlyverified ? ' AND emailverification=1 ' : '';
         $approved = $onlyapproved ? ' AND approved >= 1 ' : '';
         $sql = sprintf('
             SELECT
@@ -213,7 +214,7 @@ class themesite {
             FROM themes
             LEFT OUTER JOIN checkwps c ON (themes.themeid=c.themeid and c.version_type="current")
             LEFT OUTER JOIN checkwps r ON (themes.themeid=r.themeid and r.version_type="release")
-            WHERE id=:id %s %s',
+            WHERE themes.themeid=:id %s %s',
             $verified,
             $approved
         );
@@ -234,7 +235,7 @@ class themesite {
         $verified = '';
         if($admin === false)
         {
-            $checkwps_clause = 'AND (current_pass=1 OR release_pass=1)';
+            $checkwps_clause = 'AND (c.pass=1 OR r.pass=1)';
             $approved_clause = 'AND approved >= 1';
             $verified = 'AND emailverification = 1';
         }
@@ -270,7 +271,7 @@ class themesite {
 
     public function listthemes($target = false, $orderby = 'timestamp DESC', $approved = 'approved', $onlyverified = true) {
         $ret = array();
-        $checkwps_clause = 'AND (current_pass=1 OR release_pass=1)';
+        $checkwps_clause = 'AND (c.pass=1 OR r.pass=1)';
         switch($approved) {
             case 'any': $approved_clause = ''; break;
             case 'hidden': $approved_clause = ' AND approved = 0 '; break;
@@ -283,7 +284,7 @@ class themesite {
         if ($onlyverified == true) {
             $verified = ' AND emailverification = 1 ';
         }else {
-            $checkwps_clause = 'AND (current_pass<>2 OR release_pass<>2)';  //workaround. without this we somehow get all themes
+            $checkwps_clause = 'AND (c.pass<>2 OR r.pass<>2)';  //workaround. without this we somehow get all themes
             $verified = '';
         }
         // special case for ratings
@@ -371,7 +372,7 @@ class themesite {
             FROM themes
             LEFT OUTER JOIN checkwps c ON (themes.themeid=c.themeid and c.version_type="current")
             LEFT OUTER JOIN checkwps r ON (themes.themeid=r.themeid and r.version_type="release")
-            WHERE (current_pass=1 OR release_pass=1) AND emailverification = 1 AND approved >= 1 %s GROUP BY name ORDER BY timestamp DESC',
+            WHERE (c.pass=1 OR r.pass=1) AND emailverification = 1 AND approved >= 1 %s GROUP BY name ORDER BY timestamp DESC',
             $lcd
         );
 
