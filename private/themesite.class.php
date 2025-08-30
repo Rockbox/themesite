@@ -38,7 +38,7 @@ class themesite {
      * is automaticly added.
      */
     private function log($message) {
-        $sql = 'INSERT INTO log (time, ip, admin, msg) VALUES (datetime("now"), :ip, :admin, :msg)';
+        $sql = 'INSERT INTO log (time, ip, admin, msg) VALUES (now(), :ip, :admin, :msg)';
         $args = array(
             ':ip' => $_SERVER['REMOTE_ADDR'],
             ':admin' => isset($_SESSION['user']) ? $_SESSION['user'] : '',

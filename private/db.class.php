@@ -52,7 +52,7 @@ class db {
                                'sshot_3'            => 'TEXT',
                                'emailverification'  => 'TEXT',
                                'reason'             => 'TEXT',
-                               'timestamp'          => 'FLOAT',
+                               'timestamp'          => 'DATETIME',
                                'downloadcnt'        => 'INTEGER',
                                'ratings'            => 'INTEGER',
                                'numratings'         => 'INTEGER',
