@@ -16,4 +16,7 @@ private/templates/cache
 
 # Database
 private/themes.db
+private/themes.masterpw
+
+# Runtime config file
 private/config.inc.php
