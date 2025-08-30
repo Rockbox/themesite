@@ -38,6 +38,7 @@ class templater {
 //        $s->secure_dir = array(realpath(config::datadir), realpath($s->template_dir));
         $s->configLoad(sprintf("%s/templates/themes.cfg", preconfig::privpath));
 	$s->registerPlugin("modifier", 'siprefix', array(&$this, 'siprefix'));
+	$s->muteUndefinedOrNullWarnings();
         $this->s = $s;
     }
 
