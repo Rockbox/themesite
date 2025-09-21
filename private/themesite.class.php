@@ -668,7 +668,7 @@ END;
         }
         $sql = 'INSERT INTO themes (author, email, name, mainlcd, zipfile, sshot_wps, sshot_menu, sshot_1, sshot_2, sshot_3,
                   remotelcd, description, shortname, emailverification, timestamp, approved, downloadcnt, ratings, numratings)
-                  VALUES (:author, :email, :name, :mainlcd, :zipf, :sswps, :ssmenu, :ss1, :ss2, :ss3, :remotelcd, :desc, :sn, 0, datetime("now"), :app, 0, 0, 0)';
+                  VALUES (:author, :email, :name, :mainlcd, :zipf, :sswps, :ssmenu, :ss1, :ss2, :ss3, :remotelcd, :desc, :sn, 0, now(), :app, 0, 0, 0)';
         $args = array(
             ':author' => $author,
             ':email' => $email,
