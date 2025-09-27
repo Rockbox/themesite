@@ -228,14 +228,20 @@ class themesite {
         return $theme;
     }
 
-    public function searchthemes($searchrow,$needle,$admin = false) {
+    public function searchthemes($searchrow,$needle,$admin = false, $release = 0) {
         $ret = array();
         $checkwps_clause = '';
         $approved_clause = '';
         $verified = '';
         if($admin === false)
         {
-            $checkwps_clause = 'AND (c.pass=1 OR r.pass=1)';
+            if ($release === false) {
+                $checkwps_clause = 'AND (c.pass = 1 OR r.pass = 1)';
+            } elseif ($release == 0) {
+                $checkwps_clause = 'AND c.pass = 1';
+            } else {
+                $checkwps_clause = 'AND r.pass = 1';
+            }
             $approved_clause = 'AND approved >= 1';
             $verified = 'AND emailverification = 1';
         }
@@ -269,9 +275,8 @@ class themesite {
         return $ret;
     }
 
-    public function listthemes($target = false, $orderby = 'timestamp DESC', $approved = 'approved', $onlyverified = true) {
+    public function listthemes($target = false, $orderby = 'timestamp DESC', $approved = 'approved', $onlyverified = true, $release = false) {
         $ret = array();
-        $checkwps_clause = 'AND (c.pass=1 OR r.pass=1)';
         switch($approved) {
             case 'any': $approved_clause = ''; break;
             case 'hidden': $approved_clause = ' AND approved = 0 '; break;
@@ -281,12 +286,19 @@ class themesite {
                 $approved_clause = ' AND approved >= 1 ';
                 break;
         }
+
         if ($onlyverified == true) {
             $verified = ' AND emailverification = 1 ';
-        }else {
-            $checkwps_clause = 'AND (c.pass<>2 OR r.pass<>2)';  //workaround. without this we somehow get all themes
-            $verified = '';
         }
+
+        if ($release === false) {
+            $checkwps_clause = 'AND (c.pass = 1 OR r.pass = 1)';
+        } elseif ($release == 0) {
+            $checkwps_clause = 'AND c.pass = 1';
+        } else {
+            $checkwps_clause = 'AND r.pass = 1';
+        }
+
         // special case for ratings
         if(substr($orderby, 0, 6) == 'rating'){
             $orderby = explode(' ', $orderby);
