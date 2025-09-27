@@ -25,12 +25,21 @@ require_once('preconfig.inc.php');
 header('Content-type: text/plain');
 
 $themes = array();
+$release = false;
+
 if (!isset($_REQUEST['target'])) {
     $t->assign('errno', 1);
     $t->assign('errmsg', "Invalid URL");
 }
 else {
-    $themes = $site->listthemes($_REQUEST['target']);
+    if (isset($_REQUEST['release'])) {
+      if (strlen($_REQUEST['release'])) {
+         $release = 1;
+      } else {
+         $release = 0;
+      }
+    }
+    $themes = $site->listthemes($_REQUEST['target'], 'timestamp DESC', 'approved', true, $release);
 }
 
 if (count($themes) == 0) {
