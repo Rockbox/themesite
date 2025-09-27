@@ -26,7 +26,7 @@ archive="{$root}/download.php?themeid={$themes[i].id}"
 author="{$themes[i].author|escape:'html'}"
 version="{$themes[i].timestamp}"
 about="{$themes[i].description|escape:'html'}"
-{if $themes[i].current_pass}
+{if $themes[i].release_pass}
 pass_release="{$themes[i].release_version}"
 {/if}
 {if $themes[i].current_pass}
