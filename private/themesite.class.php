@@ -188,12 +188,14 @@ class themesite {
     }
 
     private function zipcontents($zipfile) {
-        $zip = zip_open($zipfile);
+        $zip = new ZipArchive;
+        $res = $zip->open($zipfile);
         $files = array();
-        while ($ze = zip_read($zip)) {
-            $filename = zip_entry_name($ze);
-            $files[] = $filename;
+        for ($i = 0 ; $i < $zip->count() ; $i++) {
+           $ze = $zip->statIndex($i);
+           $files[] = $ze['name'];
         }
+        $zip->close();
         return $files;
     }
 
@@ -755,11 +757,7 @@ END;
      */
     private function getzipentrycontents($zip, $ze) {
         $ret = '';
-        zip_entry_open($zip, $ze);
-        while($read = zip_entry_read($ze)) {
-            $ret .= $read;
-        }
-        zip_entry_close($ze);
+        $ret .= $zip->getFromIndex($ze['index'], 0);
         return $ret;
     }
 
@@ -987,7 +985,8 @@ END;
      */
     public function validatezip($themezipupload) {
         $err = array();
-        $zip = zip_open($themezipupload['tmp_name']);
+        $zip = new ZipArchive;
+        $res = $zip->open($themezipupload['tmp_name']);
         $totalsize = 0;
         $files = array();
         $wpsfound = array();
@@ -998,14 +997,15 @@ END;
         $shortname = '';
         $cfg = '';
 
-        if (is_int($zip)) {
+        if ($res === false) {
             $err[] = sprintf("'Couldn't open zipfile %s", $themezipupload['name']);
             return $err;
         }
-        while ($ze = zip_read($zip)) {
-            $filename = zip_entry_name($ze);
+        for ($i = 0 ; $i < $zip->count() ; $i++) {
+            $ze = $zip->statIndex($i);
+            $filename = $ze['name'];
             $pathinfo = $this->my_pathinfo($filename);
-            $totalsize += zip_entry_filesize($ze);
+            $totalsize += $ze['size'];
             $files[] = $filename;
 
             /* Count .wps and .rwps  and [.r]sbs files for later checking */
@@ -1083,6 +1083,7 @@ END;
                     $err[] = sprintf('Unwanted file: %s', $filename);
             }
         }
+        $zip->close();
 
         /* Now we check all the things that could be wrong */
         $error = $this->validatecfg($cfg, $files);
