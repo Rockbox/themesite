@@ -88,6 +88,9 @@
     {if $themes[td].release_pass}
     <strong>Works with release {$themes[td].release_version}</strong><br />
     {/if}
+    {if $themes[td].needfontpack}
+    <strong>Requires Rockbox font pack to be installed!<br />
+    {/if}
     </small>
     </td>
     {/if}

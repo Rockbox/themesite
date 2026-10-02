@@ -222,6 +222,7 @@ class themesite {
         );
         $args = array(':id' => $id);
         $theme = $this->db->query($sql, $args)->next();
+        $theme['needfontpack'] = strstr($theme['checkwps_output'], "requires rockbox font bundle") === false ? false : true;
         $fileresult = $this->db->query('SELECT filename FROM zipcontents WHERE themeid=:id', array(':id' => $theme['id']));
         $files = array();
         while ($file = $fileresult->next()) {$files[] = $file['filename']; }
@@ -271,6 +272,7 @@ class themesite {
         $themes = $this->db->query($sql);
         /* create additional data */
         while ($theme = $themes->next()) {
+            $theme['needfontpack'] = strstr($theme['checkwps_output'], "requires rockbox font bundle") === false ? false : true;
             if($theme['numratings'] > 0) $theme['ratings'] = $theme['ratings'] / $theme['numratings'];
             $ret[] = $theme;
         }
@@ -353,6 +355,7 @@ class themesite {
         $themes = $this->db->query($sql, $args);
         /* create additional data */
         while ($theme = $themes->next()) {
+            $theme['needfontpack'] = strstr($theme['checkwps_output'], "requires rockbox font bundle") === false ? false : true;
             if($theme['numratings'] > 0) $theme['ratings'] = $theme['ratings'] / $theme['numratings'];
             $ret[] = $theme;
         }
@@ -393,6 +396,7 @@ class themesite {
         $themes = $this->db->query($sql, $args);
         /* create additional data */
         while ($theme = $themes->next()) {
+            $theme['needfontpack'] = strstr($theme['checkwps_output'], "requires rockbox font bundle") === false ? false : true;
             if($theme['numratings'] > 0) $theme['ratings'] = $theme['ratings'] / $theme['numratings'];
             $ret[] = $theme;
         }
