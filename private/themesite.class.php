@@ -890,9 +890,15 @@ END;
             foreach(array('release', 'current') as $version) {
                 if ($release == 0 && $version == 'release') {
                      continue;
-                 }
+                }
+                if ($version == 'release') {
+                    $glob = '.rockbox/*/*.{wps,sbs,fms,rwps,rsbs,rfms}';
+                } else {
+                    $glob = '.rockbox/*/*.{wps,sbs,fms,cfg,rwps,rsbs,rfms}';
+                }
+
                 /* for every skin file in the theme */
-                foreach(glob('.rockbox/*/*.{wps,sbs,fms,cfg,rwps,rsbs,rfms}',GLOB_BRACE) as $file) {
+                foreach(glob($glob,GLOB_BRACE) as $file) {
                     $p = $this->my_pathinfo($file);
                     /* skip file if it is a remote file, and remote resolution doesnt fit (ie remotechecking is optional on targets without native remote lcd resolution */
                     if(($p['extension'] == 'rwps' || $p['extension'] == 'rsbs' || $p['extension'] == 'rfms') && ($target['remotelcd'] != $remotelcd))
