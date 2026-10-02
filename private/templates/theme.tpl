@@ -15,8 +15,6 @@
 
 {if $msg}<p>{$msg}</p>{/if}
 
-<p><b>Note that this theme may require the optional Rockbox font pack installed.  The latest version can always be found <a href="//www.rockbox.org/download/daily.shtml">here</a></b></p>
-
 <table class="rockbox">
   {* First print a row with theme name *}
   <tr>
@@ -87,7 +85,7 @@
     <strong>Works with release {$theme.release_version}</strong><br />
     {/if}
     {if $theme.needfontpack}
-    <strong>Requires Rockbox font pack to be installed!<br />
+    <strong>Requires Rockbox <a href="https://download.rockbox.org/daily/fonts/">font pack</a> to be installed!<br />
     {/if}
     </small> 
     </p>
