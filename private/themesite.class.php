@@ -894,11 +894,7 @@ END;
         while($target = $targets->next()){
             /* for both versions */
             foreach(array('release', 'current') as $version) {
-                if ($version == 'release') {
-                    $glob = '.rockbox/*/*.{wps,sbs,fms,rwps,rsbs,rfms}';
-                } else {
-                    $glob = '.rockbox/*/*.{wps,sbs,fms,cfg,rwps,rsbs,rfms}';
-                }
+                $glob = '.rockbox/*/*.{wps,sbs,fms,cfg,rwps,rsbs,rfms}';
 
                 /* for every skin file in the theme */
                 foreach(glob($glob,GLOB_BRACE) as $file) {
@@ -921,6 +917,9 @@ END;
                             $version);
                         $result['version'] = trim(file_get_contents($vfn));
                     }
+                    /* 4.0 and older checkwps can't validate cfg files */
+                    if ($version == 'release' && $result['version'] < 4.0 && $p['extension'] == 'cfg')
+                        continue;
                     /* run checkwps */
                     $checkwps = sprintf('%s/checkwps/%s/checkwps.%s',
                         preconfig::privpath,
