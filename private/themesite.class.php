@@ -892,7 +892,7 @@ END;
                      continue;
                  }
                 /* for every skin file in the theme */
-                foreach(glob('.rockbox/wps/*{wps,sbs,fms}',GLOB_BRACE) as $file) {
+                foreach(glob('.rockbox/*/*.{wps,sbs,fms,cfg,rwps,rsbs,rfms}',GLOB_BRACE) as $file) {
                     $p = $this->my_pathinfo($file);
                     /* skip file if it is a remote file, and remote resolution doesnt fit (ie remotechecking is optional on targets without native remote lcd resolution */
                     if(($p['extension'] == 'rwps' || $p['extension'] == 'rsbs' || $p['extension'] == 'rfms') && ($target['remotelcd'] != $remotelcd))
