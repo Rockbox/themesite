@@ -24,9 +24,9 @@
 <form method="POST" action="{$smarty.server.SCRIPT_NAME}?target={$smarty.request.target}">
 {else}
 <form method="POST" action="{$smarty.server.SCRIPT_NAME}?allthemes">
-{/if}        
+{/if}
         <input type="hidden" name="order" value="yes" />
-        Ordered by: {html_options name=orderby options=$sortings selected=$smarty.request.orderby} 
+        Ordered by: {html_options name=orderby options=$sortings selected=$smarty.request.orderby}
         {html_options name=direction options=$directions selected=$smarty.request.direction}
         <input type="submit" value="Go" />
 </form>
@@ -51,7 +51,7 @@
     {if $target}{assign var="url" value="index.php?themeid=`$themes[td].id`&amp;target=`$smarty.request.target`"}
     {else} {assign var="url" value="index.php?themeid=`$themes[td].id`"}
     {/if}
-    {html_image file="`$datadir`/`$themes[td].mainlcd`/`$themes[td].shortname`/`$themes[td].sshot_wps`" href=$url 
+    {html_image file="`$datadir`/`$themes[td].mainlcd`/`$themes[td].shortname`/`$themes[td].sshot_wps`" href=$url
                         path=$path oversrc=$themes[td].sshot_menu oversrc1=$themes[td].sshot_1 oversrc2=$themes[td].sshot_2 oversrc3=$themes[td].sshot_3
                         alt="Theme details" title="Theme details"}<br />
     <small><a href="download.php?themeid={$themes[td].id}">Download</a> Size: {$themes[td].size|siprefix}B </small>
@@ -65,7 +65,7 @@
         {else}
             <img src="empty.png" style="width:15px; height:15px;" />
         {/if}
-    {/section} 
+    {/section}
     {$themes[td].numratings} vote{if $themes[td].numratings !=1}s.{/if}
     <br />
     <small>
@@ -76,14 +76,16 @@
     <strong>Designed for LCD size: </strong>&nbsp;{$themes[td].mainlcd|escape:'html'}<br />
     {if $themes[td].remotelcd} <strong>Designed for remote LCD size: </strong>&nbsp;{$themes[td].remotelcd|escape:'html'}<br /> {/if}
     {/if}
-    <strong>Description:</strong><br />  
+    <strong>Description:</strong><br />
     &nbsp;{$themes[td].description|escape:'html'}<br />
-    {if $themes[td].current_pass}
+    {if $themes[td].current_pass > 0}
     <strong>Works with <span class="build_info" title="{$themes[td].current_version}">current dev build</span></strong><br />
-    {else}
+    {elseif $themes[td].current_pass == 0 }
     <strong class="broken_build">Doesn't work with <span class="build_info" title="{$themes[td].current_version} - {$themes[td].checkwps_output}">current build</span></strong><br />
+    {else}
+    <strong>Select specific target device for validation checks</strong><br />
     {/if}
-    {if $themes[td].release_pass}
+    {if $themes[td].release_pass > 0}
     <strong>Works with release {$themes[td].release_version}</strong><br />
     {/if}
     {if $themes[td].needfontpack}
@@ -103,11 +105,11 @@
 <h2>Upload your own theme</h2> <p>Have you made a theme that is not listed
 here? Please read <a
 href="//www.rockbox.org/wiki/ThemeGuidelines">the theme
-guidelines</a> and then 
+guidelines</a> and then
 {if $target}
 <a href="upload.php?target={$smarty.request.target}">
 {else}
 <a href="upload.php">
 {/if}
-upload your theme</a>.</p> 
+upload your theme</a>.</p>
 {include file="footer.tpl"}

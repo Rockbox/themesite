@@ -44,7 +44,7 @@
         {else}
             <img src="empty.png" style="width:15px; height:15px;" />
         {/if}
-    {/section} 
+    {/section}
     {$theme.numratings} vote{if $theme.numratings !=1}s.{/if} </p>
     <form method="POST" action="{$smarty.server.SCRIPT_NAME}?themeid={$theme.id}{if $target}&amp;target={$smarty.request.target}{/if}">
         <input type="hidden" name="ratetheme" value={$theme.id} />
@@ -72,22 +72,24 @@
     <strong>Downloaded {$theme.downloadcnt|escape:'html'} time{if $theme.downloadcnt != 1}s{/if}</strong><br />
     {if !$target}
     <strong>Designed for LCD size: </strong>&nbsp;{$theme.mainlcd|escape:'html'}<br />
+    {/if}
     {if $theme.remotelcd} <strong>Designed for remote LCD size: </strong>&nbsp;{$theme.remotelcd|escape:'html'}<br /> {/if}
-    {/if}
-    <strong>Description:</strong><br />  
+    <strong>Description:</strong><br />
     &nbsp;{$theme.description|escape:'html'}<br />
-    {if $theme.current_pass}
+    {if $theme.current_pass > 0}
     <strong>Works with <span class="build_info" title="{$theme.current_version}">current dev build</span></strong><br />
-    {else}
+    {elseif $theme.current_pass == 0}
     <strong class="broken_build">Doesn't work with <span class="build_info" title="{$theme.current_version} - {$theme.checkwps_output}">current build</span></strong><br />
+    {else}
+    <strong>Select specific target device for validation checks</strong><br />
     {/if}
-    {if $theme.release_pass}
+    {if $theme.release_pass > 0}
     <strong>Works with release {$theme.release_version}</strong><br />
     {/if}
     {if $theme.needfontpack}
     <strong>Requires Rockbox <a href="https://download.rockbox.org/daily/fonts/">font pack</a> to be installed!<br />
     {/if}
-    </small> 
+    </small>
     </p>
     </td>
     <tr>
@@ -121,7 +123,7 @@
                 height="300" width="500" frameborder="0"></iframe><br>
             <textarea name="recaptcha_challenge_field" rows="3" cols="40">
             </textarea>
-            <input type="hidden" name="recaptcha_response_field" 
+            <input type="hidden" name="recaptcha_response_field"
                 value="manual_challenge">
         </noscript>
         <input type="submit" value="Report" />

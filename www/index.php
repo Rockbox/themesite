@@ -29,7 +29,7 @@ if (isset($_REQUEST['ratetheme'])) {
 }
 
 if (isset($_REQUEST['reporttheme'])) {
-    /* check if there is a text */ 
+    /* check if there is a text */
     if($_REQUEST['reason'] != "") {
         /* check captcha */
         $resp = recaptcha_check_answer (config::recaptchakey_priv,
@@ -39,7 +39,7 @@ if (isset($_REQUEST['reporttheme'])) {
 
         if ($resp->is_valid) {
             $site->changestatus($_REQUEST['reporttheme'], 2, 1, $_REQUEST['reason']);
-            $t->assign('msg',"Theme successfully reported.");  
+            $t->assign('msg',"Theme successfully reported.");
         }
         else   {
             $t->assign('msg',"Captcha failed ! Are you a bot ?");
@@ -62,7 +62,10 @@ if (isset($_REQUEST['target'])) {
 /* show more details about a theme */
 if (isset($_REQUEST['themeid'])) {
     if (isset($_REQUEST['target'])) {
-        $t->assign('target', $site->target2fullname($_REQUEST['target']));
+        $target = $_REQUEST['target'];
+        $t->assign('target', $site->target2fullname($target));
+    } else {
+        $target = false;
     }
     // get the newest theme that is approved or the current theme
     $newest = $site->getNewestChildTheme($_REQUEST['themeid']);
@@ -73,7 +76,7 @@ if (isset($_REQUEST['themeid'])) {
         header('Location: ?' . $target . 'themeid=' . $newest);
         exit;
     }
-    $t->assign('theme',$site->themedetails($_REQUEST['themeid'],true,true));
+    $t->assign('theme',$site->themedetails($_REQUEST['themeid'],true,true,$target));
     $template = 'theme.tpl';
 }
 /* Show all themes for a specific target */

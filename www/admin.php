@@ -83,7 +83,7 @@ else {
         }
         $approved = isset($_REQUEST['approved']) ? $_REQUEST['approved'] : 'any';
         $template = 'adminlist.tpl';
-        $themes = $site->listthemes(false, 'timestamp DESC',$approved, $onlyverified = false);
+        $themes = $site->listthemes(false, 'timestamp DESC', $approved, $onlyverified = false);
         $t->assign('themes', $themes);
         $t->assign('approved', $approved);
     }
@@ -101,7 +101,13 @@ else {
                 $_REQUEST['description']
             );
         }
-        $theme = $site->themedetails($_REQUEST['edittheme']);
+        if (isset($_REQUEST['target'])) {
+           $target = $_REQUTEST['target'];
+        } else {
+           $target = false;
+        }
+
+        $theme = $site->themedetails($_REQUEST['edittheme'], false, false, $target);
         $targets = array();
         foreach($site->listtargets() as $target) {
             $targets[$target['shortname']] = $target['fullname'];

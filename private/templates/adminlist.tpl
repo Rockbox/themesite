@@ -8,7 +8,7 @@
 
 <h1>{$self|capitalize}</h1>
 {include file="breadcrumbs.tpl"}
-{if $target}   
+{if $target}
    <a href="{$smarty.server.SCRIPT_NAME}?target={$smarty.request.target}&amp;approved=any">Show{if $approved=="any"}ing{/if} all</a>
  | <a href="{$smarty.server.SCRIPT_NAME}?target={$smarty.request.target}&amp;approved=approved">Show{if $approved=="approved"}ing{/if} approved</a>
  | <a href="{$smarty.server.SCRIPT_NAME}?target={$smarty.request.target}&amp;approved=hidden">Show{if $approved=="hidden"}ing{/if} hidden</a>
@@ -41,7 +41,7 @@
     {assign var='id' value=$themes[i].id}
     <tr>
         {assign var="path" value="`$datadir`/`$themes[i].mainlcd`/`$themes[i].shortname`/"}
-        <td>{html_image file="`$datadir`/`$themes[i].mainlcd`/`$themes[i].shortname`/`$themes[i].sshot_wps`" href="download.php?themeid=`$themes[i].id`" 
+        <td>{html_image file="`$datadir`/`$themes[i].mainlcd`/`$themes[i].shortname`/`$themes[i].sshot_wps`" href="download.php?themeid=`$themes[i].id`"
             path=$path oversrc=$themes[i].sshot_menu oversrc1=$themes[i].sshot_1 oversrc2=$themes[i].sshot_2 oversrc3=$themes[i].sshot_3 alt="Download" title="Download"}</td>
         <td>
             <strong>#{$themes[i].id}: {$themes[i].name}</strong>
@@ -57,12 +57,14 @@
             {if $themes[i].remotelcd} <strong>Designed for remote LCD size: </strong>&nbsp;{$themes[i].remotelcd|escape:'html'}<br /> {/if}
             {/if}
             {$themes[i].description|escape:'html'}<br />
-            {if $themes[i].current_pass}
+            {if $themes[i].current_pass > 0}
             <br /><strong>Works with <span title="{$themes[i].current_version}">current build</span></strong>
-            {else}
+            {elseif $themes[i].current_pass == 0}
             <strong class="broken_build">Doesn't work with <span class="build_info" title="{$themes[i].current_version} - {$themes[i].checkwps_output}">current build</span></strong><br />
+            {else}
+            <strong>Select specific target device for validation checks</strong><br />s
             {/if}
-            {if $themes[i].release_pass}
+            {if $themes[i].release_pass > 0}
             <br /><strong>Works with release {$themes[i].release_version}</strong>
             {/if}
             <br /><a href="admin.php?edittheme={$themes[i].id}&amp;{if $target}parenttarget={$smarty.request.target}{/if}">Edit theme</a>
@@ -76,10 +78,10 @@
 
             <label for="reported[{$id}]">Reported</label>
             <input type="radio" id="reported[{$id}]" name="status[{$id}]" value="2" {if $themes[i].approved == 2}checked="checked" {/if}/><br />
-            
+
             <label for="hidden[{$id}]">Hidden</label>
             <input type="radio" id="hidden[{$id}]" name="status[{$id}]" value="0" {if $themes[i].approved == 0 && $themes[i].reason != "Theme was replaced by newer version."}checked="checked" {/if}/><br />
-            
+
             <label for="delete[{$id}]">Delete</label>
             <input type="radio" id="delete[{$id}]" name="status[{$id}]" value="-1" {if $themes[i].approved == 0 && $themes[i].reason == "Theme was replaced by newer version."}checked="checked" {/if} />
         </td>
@@ -94,4 +96,3 @@
 </form>
 {/if}
 {include file="footer.tpl"}
-

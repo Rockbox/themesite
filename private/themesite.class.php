@@ -9,6 +9,7 @@
  * $Id$
  *
  * Copyright (C) 2009 Jonas Häggqvist
+ * Copyright (C) 2020-2026 Solomon Peachy
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -205,28 +206,44 @@ class themesite {
         return $files;
     }
 
-    public function themedetails($id, $onlyapproved = false, $onlyverified = false) {
+    public function themedetails($id, $onlyapproved = false, $onlyverified = false, $target = false) {
         $verified = $onlyverified ? ' AND emailverification=1 ' : '';
         $approved = $onlyapproved ? ' AND approved >= 1 ' : '';
-        $sql = sprintf('
-            SELECT
-            name, author, timestamp, mainlcd, approved, reason, description, shortname, zipfile, sshot_wps, sshot_menu, sshot_1, sshot_2,sshot_3,
-            email, downloadcnt, ratings, numratings, filesize as size,
-            emailverification = 1 as verified,
-            themes.themeid as id,
-            c.version_number AS current_version,
-            c.pass AS current_pass,
-            r.version_number as release_version,
-            r.pass as release_pass,
-            c.output as checkwps_output
-            FROM themes
-            LEFT OUTER JOIN checkwps c ON (themes.themeid=c.themeid and c.version_type="current")
-            LEFT OUTER JOIN checkwps r ON (themes.themeid=r.themeid and r.version_type="release")
-            WHERE themes.themeid=:id %s %s',
-            $verified,
-            $approved
-        );
-        $args = array(':id' => $id);
+        if ($target === false) {
+            $sql = sprintf('
+             SELECT name, author, timestamp, mainlcd, approved, reason, description,
+		shortname, zipfile, sshot_wps, sshot_menu, sshot_1, sshot_2,sshot_3,
+                email, downloadcnt, ratings, numratings, filesize as size,
+                emailverification = 1 as verified,
+                t.themeid as id,
+                "unknown" AS current_version,
+                -1 AS current_pass,
+                "unknown" as release_version,
+                -1 release_pass,
+                "" as checkwps_output
+             FROM themes t
+             WHERE t.themeid=:id %s %s',
+            $verified, $approved);
+            $args = array(':id' => $id);
+        } else {
+            $sql = sprintf('
+             SELECT name, author, timestamp, mainlcd, approved, reason, description,
+		shortname, zipfile, sshot_wps, sshot_menu, sshot_1, sshot_2,sshot_3,
+                email, downloadcnt, ratings, numratings, filesize as size,
+                emailverification = 1 as verified,
+                t.themeid as id,
+                c.version_number AS current_version,
+                c.pass AS current_pass,
+                r.version_number as release_version,
+                r.pass as release_pass,
+                c.output as checkwps_output
+             FROM themes t
+             LEFT OUTER JOIN checkwps c ON (t.themeid=c.themeid and c.version_type="current" and c.target=:ctarget)
+             LEFT OUTER JOIN checkwps r ON (t.themeid=r.themeid and r.version_type="release" and r.target=:rtarget)
+             WHERE t.themeid=:id %s %s',
+            $verified, $approved); // XXX FIXME to be less clunky
+            $args = array(':id' => $id, ':ctarget' => $target, ':rtarget' => $target);
+        }
         $theme = $this->db->query($sql, $args)->next();
         $theme['needfontpack'] = strstr($theme['checkwps_output'], "requires rockbox font bundle") === false ? false : true;
         $fileresult = $this->db->query('SELECT filename FROM zipcontents WHERE themeid=:id', array(':id' => $theme['id']));
@@ -315,23 +332,22 @@ class themesite {
             $orderby = 'ratings/numratings ' . $orderby[count($orderby) - 1] . ', numratings ' . $orderby[count($orderby) - 1];
         }
         if ($target === false) {
-            $sql = sprintf('SELECT themes.name AS name, author, timestamp, mainlcd, approved, reason, description, shortname,
-                            zipfile, sshot_wps, sshot_menu,sshot_1,sshot_2,sshot_3,downloadcnt, ratings, numratings, filesize as size,
-                            emailverification = 1 as verified, themes.themeid as id,
-                            c.version_number AS current_version,
-                            c.pass AS current_pass,
-                            r.version_number as release_version,
-                            r.pass as release_pass,
-                            c.output as checkwps_output
+            /* CheckWPS is irrelevant when there is no target */
+            $sql = sprintf('SELECT name, author, timestamp, mainlcd, approved, reason, description, shortname,
+                            zipfile, sshot_wps, sshot_menu, sshot_1, sshot_2, sshot_3, downloadcnt, ratings,
+			    numratings, filesize as size,
+                            emailverification = 1 as verified, themeid as id,
+                            "unknown" as current_version,
+                            -1 as current_pass,
+                            "unknown" as release_version,
+                            -1 as release_pass,
+                            "" as checkwps_output
                             FROM themes
-                            LEFT OUTER JOIN checkwps c ON (themes.themeid=c.themeid and c.version_type="current")
-                            LEFT OUTER JOIN checkwps r ON (themes.themeid=r.themeid and r.version_type="release")
-                            WHERE 1 %s %s %s GROUP BY name, mainlcd ORDER BY %s',
-                        $checkwps_clause,
+                            WHERE 1 %s %s GROUP BY name, mainlcd ORDER BY %s',
                         $verified,
                         $approved_clause,
                         db::quote($orderby)
-                    );
+                    ); // XXX Fixme to only show themes that have _any_ checkwps pass?
             $args= array();
         } else {
             $sql = sprintf('SELECT name, author, timestamp, mainlcd, approved, reason, description, shortname,
