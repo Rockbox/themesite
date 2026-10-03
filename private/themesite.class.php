@@ -95,12 +95,18 @@ class themesite {
     }
 
     /*
-     * Run checkwps on all our themes
+     * Run checkwps on a single theme, or all themes if $id = 0
      */
-    public function checkallthemes($id = 0, $release = 0) {
+    public function checktheme($id = 0) {
         $this->log('Running checkwps');
-        $sql = 'SELECT * FROM themes WHERE themeid=:id OR (:wmtf AND approved > 0)';
-        $args = array(':id' => $id, ':wmtf' => $id === 0 ? 1 : 0);
+	if ($id === 0) {
+            $sql = 'SELECT * FROM themes WHERE approved > 0';
+            $args = array();
+        } else {
+            $sql = 'SELECT * FROM themes WHERE themeid=:id';
+            $args = array(':id' => $id);
+        }
+
         $themes = $this->db->query($sql, $args);
         $return = array();
         while ($theme = $themes->next()) {
@@ -111,13 +117,12 @@ class themesite {
                 $theme['shortname'],
                 $theme['zipfile']
             );
-            $result = $this->checkwps($zipfile, $theme['mainlcd'], $theme['remotelcd'], $release);
+            $result = $this->checkwps($zipfile, $theme['mainlcd'], $theme['remotelcd']);
 
             /*
              * Store the results and check if at least one check passed (for
              * the summary)
              */
-            $this->db->query('DELETE FROM checkwps WHERE themeid=:id', array(':id' => $theme['themeid']));
             $passany = false;
             foreach($result as $version_type => $targets) {
                 foreach($targets as $target => $result2) {
@@ -136,6 +141,7 @@ class themesite {
                         ':pass' => $result2['pass'] ? 1 : 0,
                         ':output' => implode(' ',$result2['output'])
                     );
+                    $this->db->query('DELETE FROM checkwps WHERE themeid=:id and version_type=:type', array(':id' => $theme['themeid'], ':type' => $version_type));
                     $this->db->query($sql, $args);
                 }
             }
@@ -632,7 +638,7 @@ END;
         return $res->rowsaffected();
     }
 
-    public function addtheme($name, $shortname, $author, $email, $mainlcd, $remotelcd, $description, $zipfile, $sshot_wps, $sshot_menu,$sshot_1,$sshot_2,$sshot_3) {
+    public function addtheme($name, $shortname, $author, $email, $mainlcd, $remotelcd, $description, $zipfile, $sshot_wps, $sshot_menu, $sshot_1, $sshot_2, $sshot_3) {
         $err = array();
         /* return array("Skipping upload"); */
 
@@ -705,7 +711,7 @@ END;
         );
         $result = $this->db->query($sql, $args);
         $id = $result->insertid();
-        $this->checkallthemes($id, 1);  // We want to check it against stable!
+        $this->checktheme($id);
         $this->log(sprintf("Added theme %d (email: %s)", $id, $email));
         return $id;
     }
@@ -863,7 +869,7 @@ END;
     /*
      * Check a WPS against two revisions: current and the latest release
      */
-    public function checkwps($zipfile, $mainlcd, $remotelcd, $release = 0) {
+    public function checkwps($zipfile, $mainlcd, $remotelcd) {
         $return = array();
 
         /* First, create a temporary dir */
@@ -888,9 +894,6 @@ END;
         while($target = $targets->next()){
             /* for both versions */
             foreach(array('release', 'current') as $version) {
-                if ($release == 0 && $version == 'release') {
-                     continue;
-                }
                 if ($version == 'release') {
                     $glob = '.rockbox/*/*.{wps,sbs,fms,rwps,rsbs,rfms}';
                 } else {
