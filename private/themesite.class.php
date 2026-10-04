@@ -582,16 +582,15 @@ END;
     public function edittarget($id, $shortname, $fullname, $mainlcd, $pic, $depth, $remotelcd = false) {
         $this->log(sprintf('Edit target %s', $fullname));
 
-        $sql = 'UPDATE targets SET shortname=:sn, fullname=:fn, mainlcd=:mainlcd,
-                pic=:pic, depth=:depth, remotelcd=:remotelcd WHERE themeid=:id';
+        $sql = 'UPDATE targets SET fullname=:fn, mainlcd=:mainlcd,
+                pic=:pic, depth=:depth, remotelcd=:remotelcd WHERE shortname=:sn';
         $args = array(
             ':sn' => $shortname,
             ':fn' => $fullname,
             ':mainlcd' => $mainlcd,
             ':pic' => $pic,
             ':depth' => $depth,
-            ':remotelcd' => $remotelcd === false ? 'NULL' : $remotelcd,
-            ':id' => $id
+            ':remotelcd' => $remotelcd === false ? 'NULL' : $remotelcd
         );
         $this->db->query($sql, $args);
     }
