@@ -142,7 +142,7 @@ class themesite {
                         ':pass' => $result2['pass'] ? 1 : 0,
                         ':output' => implode(' ',$result2['output'])
                     );
-                    $this->db->query('DELETE FROM checkwps WHERE themeid=:id and version_type=:type', array(':id' => $theme['themeid'], ':type' => $version_type));
+                    $this->db->query('DELETE FROM checkwps WHERE themeid=:id and version_type=:type and target =:target', array(':id' => $theme['themeid'], ':type' => $version_type, ':target' => $target));
                     $this->db->query($sql, $args);
                 }
             }
