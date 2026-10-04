@@ -274,13 +274,6 @@ class themesite {
         $verified = '';
         if($admin === false)
         {
-            if ($release === false) {
-                $checkwps_clause = 'AND (c.pass = 1 OR r.pass = 1)';
-            } elseif ($release == 0) {
-                $checkwps_clause = 'AND c.pass = 1';
-            } else {
-                $checkwps_clause = 'AND r.pass = 1';
-            }
             $approved_clause = 'AND approved >= 1';
             $verified = 'AND emailverification = 1';
         }
@@ -290,21 +283,18 @@ class themesite {
                 email, downloadcnt, ratings, numratings, filesize as size,
                 emailverification = 1 as verified,
                 themes.themeid as id,
-                c.version_number AS current_version,
-                c.pass AS current_pass,
-                r.version_number as release_version,
-                r.pass as release_pass,
-                c.output as checkwps_output
+                "unknown" AS current_version,
+                -1 AS current_pass,
+                "unknown" AS release_version,
+                -1 AS release_pass,
+                "" AS checkwps_output
                 FROM themes
-                LEFT OUTER JOIN checkwps c ON (themes.themeid=c.themeid and c.version_type="current")
-                LEFT OUTER JOIN checkwps r ON (themes.themeid=r.themeid and r.version_type="release")
-                WHERE 1 %s %s %s AND %s LIKE "%%%s%%" GROUP BY name, mainlcd',
+                WHERE 1 %s %s AND %s LIKE "%%%s%%" GROUP BY name, mainlcd',
                 $verified,
                 $approved_clause,
-                $checkwps_clause,
                 db::quote($searchrow),
                 db::quote($needle)
-        );
+        ); // XXX Fixme to only show themes that have _any_ checkwps pass?
         $themes = $this->db->query($sql);
         /* create additional data */
         while ($theme = $themes->next()) {
