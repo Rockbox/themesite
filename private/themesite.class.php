@@ -902,7 +902,7 @@ END;
          * all applicable targets
          */
         /* get list of targets to check */
-        $targets = lcd2targets($mainlcd);
+        $targets = $this->lcd2targets($mainlcd);
         /* for every target */
         while($target = $targets->next()){
             /* for both versions */
@@ -917,6 +917,8 @@ END;
                         continue;
 
                     $result = array();
+                    $output = array();
+
                     /* Read in version info */
                     $vfn = sprintf('%s/checkwps/%s/VERSION.%s',
                         preconfig::privpath,
