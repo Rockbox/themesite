@@ -213,14 +213,14 @@ class themesite {
             $sql = sprintf('
              SELECT name, author, timestamp, mainlcd, approved, reason, description,
 		shortname, zipfile, sshot_wps, sshot_menu, sshot_1, sshot_2,sshot_3,
-                email, downloadcnt, ratings, numratings, filesize as size,
-                emailverification = 1 as verified,
-                t.themeid as id,
+                email, downloadcnt, ratings, numratings, filesize AS size,
+                emailverification = 1 AS verified,
+                t.themeid AS id,
                 "unknown" AS current_version,
                 -1 AS current_pass,
-                "unknown" as release_version,
-                -1 release_pass,
-                "" as checkwps_output
+                "unknown" AS release_version,
+                -1 AS release_pass,
+                "" AS checkwps_output
              FROM themes t
              WHERE t.themeid=:id %s %s',
             $verified, $approved);
@@ -229,14 +229,14 @@ class themesite {
             $sql = sprintf('
              SELECT name, author, timestamp, mainlcd, approved, reason, description,
 		shortname, zipfile, sshot_wps, sshot_menu, sshot_1, sshot_2,sshot_3,
-                email, downloadcnt, ratings, numratings, filesize as size,
+                email, downloadcnt, ratings, numratings, filesize AS size,
                 emailverification = 1 as verified,
-                t.themeid as id,
+                t.themeid AS id,
                 c.version_number AS current_version,
                 c.pass AS current_pass,
-                r.version_number as release_version,
-                r.pass as release_pass,
-                c.output as checkwps_output
+                r.version_number AS release_version,
+                r.pass AS release_pass,
+                c.output AS checkwps_output
              FROM themes t
              LEFT OUTER JOIN checkwps c ON (t.themeid=c.themeid and c.version_type="current" and c.target=:ctarget)
              LEFT OUTER JOIN checkwps r ON (t.themeid=r.themeid and r.version_type="release" and r.target=:rtarget)
@@ -336,12 +336,12 @@ class themesite {
             $sql = sprintf('SELECT name, author, timestamp, mainlcd, approved, reason, description, shortname,
                             zipfile, sshot_wps, sshot_menu, sshot_1, sshot_2, sshot_3, downloadcnt, ratings,
 			    numratings, filesize as size,
-                            emailverification = 1 as verified, themeid as id,
-                            "unknown" as current_version,
-                            -1 as current_pass,
-                            "unknown" as release_version,
-                            -1 as release_pass,
-                            "" as checkwps_output
+                            emailverification = 1 AS verified, themeid AS id,
+                            "unknown" AS current_version,
+                            -1 AS current_pass,
+                            "unknown" AS release_version,
+                            -1 AS release_pass,
+                            "" AS checkwps_output
                             FROM themes
                             WHERE 1 %s %s GROUP BY name, mainlcd ORDER BY %s',
                         $verified,
