@@ -87,10 +87,20 @@
     <strong>Works with release {$theme.release_version}</strong><br />
     {/if}
     {if $theme.needfontpack}
-    <strong>Requires Rockbox <a href="https://download.rockbox.org/daily/fonts/">font pack</a> to be installed!<br />
+    <strong>Requires Rockbox <a href="https://download.rockbox.org/daily/fonts/">font pack</a> to be installed!</strong><br />
     {/if}
     </small>
     </p>
+
+    <form method="GET" action="{$smarty.server.SCRIPT_NAME}">
+        <input type="hidden" name="themeid" value={$theme.id} />
+        <select name=target>
+    {section name=tgt loop=$theme.compatible}
+             <option value='{$theme.compatible[tgt].shortname}'>{$theme.compatible[tgt].fullname}</option>
+    {/section}
+        </select>
+        <input type="submit" value="Check Compatibility" />
+    </form>
     </td>
     <tr>
         <th>Zip contents</th>

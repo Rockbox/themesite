@@ -89,7 +89,7 @@
     <strong>Works with release {$themes[td].release_version}</strong><br />
     {/if}
     {if $themes[td].needfontpack}
-    <strong>Requires Rockbox <a href="https://download.rockbox.org/daily/fonts/">font pack</a> to be installed!<br />
+    <strong>Requires Rockbox <a href="https://download.rockbox.org/daily/fonts/">font pack</a> to be installed!</strong><br />
     {/if}
     </small>
     </td>

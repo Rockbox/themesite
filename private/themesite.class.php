@@ -206,6 +206,12 @@ class themesite {
         return $files;
     }
 
+    private function lcd2targets($lcd) {
+        $sql = 'SELECT shortname, remotelcd, fullname FROM targets WHERE mainlcd=:mainlcd';
+        $args = array(':mainlcd' => $lcd);
+        return $this->db->query($sql, $args);
+    }
+
     public function themedetails($id, $onlyapproved = false, $onlyverified = false, $target = false) {
         $verified = $onlyverified ? ' AND emailverification=1 ' : '';
         $approved = $onlyapproved ? ' AND approved >= 1 ' : '';
@@ -251,6 +257,13 @@ class themesite {
         while ($file = $fileresult->next()) {$files[] = $file['filename']; }
         $theme['files'] = $files;
         if($theme['numratings'] > 0) $theme['ratings'] = $theme['ratings'] /$theme['numratings'] ;
+
+        $theme['compatible'] = array();
+        $results = $this->lcd2targets($theme['mainlcd']);
+        while ($result = $results->next()) {
+            $theme['compatible'][] = $result;
+        }
+
         return $theme;
     }
 
@@ -876,12 +889,6 @@ END;
         return '';
     }
 
-    public function lcd2targets($lcd) {
-        $sql = 'SELECT shortname, remotelcd FROM targets WHERE mainlcd=:mainlcd';
-        $args = array(':mainlcd' => $lcd);
-        return $this->db->query($sql, $args);
-    }
-
     /*
      * Check a WPS against two revisions: current and the latest release
      */
@@ -905,7 +912,7 @@ END;
          * all applicable targets
          */
         /* get list of targets to check */
-        $targets =  $this->lcd2targets($mainlcd);
+        $targets = lcd2targets($mainlcd);
         /* for every target */
         while($target = $targets->next()){
             /* for both versions */
