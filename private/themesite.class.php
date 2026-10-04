@@ -934,7 +934,7 @@ END;
                         $result['version'] = trim(file_get_contents($vfn));
                     }
                     /* 4.0 and older checkwps can't validate cfg files */
-                    if ($version == 'release' && $result['version'] < 4.0 && $p['extension'] == 'cfg')
+                    if ($version == 'release' && $result['version'] <= 4.0 && $p['extension'] == 'cfg')
                         continue;
                     /* run checkwps */
                     $checkwps = sprintf('%s/checkwps/%s/checkwps.%s',
