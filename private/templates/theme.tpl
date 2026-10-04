@@ -77,14 +77,14 @@
     <strong>Description:</strong><br />
     &nbsp;{$theme.description|escape:'html'}<br />
     {if $theme.current_pass > 0}
-    <strong>Works with <span class="build_info" title="{$theme.current_version}">current dev build</span></strong><br />
+    <strong>Works with <span class="build_info" title="{$theme.current_version}">current {$target} dev build</span></strong><br />
     {elseif $theme.current_pass == 0}
-    <strong class="broken_build">Doesn't work with <span class="build_info" title="{$theme.current_version} - {$theme.checkwps_output}">current build</span></strong><br />
+    <strong class="broken_build">Doesn't work with <span class="build_info" title="{$theme.current_version} - {$theme.checkwps_output}">current {$target} build</span></strong><br />
     {else}
     <strong>Select specific target device for validation checks</strong><br />
     {/if}
     {if $theme.release_pass > 0}
-    <strong>Works with release {$theme.release_version}</strong><br />
+    <strong>Works with {$target} release {$theme.release_version}</strong><br />
     {/if}
     {if $theme.needfontpack}
     <strong>Requires Rockbox <a href="https://download.rockbox.org/daily/fonts/">font pack</a> to be installed!</strong><br />
@@ -96,7 +96,11 @@
         <input type="hidden" name="themeid" value={$theme.id} />
         <select name=target>
     {section name=tgt loop=$theme.compatible}
+    {if $theme.compatible[tgt].shortname == $smarty.request.target}
+             <option value='{$theme.compatible[tgt].shortname}' selected='true'>{$theme.compatible[tgt].fullname}</option>
+    {else}
              <option value='{$theme.compatible[tgt].shortname}'>{$theme.compatible[tgt].fullname}</option>
+    {/if}
     {/section}
         </select>
         <input type="submit" value="Check Compatibility" />

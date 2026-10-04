@@ -58,14 +58,14 @@
             {/if}
             {$themes[i].description|escape:'html'}<br />
             {if $themes[i].current_pass > 0}
-            <br /><strong>Works with <span title="{$themes[i].current_version}">current build</span></strong>
+            <br /><strong>Works with <span title="{$themes[i].current_version}">current {$target} build</span></strong>
             {elseif $themes[i].current_pass == 0}
-            <strong class="broken_build">Doesn't work with <span class="build_info" title="{$themes[i].current_version} - {$themes[i].checkwps_output}">current build</span></strong><br />
+            <strong class="broken_build">Doesn't work with <span class="build_info" title="{$themes[i].current_version} - {$themes[i].checkwps_output}">current {$target} build</span></strong><br />
             {else}
             <strong>Select specific target device for validation checks</strong><br />s
             {/if}
             {if $themes[i].release_pass > 0}
-            <br /><strong>Works with release {$themes[i].release_version}</strong>
+            <br /><strong>Works with {$target} release {$themes[i].release_version}</strong>
             {/if}
             <br /><a href="admin.php?edittheme={$themes[i].id}&amp;{if $target}parenttarget={$smarty.request.target}{/if}">Edit theme</a>
             <br /><a href="index.php?themeid={$themes[i].id}&amp;{if $target}target={$smarty.request.target}{/if}">Show details</a>

@@ -79,14 +79,14 @@
     <strong>Description:</strong><br />
     &nbsp;{$themes[td].description|escape:'html'}<br />
     {if $themes[td].current_pass > 0}
-    <strong>Works with <span class="build_info" title="{$themes[td].current_version}">current dev build</span></strong><br />
+    <strong>Works with <span class="build_info" title="{$themes[td].current_version}">current {$target} dev build</span></strong><br />
     {elseif $themes[td].current_pass == 0 }
-    <strong class="broken_build">Doesn't work with <span class="build_info" title="{$themes[td].current_version} - {$themes[td].checkwps_output}">current build</span></strong><br />
+    <strong class="broken_build">Doesn't work with <span class="build_info" title="{$themes[td].current_version} - {$themes[td].checkwps_output}">current {$target} build</span></strong><br />
     {else}
     <strong>Select specific target device for validation checks</strong><br />
     {/if}
     {if $themes[td].release_pass > 0}
-    <strong>Works with release {$themes[td].release_version}</strong><br />
+    <strong>Works with {$target} release {$themes[td].release_version}</strong><br />
     {/if}
     {if $themes[td].needfontpack}
     <strong>Requires Rockbox <a href="https://download.rockbox.org/daily/fonts/">font pack</a> to be installed!</strong><br />

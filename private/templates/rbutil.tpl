@@ -26,10 +26,10 @@ archive="{$root}/download.php?themeid={$themes[i].id}"
 author="{$themes[i].author|escape:'html'}"
 version="{$themes[i].timestamp}"
 about="{$themes[i].description|escape:'html'}"
-{if $themes[i].release_pass}
+{if $themes[i].release_pass > 0}
 pass_release="{$themes[i].release_version}"
 {/if}
-{if $themes[i].current_pass}
+{if $themes[i].current_pass > 0}
 pass_current="{$themes[i].current_version}"
 {/if}
 
