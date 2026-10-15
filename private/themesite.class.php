@@ -1003,6 +1003,7 @@ END;
      * - All files are inside /.rockbox
      * - All .wps, .rwps and .cfg files use the same shortname, which is also
      *   the one used for the subdir in /.rockbox/wps
+     * - Does not overwrite system files (.lng/voice/codec/rock/binary)
      *
      * It does not uncompress any of the files.
      *
