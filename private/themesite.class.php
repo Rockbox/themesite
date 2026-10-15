@@ -1108,6 +1108,22 @@ END;
                 case '.directory':
                     $err[] = sprintf('Unwanted file: %s', $filename);
             }
+
+            /* Check for attempts to overwrite system components */
+            switch(strtolower($pathinfo['extension'])) {
+                case 'lng':
+                case 'rock':
+                case 'voice':
+                case 'codec':
+                case 'ignore':
+                    $err[] = sprintf('Unwanted file: %s', $filename);
+            }
+
+            /* And finally, don't let them overwrite the main binary! */
+            switch(strtolower($pathinfo['filename'])) {
+                case 'rockbox':
+                    $err[] = sprintf('Unwanted file: %s', $filename);
+            }
         }
         $zip->close();
 
