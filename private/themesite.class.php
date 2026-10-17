@@ -906,13 +906,13 @@ END;
         while($target = $targets->next()){
             /* for both versions */
             foreach(array('release', 'current') as $version) {
-                $glob = '.rockbox/*/*.{wps,sbs,fms,cfg,rwps,rsbs,rfms}';
+                $glob = '.rockbox/*/*.{wps,sbs,fms,cfg,rwps,rsbs,rfms,wrs,rwrs}';
 
                 /* for every skin file in the theme */
                 foreach(glob($glob,GLOB_BRACE) as $file) {
                     $p = $this->my_pathinfo($file);
                     /* skip file if it is a remote file, and remote resolution doesnt fit (ie remotechecking is optional on targets without native remote lcd resolution */
-                    if(($p['extension'] == 'rwps' || $p['extension'] == 'rsbs' || $p['extension'] == 'rfms') && ($target['remotelcd'] != $remotelcd))
+                    if(($p['extension'] == 'rwps' || $p['extension'] == 'rsbs' || $p['extension'] == 'rfms' || $p['extension'] == 'rwrs') && ($target['remotelcd'] != $remotelcd))
                         continue;
 
                     $result = array();
