@@ -931,8 +931,8 @@ END;
                             $version);
                         $result['version'] = trim(file_get_contents($vfn));
                     }
-                    /* 4.0 and older checkwps can't validate cfg files */
-                    if ($version == 'release' && $result['version'] <= 4.0 && $p['extension'] == 'cfg')
+                    /* 4.0 and older checkwps can't validate cfg,wrs,rwrs files */
+                    if ($version == 'release' && $result['version'] <= 4.0 && ($p['extension'] == 'cfg' || $p['extension'] == 'wrs' || $p['extension'] == 'rwrs'))
                         continue;
                     /* run checkwps */
                     $checkwps = sprintf('%s/checkwps/%s/checkwps.%s',
@@ -1056,7 +1056,7 @@ END;
                 }
             }
 
-            /* Check that all .wps, .rwps and .cfg filenames use the same shortname */
+            /* Check that all wps/wrs/fms/sbs and .cfg filenames use the same shortname */
             switch(strtolower($pathinfo['extension'])) {
                 case 'cfg':
                     /* Save the contents for later checking */
@@ -1064,6 +1064,10 @@ END;
                     $cfgfound[] = $filename;
                 case 'sbs':
                 case 'rsbs':
+                case 'fms':
+                case 'rfms':
+                case 'wrs':
+                case 'rwrs':
                 case 'wps':
                 case 'rwps':
                     if ($shortname === '')
