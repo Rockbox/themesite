@@ -24,6 +24,12 @@ require_once(sprintf("%s/config.inc.php", preconfig::privpath));
 require_once('themesite.class.php');
 require_once('templater.class.php');
 
+use Google\Cloud\RecaptchaEnterprise\V1\Client\RecaptchaEnterpriseServiceClient;
+use Google\Cloud\RecaptchaEnterprise\V1\Event;
+use Google\Cloud\RecaptchaEnterprise\V1\Assessment;
+use Google\Cloud\RecaptchaEnterprise\V1\CreateAssessmentRequest;
+use Google\Cloud\RecaptchaEnterprise\V1\TokenProperties\InvalidReason;
+
 date_default_timezone_set('UTC');
 
 $site = new themesite(config::dbstr, config::dbuser, config::dbpass);
