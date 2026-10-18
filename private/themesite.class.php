@@ -127,12 +127,16 @@ class themesite {
             $passany = false;
             foreach($result as $version_type => $targets) {
                 foreach($targets as $target => $result2) {
-                    if ($result2['pass']) $passany = true; /* For the summary */
+                    if ($result2['pass'])
+                         $passany = true; /* For the summary */
                     /*
                      * Maybe we want to have two tables - one with historic
                      * data, and one with only the latest results for fast
                      * retrieval?
                      */
+                    $this->db->query('DELETE FROM checkwps WHERE themeid=:id and version_type=:type and target =:target',
+                                     array(':id' => $theme['themeid'], ':type' => $version_type, ':target' => $target));
+
                     $sql = 'INSERT INTO checkwps (themeid, version_type, version_number, target, pass, output) VALUES (:id, :ver_type, :ver_num, :target, :pass, :output)';
                     $args = array(
                         ':id' => $theme['themeid'],
@@ -142,7 +146,6 @@ class themesite {
                         ':pass' => $result2['pass'] ? 1 : 0,
                         ':output' => implode(' ',$result2['output'])
                     );
-                    $this->db->query('DELETE FROM checkwps WHERE themeid=:id and version_type=:type and target =:target', array(':id' => $theme['themeid'], ':type' => $version_type, ':target' => $target));
                     $this->db->query($sql, $args);
                 }
             }
@@ -908,47 +911,52 @@ END;
             foreach(array('release', 'current') as $version) {
                 $glob = '.rockbox/*/*.{wps,sbs,fms,cfg,rwps,rsbs,rfms,wrs,rwrs}';
 
-                /* for every skin file in the theme */
+                $output = array();
+                $result = array();
+                $files = array();
+
+                /* Read in version info */
+                $vfn = sprintf('%s/checkwps/%s/VERSION.%s',
+                    preconfig::privpath,
+                    $version,
+                    $target['shortname']);
+                if (file_exists($vfn)) {
+                    $result['version'] = trim(file_get_contents($vfn));
+                } else {
+                    $vfn = sprintf('%s/checkwps/%s/VERSION',
+                        preconfig::privpath,
+                        $version);
+                    $result['version'] = trim(file_get_contents($vfn));
+                }
+                $result['pass'] = 0;
+
+                /* Build a list of theme/skin files in the theme */
                 foreach(glob($glob,GLOB_BRACE) as $file) {
                     $p = $this->my_pathinfo($file);
                     /* skip file if it is a remote file, and remote resolution doesnt fit (ie remotechecking is optional on targets without native remote lcd resolution */
                     if(($p['extension'] == 'rwps' || $p['extension'] == 'rsbs' || $p['extension'] == 'rfms' || $p['extension'] == 'rwrs') && ($target['remotelcd'] != $remotelcd))
                         continue;
 
-                    $result = array();
-                    $output = array();
-
-                    /* Read in version info */
-                    $vfn = sprintf('%s/checkwps/%s/VERSION.%s',
-                        preconfig::privpath,
-                        $version,
-                        $target['shortname']);
-                    if (file_exists($vfn)) {
-                        $result['version'] = trim(file_get_contents($vfn));
-                    } else {
-                        $vfn = sprintf('%s/checkwps/%s/VERSION',
-                            preconfig::privpath,
-                            $version);
-                        $result['version'] = trim(file_get_contents($vfn));
-                    }
                     /* 4.0 and older checkwps can't validate cfg,wrs,rwrs files */
                     if ($version == 'release' && $result['version'] <= 4.0 && ($p['extension'] == 'cfg' || $p['extension'] == 'wrs' || $p['extension'] == 'rwrs'))
                         continue;
-                    /* run checkwps */
-                    $checkwps = sprintf('%s/checkwps/%s/checkwps.%s',
-                        preconfig::privpath,
-                        $version,
-                        $target['shortname']
-                    );
-                    if (file_exists($checkwps)) {
-                        exec(sprintf('%s %s', $checkwps, escapeshellarg($file)), $output, $ret);
-                        $result['pass'] = ($ret == 0);
-                        $result['output'] = $output;
-                        /* only overwrite results if there is no previous result or previous did pass */
-                        if(empty($return[$version][$target['shortname']]) || $return[$version][$target['shortname']]['pass']) {
-                            $return[$version][$target['shortname']] = $result;
-                        }
-                    }
+
+                    $files[] = escapeshellarg($file);
+                }
+
+                /* run checkwps across the full set */
+                $checkwps = sprintf('%s/checkwps/%s/checkwps.%s',
+                    preconfig::privpath,
+                    $version,
+                    $target['shortname']
+                );
+                if (file_exists($checkwps)) {
+                    $cmdline = sprintf('%s %s', $checkwps, implode(" ", $files));
+                    exec($cmdline, $output, $ret);
+                    if ($ret == 0)
+                        $result['pass'] = 1;
+                    $result['output'] = $output;
+                    $return[$version][$target['shortname']] = $result;
                 }
             }
         }
