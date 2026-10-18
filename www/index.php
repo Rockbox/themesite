@@ -32,6 +32,7 @@ if (isset($_REQUEST['reporttheme'])) {
     /* check if there is a text */
     if($_REQUEST['reason'] != "") {
         /* check captcha */
+/*
         $resp = recaptcha_check_answer (config::recaptchakey_priv,
                                 $_SERVER["REMOTE_ADDR"],
                                 $_POST["recaptcha_challenge_field"],
@@ -42,8 +43,11 @@ if (isset($_REQUEST['reporttheme'])) {
             $t->assign('msg',"Theme successfully reported.");
         }
         else   {
+*/
             $t->assign('msg',"Captcha failed ! Are you a bot ?");
+/*
         }
+*/
     }
     else {
         $t->assign('msg',"You need to provide a reason.");

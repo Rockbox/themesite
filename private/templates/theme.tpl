@@ -131,21 +131,23 @@
     If the theme does not work, please discuss the issue on the forums instead.<br/>
     If the theme causes rockbox to crash or hang, please report a bug instead.<br/>
     </div>
-    <form method="POST" action="{$smarty.server.SCRIPT_NAME}?themeid={$theme.id}{if $target}&amp;target={$smarty.request.target}{/if}">
+    <form id="abuse" method="POST" action="{$smarty.server.SCRIPT_NAME}?themeid={$theme.id}{if $target}&amp;target={$smarty.request.target}{/if}">
         <input type="hidden" name="reporttheme" value={$theme.id} />
         <textarea cols="45" rows="4" name="reason"></textarea> <br />
         <script type="text/javascript"
-            src="http://api.recaptcha.net/challenge?k={$recaptchakey}">
+            src="https://www.google.com/recaptcha/enterprise.js?render={$recaptchakey}">
         </script>
-        <noscript>
-            <iframe src="http://api.recaptcha.net/noscript?k={$recaptchakey}"
-                height="300" width="500" frameborder="0"></iframe><br>
-            <textarea name="recaptcha_challenge_field" rows="3" cols="40">
-            </textarea>
-            <input type="hidden" name="recaptcha_response_field"
-                value="manual_challenge">
-        </noscript>
-        <input type="submit" value="Report" />
+        <script>
+	  function onSubmit(token) { 
+	      document.getElementById("abuse").submit();
+	  } 
+	</script>
+        <button class="g-recaptcha"
+         data-sitekey="{$recaptchakey}"
+	 data-callback='onSubmit'
+	 data-action='submit'>
+	  Report
+	</button>
     </form>
     </td>
   </tr>

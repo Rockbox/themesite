@@ -23,7 +23,6 @@
 require_once(sprintf("%s/config.inc.php", preconfig::privpath));
 require_once('themesite.class.php');
 require_once('templater.class.php');
-require_once('recaptchalib.php');
 
 date_default_timezone_set('UTC');
 
