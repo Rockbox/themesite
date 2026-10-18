@@ -229,7 +229,8 @@ class themesite {
                 -1 AS current_pass,
                 "unknown" AS release_version,
                 -1 AS release_pass,
-                "" AS checkwps_output
+                "" AS checkwps_output,
+                "" AS rcheckwps_output
              FROM themes t
              WHERE t.themeid=:id %s %s',
             $verified, $approved);
@@ -245,7 +246,8 @@ class themesite {
                 c.pass AS current_pass,
                 r.version_number AS release_version,
                 r.pass AS release_pass,
-                c.output AS checkwps_output
+                c.output AS checkwps_output,
+                r.output AS rcheckwps_output
              FROM themes t
              LEFT OUTER JOIN checkwps c ON (t.themeid=c.themeid and c.version_type="current" and c.target=:ctarget)
              LEFT OUTER JOIN checkwps r ON (t.themeid=r.themeid and r.version_type="release" and r.target=:rtarget)
@@ -290,7 +292,8 @@ class themesite {
                 -1 AS current_pass,
                 "unknown" AS release_version,
                 -1 AS release_pass,
-                "" AS checkwps_output
+                "" AS checkwps_output,
+                "" AS rcheckwps_output
                 FROM themes
                 WHERE 1 %s %s AND %s LIKE "%%%s%%" GROUP BY name, mainlcd',
                 $verified,
@@ -347,7 +350,8 @@ class themesite {
                             -1 AS current_pass,
                             "unknown" AS release_version,
                             -1 AS release_pass,
-                            "" AS checkwps_output
+                            "" AS checkwps_output,
+                            "" AS rcheckwps_output
                             FROM themes
                             WHERE 1 %s %s GROUP BY name, mainlcd ORDER BY %s',
                         $verified,
@@ -365,7 +369,8 @@ class themesite {
                 c.pass AS current_pass,
                 r.version_number as release_version,
                 r.pass as release_pass,
-                c.output as checkwps_output
+                c.output as checkwps_output,
+                r.output as rcheckwps_output
                 FROM themes
                 LEFT OUTER JOIN checkwps c ON (themes.themeid=c.themeid and c.version_type="current" and c.target=:ctarget)
                 LEFT OUTER JOIN checkwps r ON (themes.themeid=r.themeid and r.version_type="release" and r.target=:rtarget)
@@ -413,7 +418,8 @@ class themesite {
             c.pass AS current_pass,
             r.version_number as release_version,
             r.pass as release_pass,
-            c.output as checkwps_output
+            c.output as checkwps_output,
+            r.output as rcheckwps_output
             FROM themes
             LEFT OUTER JOIN checkwps c ON (themes.themeid=c.themeid and c.version_type="current")
             LEFT OUTER JOIN checkwps r ON (themes.themeid=r.themeid and r.version_type="release")

@@ -87,6 +87,8 @@
     {/if}
     {if $themes[td].release_pass > 0}
     <strong>Works with {$target} release {$themes[td].release_version}</strong><br />
+    {elseif $themes[td].release_pass == 0}
+    <strong class="broken_build">Doesn't work with <span class="build_info" title="{$theme.release_version} - {$theme.rcheckwps_output}">release {$theme.release_version} {$target} build</span></strong><br />
     {/if}
     {if $themes[td].needfontpack}
     <strong>Requires Rockbox <a href="https://download.rockbox.org/daily/fonts/">font pack</a> to be installed!</strong><br />
