@@ -364,16 +364,16 @@ class themesite {
                 zipfile, sshot_wps, sshot_menu, sshot_1, sshot_2, sshot_3,
                 email, downloadcnt, ratings, numratings, filesize as size,
                 emailverification = 1 as verified,
-                themes.themeid as id,
+                t.themeid as id,
                 c.version_number AS current_version,
                 c.pass AS current_pass,
                 r.version_number as release_version,
                 r.pass as release_pass,
                 c.output as checkwps_output,
                 r.output as rcheckwps_output
-                FROM themes
-                LEFT OUTER JOIN checkwps c ON (themes.themeid=c.themeid and c.version_type="current" and c.target=:ctarget)
-                LEFT OUTER JOIN checkwps r ON (themes.themeid=r.themeid and r.version_type="release" and r.target=:rtarget)
+                FROM themes t
+                LEFT OUTER JOIN checkwps c ON (t.themeid=c.themeid and c.version_type="current" and c.target=:ctarget)
+                LEFT OUTER JOIN checkwps r ON (t.themeid=r.themeid and r.version_type="release" and r.target=:rtarget)
                 WHERE 1 %s %s %s GROUP BY name ORDER BY %s',
                 $verified,
                 $approved_clause,
