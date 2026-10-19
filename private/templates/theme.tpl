@@ -88,6 +88,9 @@
     {elseif $theme.release_pass === 0}
     <strong class="broken_build">Doesn't work with <span class="build_info" title="{$theme.release_version} - {$theme.rcheckwps_output}">release {$theme.release_version} {$target} build</span></strong><br />
     {/if}
+    {if $theme.current_pass == 0 && $theme.release_pass == 1}
+    <strong>Please note that this theme is most likely broken on release {$theme.release_version} as well.  Validation is much more comprehensive now.</strong>
+    {/if}
     {if $theme.needfontpack}
     <strong>Requires Rockbox <a href="https://download.rockbox.org/daily/fonts/">font pack</a> to be installed!</strong><br />
     {/if}
