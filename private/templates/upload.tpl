@@ -168,8 +168,8 @@ This is very unlikely to be your fault.
     </tr>
     <tr>
         <td colspan="2">
-            <img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/3.0/88x31.png" />
-            <a rel="license" href="https://creativecommons.org/licenses/by-sa/3.0/"> Creative Commons Attribution-Share Alike 3.0 Unported License</a>
+            <img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" />
+            <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/"> Creative Commons Attribution-Share Alike 4.0 Unported License</a>
         </td>
     </tr>
     <tr>
