@@ -120,6 +120,12 @@ class themesite {
             );
             $result = $this->checkwps($zipfile, $theme['mainlcd'], $theme['remotelcd']);
 
+            $err = $site->validatezip($zipfile, basename($zipfile), filesize($zipfile));
+            if (count($err) > 0) {
+                $result['pass'] = 0;
+                $result2['output'] = array_merge($result2['output'], $err);
+            }
+
             /*
              * Store the results and check if at least one check passed (for
              * the summary)
