@@ -519,12 +519,8 @@ class themesite {
                     $theme['mainlcd'],
                     $theme['shortname']
                 );
-                if (file_exists($dir)) {
-                    foreach(glob(sprintf('%s/*', $dir)) as $file) {
-                        unlink($file);
-                    }
-                    rmdir($dir);
-                }
+                if (file_exists($dir))
+                    $this->rmdir_recursive($dir);
             }
         } else {
             $sql = 'UPDATE themes SET approved=:approved, reason=:reason WHERE themeid=:id';
