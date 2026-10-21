@@ -88,7 +88,7 @@ function checkuploadfiles(&$site, &$err) {
         switch($name) {
             case 'themefile':
                 /* check zip content */
-                $result = $site->validatezip($values);
+                $result = $site->validatezip($values['tmp_name'], $values['name'], $values['size']);
                 if (count($result) > 0) break;
                 /* check the theme files */
                 $test = $site->checkwps($values['tmp_name'], $lcd['mainlcd'], $lcd['remotelcd']);

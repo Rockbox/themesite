@@ -1020,10 +1020,10 @@ END;
      * We continue checking for errors, rather than aborting, so the uploader
      * gets a full list of things we didn't like.
      */
-    public function validatezip($themezipupload) {
+    public function validatezip($file, $realname, $zipsize) {
         $err = array();
         $zip = new ZipArchive;
-        $res = $zip->open($themezipupload['tmp_name']);
+        $res = $zip->open($file);
         $totalsize = 0;
         $files = array();
         $wpsfound = array();
@@ -1035,7 +1035,7 @@ END;
         $cfg = '';
 
         if ($res === false) {
-            $err[] = sprintf("'Couldn't open zipfile %s", $themezipupload['name']);
+            $err[] = sprintf("'Couldn't open zipfile %s", $realname);
             return $err;
         }
         for ($i = 0 ; $i < $zip->count() ; $i++) {
@@ -1146,8 +1146,8 @@ END;
         $error = $this->validatecfg($cfg, $files);
         if($error != '')
             $err[] = $error;
-        if ($themezipupload['size'] > config::maxzippedsize)
-            $err[] = sprintf("Theme zip too large at %s (max size is %s)", $themezipupload['size'], config::maxzippedsize);
+        if ($zipsize > config::maxzippedsize)
+            $err[] = sprintf("Theme zip too large at %s (max size is %s)", $zipsize, config::maxzippedsize);
         if ($totalsize > config::maxthemesize)
             $err[] = sprintf("Unzipped theme size too large at %s (max size is %s)", $totalsize, config::maxthemesize);
         if (count($files) > config::maxfiles)
