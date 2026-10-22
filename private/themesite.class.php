@@ -1132,17 +1132,23 @@ END;
                 case 'thumbs.db':
                 case 'desktop.ini':
                 case '.ds_store':
+                case '__macosx':
                 case '.directory':
                     $err[] = sprintf('Unwanted file: %s', $filename);
             }
 
             /* Check for attempts to overwrite system components */
             switch(strtolower($pathinfo['extension'])) {
+                case 'lua':
                 case 'lng':
+                case 'talk':
                 case 'rock':
+                case 'ovl':
+                case 'elf':
                 case 'voice':
                 case 'codec':
                 case 'ignore':
+                case 'zip':
                     $err[] = sprintf('Unwanted file: %s', $filename);
             }
 
