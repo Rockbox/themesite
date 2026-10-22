@@ -89,6 +89,9 @@ function checkuploadfiles(&$site, &$err) {
             case 'themefile':
                 /* check zip content */
                 $result = $site->validatezip($values['tmp_name'], $values['name'], $values['size']);
+                if (strtolower($values['name']) == '.rockbox.zip' || strtolower($values['name']) == 'rockbox.zip') {
+                    $result[] = "Please rename the archive file to something less generic";
+                }
                 if (count($result) > 0) break;
                 /* check the theme files */
                 $test = $site->checkwps($values['tmp_name'], $lcd['mainlcd'], $lcd['remotelcd']);
