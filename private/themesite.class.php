@@ -842,7 +842,7 @@ END;
                              * write theme settings feature in rb */
                             $fname = preg_replace('/\.fnt\s*$/','',$value_info['filename']);
                             if ((preg_match('/\.fnt\s*$/', $value) && $this->isfontpackfont($fname)) ||
-                                (preg_match('/\.bmp\s*$/', $value) && $this->isrockbboxicon($fname)) ||
+                                (preg_match('/\.bmp\s*$/', $value) && $this->isrockboxicon($fname)) ||
                                 (preg_match('/^\s*-\s*$/', $value)) )
                             {
                                 $found = true;
@@ -996,7 +996,7 @@ END;
         return in_array($name, $ourfonts);
     }
 
-    private function isrockbboxicon($name) {
+    private function isrockboxicon($name) {
         $ouricons = glob(sprintf('%s/*bmp', config::icondir));
         foreach($ouricons as &$icon) {
             $icon = basename($icon, '.bmp');
