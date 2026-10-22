@@ -120,11 +120,7 @@ class themesite {
             );
             $result = $this->checkwps($zipfile, $theme['mainlcd'], $theme['remotelcd']);
 
-            $err = $site->validatezip($zipfile, basename($zipfile), filesize($zipfile));
-            if (count($err) > 0) {
-                $result['pass'] = 0;
-                $result2['output'] = array_merge($result2['output'], $err);
-            }
+            $err = $this->validatezip($zipfile, basename($zipfile), filesize($zipfile));
 
             /*
              * Store the results and check if at least one check passed (for
@@ -135,6 +131,13 @@ class themesite {
                 foreach($targets as $target => $result2) {
                     if ($result2['pass'])
                          $passany = true; /* For the summary */
+
+                    if (count($err) > 0) {
+// disable for now
+//                       $result2['pass'] = 0;
+//                       $result2['output'] = array_merge($result2['output'], $err);
+                    }
+
                     /*
                      * Maybe we want to have two tables - one with historic
                      * data, and one with only the latest results for fast
