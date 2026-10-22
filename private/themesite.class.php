@@ -1030,6 +1030,10 @@ END;
         $rwpsfound = array();
         $sbsfound = array();
         $rsbsfound = array();
+        $fmsfound = array();
+        $rfmsfound = array();
+        $wrsfound = array();
+        $rwrsfound = array();
         $cfgfound = array();
         $shortname = '';
         $cfg = '';
@@ -1054,6 +1058,14 @@ END;
                 $sbsfound[] = $filename;
             if (strtolower($pathinfo['extension']) == 'rsbs')
                 $rsbsfound[] = $filename;
+            if (strtolower($pathinfo['extension']) == 'fms')
+                $fmsfound[] = $filename;
+            if (strtolower($pathinfo['extension']) == 'rfms')
+                $rfmsfound[] = $filename;
+            if (strtolower($pathinfo['extension']) == 'wrs')
+                $wrsfound[] = $filename;
+            if (strtolower($pathinfo['extension']) == 'rwrs')
+                $rwrsfound[] = $filename;
 
             /* Check that all files are within .rockbox */
             if (strpos($filename, '.rockbox') !== 0)
@@ -1171,6 +1183,18 @@ END;
 
         if (count($rsbsfound) > 1)
             $err[] = sprintf("More than one .rsbs found (%s).", implode(', ', $rsbsfound));
+
+        if (count($wrsfound) > 1)
+            $err[] = sprintf("More than one .wrs found (%s).", implode(', ', $wrsfound));
+
+        if (count($rwrsfound) > 1)
+            $err[] = sprintf("More than one .rwrs found (%s).", implode(', ', $rwrsfound));
+
+        if (count($fmsfound) > 1)
+            $err[] = sprintf("More than one .fms found (%s).", implode(', ', $fmsfound));
+
+        if (count($rfmsfound) > 1)
+            $err[] = sprintf("More than one .rfms found (%s).", implode(', ', $rfmsfound));
         return $err;
     }
 
