@@ -1165,13 +1165,23 @@ END;
                 case 'voice':
                 case 'codec':
                 case 'ignore':
+                case 'config':
                 case 'zip':
-                    $err[] = sprintf('Unwanted file: %s', $filename);
+                    if ($fixup === false) {
+                        $err[] = sprintf('Unwanted file: %s', $filename);
+                    } else {
+//                        printf("Deleting >%s< from zip >%s<\n", $filename, $file);
+                        $zip->deleteName($filename);
+                    }
             }
 
             /* And finally, don't let them overwrite the main binary! */
             switch(strtolower($pathinfo['filename'])) {
                 case 'rockbox':
+                    if (strtolower($pathinfo['extension']) !== 'bmp')
+                        break;
+                case 'shortcuts':
+                case 'rockbox-info':
                     $err[] = sprintf('Unwanted file: %s', $filename);
             }
         }
