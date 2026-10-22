@@ -135,7 +135,7 @@ class themesite {
                     if (count($err) > 0) {
 // disable for now
 //                       $result2['pass'] = 0;
-//                       $result2['output'] = array_merge($result2['output'], $err);
+                       $result2['output'] = array_merge($result2['output'], $err);
                     }
 
                     /*
@@ -851,7 +851,7 @@ END;
                              * write theme settings feature in rb */
                             $fname = preg_replace('/\.fnt\s*$/','',$value_info['filename']);
                             if ((preg_match('/\.fnt\s*$/', $value) && $this->isfontpackfont($fname)) ||
-                                (preg_match('/\.bmp\s*$/', $value) && $this->isrockboxicon($fname)) ||
+                                (preg_match('/\.bmp\s*$/', $value) && $this->isrockboxicon($fname)) || // XXX this has false negatives
                                 (preg_match('/^\s*-\s*$/', $value)) )
                             {
                                 $found = true;
@@ -870,7 +870,7 @@ END;
                                 }
                             }
                             if($foundfile == false)
-                                return sprintf("The file %s from the setting '%s' doesnt exist.",$value,$name);
+                                return sprintf("The file >%s< from the setting '%s' doesnt exist.",$value,$name);
                         } elseif ($setting['type'] == 'viewport') {
                              $array = explode(",", $value);
                              if (count($array) == 1) {
@@ -1029,7 +1029,7 @@ END;
      * We continue checking for errors, rather than aborting, so the uploader
      * gets a full list of things we didn't like.
      */
-    public function validatezip($file, $realname, $zipsize) {
+    public function validatezip($file, $realname, $zipsize, $fixup = false) {
         $err = array();
         $zip = new ZipArchive;
         $res = $zip->open($file);
@@ -1083,7 +1083,12 @@ END;
             /* Check if the font is already included in Rockbox */
             if (strtolower($pathinfo['extension']) == 'fnt') {
                 if ($this->isfontpackfont($pathinfo['filename'])) {
-                    $err[] = sprintf("This font is included in the Rockbox font pack. Don't include it in your theme: %s", $filename);
+                    if ($fixup === false) {
+                        $err[] = sprintf("This font is included in the Rockbox font pack. Don't include it in your theme: %s", $filename);
+                    } else {
+//                        printf("Deleting >%s< from zip >%s<\n", $filename, $file);
+                        $zip->deleteName($filename);
+                    }
                 }
             }
 
