@@ -1161,6 +1161,7 @@ END;
                 case 'rock':
                 case 'ovl':
                 case 'elf':
+                case 'gc':
                 case 'voice':
                 case 'codec':
                 case 'ignore':
