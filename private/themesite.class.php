@@ -830,7 +830,9 @@ END;
      */
     public function validatecfg($cfg, $files) {
         $settings = $this->allowedsettings();
-        foreach(explode("\n", $cfg) as $line) {
+        $lines = preg_split('/\r\n|\r|\n/', $cfg);
+        foreach($lines as $line) {
+            $line = trim($line);
             if (preg_match("/\s*#/", $line)) continue;
             preg_match("/^(?P<name>[^:]*)\s*:\s*(?P<value>[^#]*)\s*$/", $line, $matches);
             if (count($matches) > 0) {
