@@ -153,7 +153,7 @@ class themesite {
                         ':ver_num' => $result2['version'],
                         ':target' => $target,
                         ':pass' => $result2['pass'] ? 1 : 0,
-                        ':output' => implode(' ',$result2['output'])
+                        ':output' => implode("\n",$result2['output'])
                     );
                     $this->db->query($sql, $args);
                 }
@@ -265,7 +265,7 @@ class themesite {
             $args = array(':id' => $id, ':ctarget' => $target, ':rtarget' => $target);
         }
         $theme = $this->db->query($sql, $args)->next();
-        $theme['needfontpack'] = strstr($theme['checkwps_output'], "requires rockbox font bundle") === false ? false : true;
+        $theme['needfontpack'] = str_contains($theme['checkwps_output'], "requires rockbox font bundle");
         $fileresult = $this->db->query('SELECT filename FROM zipcontents WHERE themeid=:id', array(':id' => $theme['id']));
         $files = array();
         while ($file = $fileresult->next()) {$files[] = $file['filename']; }
@@ -313,7 +313,7 @@ class themesite {
         $themes = $this->db->query($sql);
         /* create additional data */
         while ($theme = $themes->next()) {
-            $theme['needfontpack'] = strstr($theme['checkwps_output'], "requires rockbox font bundle") === false ? false : true;
+            $theme['needfontpack'] = str_contains($theme['checkwps_output'], "requires rockbox font bundle");
             if($theme['numratings'] > 0) $theme['ratings'] = $theme['ratings'] / $theme['numratings'];
             $ret[] = $theme;
         }
@@ -399,7 +399,7 @@ class themesite {
         $themes = $this->db->query($sql, $args);
         /* create additional data */
         while ($theme = $themes->next()) {
-            $theme['needfontpack'] = strstr($theme['checkwps_output'], "requires rockbox font bundle") === false ? false : true;
+            $theme['needfontpack'] = str_contains($theme['checkwps_output'], "requires rockbox font bundle");
             if($theme['numratings'] > 0) $theme['ratings'] = $theme['ratings'] / $theme['numratings'];
             $ret[] = $theme;
         }
@@ -441,7 +441,7 @@ class themesite {
         $themes = $this->db->query($sql, $args);
         /* create additional data */
         while ($theme = $themes->next()) {
-            $theme['needfontpack'] = strstr($theme['checkwps_output'], "requires rockbox font bundle") === false ? false : true;
+            $theme['needfontpack'] = str_contains($theme['checkwps_output'], "requires rockbox font bundle");
             if($theme['numratings'] > 0) $theme['ratings'] = $theme['ratings'] / $theme['numratings'];
             $ret[] = $theme;
         }
@@ -874,7 +874,7 @@ END;
                                 }
                             }
                             if($foundfile == false)
-                                return sprintf("The file >%s< from the setting '%s' doesnt exist.",$value,$name);
+                                return sprintf("The file >%s< from the setting '%s' does not exist.",$value,$name);
                         } elseif ($setting['type'] == 'viewport') {
                              $array = explode(",", $value);
                              if (count($array) == 1) {
@@ -948,7 +948,7 @@ END;
                 /* Build a list of theme/skin files in the theme */
                 foreach(glob($glob,GLOB_BRACE) as $file) {
                     $p = $this->my_pathinfo($file);
-                    /* skip file if it is a remote file, and remote resolution doesnt fit (ie remotechecking is optional on targets without native remote lcd resolution */
+                    /* skip file if it is a remote file, and remote resolution doesn't fit (ie remotechecking is optional on targets without native remote lcd resolution */
                     if(($p['extension'] == 'rwps' || $p['extension'] == 'rsbs' || $p['extension'] == 'rfms' || $p['extension'] == 'rwrs') && ($target['remotelcd'] != $remotelcd))
                         continue;
 
@@ -990,7 +990,7 @@ END;
             if ($entry == '.' || $entry == '..') continue;
             $path = sprintf('%s/%s', $dir->path, $entry);
             if (is_dir($path)) {
-                chmod($path, 0700); // To make sure we're allowed to delete files
+                chmod($path, 0755); // To make sure we're allowed to delete files
                 $this->rmdir_recursive($path);
             }
             else {
@@ -1026,7 +1026,7 @@ END;
      * - All files are inside /.rockbox
      * - All .wps, .rwps and .cfg files use the same shortname, which is also
      *   the one used for the subdir in /.rockbox/wps
-     * - Does not overwrite system files (.lng/voice/codec/rock/binary)
+     * - Does not overwrite system files (.lng/voice/codec/rock/binary/etc)
      *
      * It does not uncompress any of the files.
      *
@@ -1035,8 +1035,6 @@ END;
      */
     public function validatezip($file, $realname, $zipsize, $fixup = false) {
         $err = array();
-        $zip = new ZipArchive;
-        $res = $zip->open($file);
         $totalsize = 0;
         $files = array();
         $wpsfound = array();
@@ -1048,10 +1046,12 @@ END;
         $wrsfound = array();
         $rwrsfound = array();
         $cfgfound = array();
+        $unwanted = array();
         $shortname = '';
         $cfg = '';
 
-        if ($res === false) {
+        $zip = new ZipArchive;
+        if ($zip->open($file) === false) {
             $err[] = sprintf("'Couldn't open zipfile %s", $realname);
             return $err;
         }
@@ -1062,7 +1062,7 @@ END;
             $totalsize += $ze['size'];
             $files[] = $filename;
 
-            /* Count .wps and .rwps  and [.r]sbs files for later checking */
+            /* Count .[r]wps and .[r]sbs files for later checking */
             if (strtolower($pathinfo['extension']) == 'wps')
                 $wpsfound[] = $filename;
             if (strtolower($pathinfo['extension']) == 'rwps')
@@ -1087,13 +1087,44 @@ END;
             /* Check if the font is already included in Rockbox */
             if (strtolower($pathinfo['extension']) == 'fnt') {
                 if ($this->isfontpackfont($pathinfo['filename'])) {
-                    if ($fixup === false) {
+                    $unwanted[] = $filename;
+                    if ($fixup === false)
                         $err[] = sprintf("This font is included in the Rockbox font pack. Don't include it in your theme: %s", $filename);
-                    } else {
-//                        printf("Deleting >%s< from zip >%s<\n", $filename, $file);
-                        $zip->deleteName($filename);
-                    }
                 }
+                /* Clean up old fonts */
+                if (str_contains(strtolower($filename), 'helvr1') || str_contains(strtolower($filename), 'ter-u1')) {
+                    $unwanted[] = $filename;
+                    if ($fixup === false)
+                        $err[] = sprintf("Obsolete font name: %s", $filename);
+                }
+            } elseif (strtolower($pathinfo['extension']) == 'bmp') {
+                if ($this->isrockboxicon($pathinfo['filename'])) { // XXX false negatives?
+                    $unwanted[] = $filename;
+                    if ($fixup === false)
+                        $err[] = sprintf("This iconset is part of rockbox. Don't include it in your theme: %s", $filename);
+                }
+            }
+
+            /* Don't allow specific system files to be overwritten */
+            if ($pathinfo['dirname'] == '.rockbox') {
+                switch ($pathinfo['basename']) {
+                case 'shortcuts.txt':
+                case 'rockbox-info.txt':
+                case 'config.cfg':
+                case 'tagnavi.config':
+                case 'viewers.config':
+                    $unwanted[] = $filename;
+                    if ($fixup === false)
+                        $err[] = sprintf("This file is part of rockbox. Don't include it in your theme: %s", $filename);
+                    break;
+                }
+            }
+            /* Don't let them overwrite the main binary! */
+            if (strtolower($pathinfo['filename']) == 'rockbox' &&
+                strtolower($pathinfo['dirname']) == ".rockbox") {
+                $unwanted[] = $filename;
+                if ($fixup === false)
+                    $err[] = sprintf("This file is part of rockbox. Don't include it in your theme: %s", $filename);
             }
 
             /* Check that all wps/wrs/fms/sbs and .cfg filenames use the same shortname */
@@ -1101,6 +1132,24 @@ END;
                 case 'cfg':
                     /* Save the contents for later checking */
                     $cfg = $this->getzipentrycontents($zip, $ze);
+                    if ($fixup === true && (str_contains($cfg, 'tango_small.bmp') || str_contains($cfg, 'helvR1') || str_contains($cfg, 'tango_small_viewers.bmp')) ) {
+                        $cfg = str_replace('tango_small.bmp', 'tango_icons.12x12.bmp', $cfg);
+                        $cfg = str_replace('tango_small_viewers.bmp', 'tango_icons_viewers.12x12.bmp', $cfg);
+                        $cfg = str_replace('helvR10.fnt', '12-Adobe-Helvetica.fnt', $cfg);
+                        $cfg = str_replace('helvR12.fnt', '15-Adobe-Helvetica.fnt', $cfg);
+                        $cfg = str_replace('helvR14.fnt', '16-Adobe-Helvetica.fnt', $cfg);
+                        $cfg = str_replace('helvR18.fnt', '21-Adobe-Helvetica.fnt', $cfg);
+                        printf(">>>TANGO FIX : $file $filename\n");
+//                        printf("%s", $cfg);
+//                        printf("\n<<<TANGO FIX\n");
+                        if (!$zip->deleteName($filename))
+                            printf("ZIP DELETE ERR\n");
+                        if (!$zip->addFromString($filename, $cfg, ZipArchive::FL_OVERWRITE))
+                            printf("ZIP ADD ERR\n");
+                        if (!$zip->close())
+                            printf("ZIP CLOSE ERR\n");
+                        return $this->validatezip($file, $realname, $zipsize, $fixup);
+                    }
                     $cfgfound[] = $filename;
                 case 'sbs':
                 case 'rsbs':
@@ -1152,7 +1201,18 @@ END;
                 case '.ds_store':
                 case '__macosx':
                 case '.directory':
-                    $err[] = sprintf('Unwanted file: %s', $filename);
+                $unwanted[] = $filename;
+                if ($fixup === false)
+                    $err[] = sprintf("This file/directory should not be included in your theme: %s", $filename);
+            }
+
+            /* Clean up old tango icons */
+            if (str_contains(strtolower($filename), 'tango_small')) {
+		if ($ze['size'] == 13878 || $ze['size'] == 4806) {
+                    $unwanted[] = $filename;
+                    if ($fixup === false)
+                        $err[] = sprintf("This file should not be included in your theme: %s", $filename);
+                }
             }
 
             /* Check for attempts to overwrite system components */
@@ -1167,24 +1227,18 @@ END;
                 case 'voice':
                 case 'codec':
                 case 'ignore':
-                case 'config':
                 case 'zip':
-                    if ($fixup === false) {
-                        $err[] = sprintf('Unwanted file: %s', $filename);
-                    } else {
-//                        printf("Deleting >%s< from zip >%s<\n", $filename, $file);
-                        $zip->deleteName($filename);
-                    }
+                    $unwanted[] = $filename;
+                    if ($fixup === false)
+                        $err[] = sprintf("This file should not be included in your theme: %s", $filename);
             }
+        }
 
-            /* And finally, don't let them overwrite the main binary! */
-            switch(strtolower($pathinfo['filename'])) {
-                case 'rockbox':
-                    if (strtolower($pathinfo['extension']) !== 'bmp')
-                        break;
-                case 'shortcuts':
-                case 'rockbox-info':
-                    $err[] = sprintf('Unwanted file: %s', $filename);
+        /* Report or clean up unwanted stuff */
+        foreach ($unwanted as $item) {
+            if ($fixup !== false) {
+               $zip->deleteName($item);
+//               printf("Deleting >%s< from zip >%s<\n", $item, $file);
             }
         }
         $zip->close();
