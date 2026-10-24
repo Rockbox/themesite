@@ -334,6 +334,8 @@ class themesite {
 
         if ($onlyverified == true) {
             $verified = ' AND emailverification = 1 ';
+        } else {
+            $verified = "";
         }
 
         if ($release === false) {
