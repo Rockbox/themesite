@@ -87,7 +87,7 @@ class themesite {
         $args = array(':id' => $themeid);
         $new = $themeid;
         $old = $this->db->query($sql, $args)->next();
-        if($old['approved'] != 1){
+        if($old !== false && $old['approved'] != 1){
             $sql = 'SELECT themeid, timestamp FROM themes WHERE name=:name AND mainlcd=:mainlcd AND approved >= 1 AND emailverification = 1 ORDER BY timestamp DESC';
             $args = array(':name' => $old['name'], ':mainlcd' => $old['mainlcd']);
             $new = $this->db->query($sql, $args)->next('themeid');
@@ -265,17 +265,19 @@ class themesite {
             $args = array(':id' => $id, ':ctarget' => $target, ':rtarget' => $target);
         }
         $theme = $this->db->query($sql, $args)->next();
-        $theme['needfontpack'] = str_contains($theme['checkwps_output'], "requires rockbox font bundle");
-        $fileresult = $this->db->query('SELECT filename FROM zipcontents WHERE themeid=:id', array(':id' => $theme['id']));
-        $files = array();
-        while ($file = $fileresult->next()) {$files[] = $file['filename']; }
-        $theme['files'] = $files;
-        if($theme['numratings'] > 0) $theme['ratings'] = $theme['ratings'] /$theme['numratings'] ;
+        if ($theme !== false) {
+            $theme['needfontpack'] = str_contains($theme['checkwps_output'], "requires rockbox font bundle");
+            $fileresult = $this->db->query('SELECT filename FROM zipcontents WHERE themeid=:id', array(':id' => $theme['id']));
+            $files = array();
+            while ($file = $fileresult->next()) {$files[] = $file['filename']; }
+            $theme['files'] = $files;
+            if($theme['numratings'] > 0) $theme['ratings'] = $theme['ratings'] /$theme['numratings'] ;
 
-        $theme['compatible'] = array();
-        $results = $this->lcd2targets($theme['mainlcd']);
-        while ($result = $results->next()) {
-            $theme['compatible'][] = $result;
+            $theme['compatible'] = array();
+            $results = $this->lcd2targets($theme['mainlcd']);
+            while ($result = $results->next()) {
+                $theme['compatible'][] = $result;
+            }
         }
 
         return $theme;
@@ -513,6 +515,9 @@ class themesite {
         $args = array(':id' => $themeid);
         $theme = $this->db->query($sql, $args)->next();
 
+        if ($theme === false || empty($theme['mainlcd']) || empty($theme['shortname'])) {
+            return;
+        }
         if ($newstatus == -1) {
             $sql = 'DELETE FROM zipcontents WHERE themeid=:id';
             $args = array(':id' => $themeid);
