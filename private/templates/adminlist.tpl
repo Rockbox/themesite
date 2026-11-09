@@ -62,7 +62,8 @@
             {elseif $themes[i].current_pass == 0}
             <strong class="broken_build">Doesn't work with <span class="build_info" title="{$themes[i].current_version} - {$themes[i].checkwps_output}">current {$target} build</span></strong><br />
             {else}
-            <strong>Select specific target device for validation checks</strong><br />s
+            <strong>Select specific target device for validation checks</strong><br />
+
             {/if}
             {if $themes[i].release_pass > 0}
             <br /><strong>Works with {$target} release {$themes[i].release_version}</strong>
