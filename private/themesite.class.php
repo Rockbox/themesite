@@ -118,9 +118,17 @@ class themesite {
                 $theme['shortname'],
                 $theme['zipfile']
             );
-            $result = $this->checkwps($zipfile, $theme['mainlcd'], $theme['remotelcd']);
+            if (file_exists($zipfile)) {
+                $filesize = filesize($zipfile);
+                $result = $this->checkwps($zipfile, $theme['mainlcd'], $theme['remotelcd']);
 
-            $err = $this->validatezip($zipfile, basename($zipfile), filesize($zipfile));
+                $err = $this->validatezip($zipfile, basename($zipfile), filesize($zipfile));
+            } else {
+                print "Theme $theme[themeid] file not found: $zipfile\n";
+                $filesize = 0;
+                $result = array();
+                $err = '';
+            }
 
             /*
              * Store the results and check if at least one check passed (for
@@ -165,20 +173,17 @@ class themesite {
             );
 
             /* update filesize and zipcontents here, so old themes always have this data */
-            $filesize = filesize(sprintf('%s/%s/%s/%s',
-                $theme['approved'] >= 1 ? $this->themedir_public : $this->themedir_private,
-                $theme['mainlcd'],$theme['shortname'],$theme['zipfile']));
             $sql = 'UPDATE themes SET filesize=:fs WHERE themeid=:id';
             $args = array(':fs' => $filesize, ':id' => $theme['themeid']);
             $this->db->query($sql, $args);
 
-            $zipfiles = $this->zipcontents(sprintf('%s/%s/%s/%s',
-                $theme['approved'] >= 1 ? $this->themedir_public : $this->themedir_private,
-                $theme['mainlcd'],$theme['shortname'],$theme['zipfile']));
             $this->db->query('DELETE FROM zipcontents WHERE themeid=:id', array(':id' => $theme['themeid']));
-            foreach($zipfiles as $file)
-            {
-                $this->db->query('INSERT into zipcontents(themeid,filename) VALUES(:id , :fn)', array(':id' => $theme['themeid'], ':fn' => $file));
+            if ($filesize) {
+                $zipfiles = $this->zipcontents($zipfile);
+                foreach($zipfiles as $file)
+                {
+                    $this->db->query('INSERT into zipcontents(themeid,filename) VALUES(:id , :fn)', array(':id' => $theme['themeid'], ':fn' => $file));
+                }
             }
         }
         return $return;
